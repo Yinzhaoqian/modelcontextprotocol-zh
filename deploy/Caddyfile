@@ -1,7 +1,7 @@
 # Caddy 配置模板 —— 复制到服务器 /etc/caddy/Caddyfile
-# 把 docs.example.com 替换为你的真实域名，然后 `sudo systemctl reload caddy`
+# 然后 `sudo systemctl reload caddy`
 
-docs.example.com {
+mcp-zh.com {
     root * /var/www/mcp-docs
 
     # 压缩
@@ -11,7 +11,7 @@ docs.example.com {
     try_files {path} {path}/ {path}.html /404.html
     file_server
 
-    # 可选：静态资源长缓存（图片/JS/CSS）
+    # 静态资源长缓存
     @assets {
         path *.js *.css *.png *.jpg *.jpeg *.gif *.svg *.woff *.woff2
     }
@@ -23,4 +23,9 @@ docs.example.com {
         rewrite @404 /404.html
         file_server
     }
+}
+
+# www 跳转到根域名
+www.mcp-zh.com {
+    redir https://mcp-zh.com{uri} permanent
 }

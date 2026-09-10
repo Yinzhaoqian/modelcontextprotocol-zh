@@ -5,8 +5,8 @@ import starlight from '@astrojs/starlight';
 import sidebar from './src/sidebar.generated.mjs';
 import { remarkMermaid } from './remark-mermaid.mjs';
 
-// 站点正式域名（部署到 RackNerd 后替换为真实域名）
-const SITE = 'https://example.com';
+// 站点正式域名
+const SITE = 'https://mcp-zh.com';
 const GA4_ID = 'G-6NZJWQG9XZ';
 
 export default defineConfig({
