@@ -24,6 +24,11 @@
     "light": "/logo/light.svg",
     "dark": "/logo/dark.svg"
   },
+  "integrations": {
+    "ga4": {
+      "measurementId": "G-6NZJWQG9XZ"
+    }
+  },
   "navigation": {
     "tabs": [
       {
