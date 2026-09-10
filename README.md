@@ -87,6 +87,7 @@ AGENTS.md           项目总纲与核心原则
 | [docs/translation-rules.md](docs/translation-rules.md) | 翻译规范：代码/API/术语/规范性语言/URL 的处理规则与最终检查清单 |
 | [docs/workflow.md](docs/workflow.md) | 标准工作流：从发现源站到生成报告的 9 个阶段 |
 | [docs/plan.md](docs/plan.md) | 分批执行规划：批次划分（B0–B9）、子批顺序与进度追踪 |
+| [docs/本地预览.md](docs/本地预览.md) | 本地预览：迁移脚本 + Starlight 开发服务器 |
 | [docs/部署.md](docs/部署.md) | 部署到 RackNerd 服务器（Caddy + GitHub Actions）|
 | [glossary.json](glossary.json) | 全局术语表：确定后全站统一使用 |
 
