@@ -1,0 +1,39 @@
+---
+title: 模型上下文协议 中文文档
+description: MCP 官方文档的中文镜像 —— 完整、准确地映射官方技术文档。
+template: splash
+hero:
+  tagline: 一种用于将 AI 应用连接到外部系统的开源标准。本站是官方文档的高质量中文镜像。
+  actions:
+    - text: 什么是 MCP？
+      link: /docs/2026-07-28/getting-started/intro
+      icon: right-arrow
+      variant: primary
+    - text: 在 GitHub 查看
+      link: https://github.com/modelcontextprotocol
+      icon: external
+---
+
+import { Card, CardGrid, LinkCard } from '@astrojs/starlight/components';
+
+可以把 MCP 想象成 AI 应用的 USB-C 接口。正如 USB-C 提供了连接电子设备的标准化方式，MCP 提供了将 AI 应用连接到外部系统的标准化方式。
+
+## 从这里开始
+
+<CardGrid>
+  <LinkCard title="什么是 MCP？" description="快速了解 MCP 是什么、能做什么、为何重要" href="/docs/2026-07-28/getting-started/intro" />
+  <LinkCard title="理解架构" description="掌握 MCP 的核心概念与整体架构" href="/docs/2026-07-28/learn/architecture" />
+  <LinkCard title="构建服务器" description="创建 MCP 服务器以暴露你的数据和工具" href="/docs/2026-07-28/develop/build-server" />
+  <LinkCard title="构建客户端" description="开发连接到 MCP 服务器的应用" href="/docs/2026-07-28/develop/build-client" />
+</CardGrid>
+
+## 浏览全部内容
+
+<CardGrid>
+  <LinkCard title="文档" description="入门、核心概念与开发指南" href="/docs/2026-07-28/getting-started/intro" />
+  <LinkCard title="规范" description="协议规范与技术细节" href="/specification/2026-07-28/index" />
+  <LinkCard title="扩展" description="MCP Apps、授权、Tasks 等扩展" href="/extensions/overview" />
+  <LinkCard title="注册表" description="MCP 服务器注册表" href="/registry/about" />
+  <LinkCard title="SEPs" description="规范增强提案" href="/seps/index" />
+  <LinkCard title="社区" description="治理、贡献指南与工作组" href="/community/contributing" />
+</CardGrid>

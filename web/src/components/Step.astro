@@ -1,0 +1,36 @@
+---
+// 模拟 Mintlify <Step title="...">
+interface Props { title?: string; }
+const { title } = Astro.props;
+---
+<div class="ml-step">
+  {title && <p class="ml-step-title">{title}</p>}
+  <div class="ml-step-body"><slot /></div>
+</div>
+<style>
+  .ml-step {
+    position: relative;
+  }
+  .ml-step::before {
+    counter-increment: ml-step;
+    content: counter(ml-step);
+    position: absolute;
+    left: -2.6rem;
+    top: -0.1rem;
+    width: 1.65rem;
+    height: 1.65rem;
+    border-radius: 999px;
+    background: var(--sl-color-accent-low);
+    color: var(--sl-color-accent-high);
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .ml-step-title {
+    font-weight: 600;
+    margin: 0 0 0.35rem;
+  }
+  .ml-step-body :global(> :first-child) { margin-top: 0; }
+</style>

@@ -1,0 +1,24 @@
+# 依赖与构建产物
+node_modules/
+dist/
+.astro/
+
+# 迁移脚本生成的内容与资源（由 translated/ 经 scripts/migrate_mintlify_to_starlight.py 生成）
+# translated/ 是唯一真源；构建前先运行迁移脚本再 npm run build
+src/content/docs/docs/
+src/content/docs/specification/
+src/content/docs/extensions/
+src/content/docs/registry/
+src/content/docs/community/
+src/content/docs/development/
+src/content/docs/seps/
+src/content/docs/examples.mdx
+
+# public 下除手写文件外均由脚本生成
+public/*
+!public/favicon.svg
+!public/mermaid-init.js
+
+# 其它
+.DS_Store
+*.log
