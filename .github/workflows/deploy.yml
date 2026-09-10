@@ -1,0 +1,53 @@
+name: 构建并部署到服务器
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# 避免并发部署互相覆盖
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 安装 Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: 安装 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: 运行迁移脚本（translated/ -> web/）
+        run: python scripts/migrate_mintlify_to_starlight.py
+
+      - name: 安装前端依赖
+        working-directory: web
+        run: npm ci
+
+      - name: 构建静态站点
+        working-directory: web
+        run: npm run build
+
+      - name: 配置 SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -p "${{ secrets.DEPLOY_PORT || '22' }}" -H "${{ secrets.DEPLOY_HOST }}" >> ~/.ssh/known_hosts
+
+      - name: rsync 部署到服务器
+        run: |
+          rsync -avz --delete \
+            -e "ssh -i ~/.ssh/id_ed25519 -p ${{ secrets.DEPLOY_PORT || '22' }}" \
+            web/dist/ \
+            "${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:${{ secrets.DEPLOY_PATH }}/"
