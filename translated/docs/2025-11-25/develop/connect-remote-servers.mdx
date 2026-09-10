@@ -1,0 +1,149 @@
+---
+title: 连接到远程 MCP 服务器
+description: 了解如何将 Claude 连接到远程 MCP 服务器，并使用互联网托管的工具和数据源扩展其能力
+---
+
+远程 MCP 服务器将 AI 应用的能力扩展到你的本地环境之外，提供对互联网托管的工具、服务和数据源的访问。通过连接到远程 MCP 服务器，你可以将 AI 助手从有用的工具转变为见多识广的队友，它们能够在实时访问外部资源的情况下处理复杂的、多步骤的项目。
+
+现在许多客户端都支持远程 MCP 服务器，从而带来广泛的集成可能性。本指南以 [Claude](https://claude.ai/)（众多支持 MCP 的客户端之一）为例，演示如何连接到远程 MCP 服务器。虽然我们聚焦于 Claude 通过 Custom Connectors 的实现，但这些概念广泛适用于其他兼容 MCP 的客户端。
+
+## 理解远程 MCP 服务器
+
+远程 MCP 服务器的功能与本地 MCP 服务器类似，但它们托管在互联网上，而不是你的本地机器上。它们暴露 Claude 可以用来代表你执行任务的工具、提示和资源。这些服务器可以与各种服务集成，例如项目管理工具、文档系统、代码仓库，以及任何其他支持 API 的服务。
+
+远程 MCP 服务器的关键优势在于其可访问性。与需要在每台设备上安装和配置的本地服务器不同，远程服务器可以从任何具有互联网连接的 MCP 客户端访问。这使它们成为基于 Web 的 AI 应用、强调易用性的集成，以及需要服务器端处理或认证的服务的理想选择。
+
+## 什么是 Custom Connectors？
+
+Custom Connectors 充当 Claude 与远程 MCP 服务器之间的桥梁。它们让你能够将 Claude 直接连接到对你的工作流最重要的工具和数据源，使 Claude 能够在你喜爱的软件中运作，并从你外部工具的完整上下文中获取洞察。
+
+使用 Custom Connectors，你可以：
+
+- [将 Claude 连接到由第三方开发者提供的现有远程 MCP 服务器](https://support.anthropic.com/en/articles/11175166-getting-started-with-custom-connectors-using-remote-mcp)
+- [构建你自己的远程 MCP 服务器以与任何工具连接](https://support.anthropic.com/en/articles/11503834-building-custom-connectors-via-remote-mcp-servers)
+
+## 连接到远程 MCP 服务器
+
+将 Claude 连接到远程 MCP 服务器的过程涉及通过 [Claude 界面](https://claude.ai/)添加一个 Custom Connector。这会在 Claude 与你所选的远程服务器之间建立一个安全连接。
+
+<Steps>
+<Step title="进入 Connector 设置">
+打开浏览器中的 Claude 并导航到设置页面。你可以通过点击你的个人资料图标并从下拉菜单中选择 "Settings" 来访问它。进入设置后，定位并点击侧边栏中的 "Connectors" 部分。
+
+这会显示你当前已配置的连接器，并提供添加新连接器的选项。
+
+</Step>
+
+<Step title="添加 Custom Connector">
+在 Connectors 部分，滚动到底部，你会找到 "Add custom connector" 按钮。点击此按钮以开始连接过程。
+
+<Frame>
+  <img
+    src="/images/quickstart-remote/1-add-connector.png"
+    alt="Claude 设置中的“添加自定义连接器”按钮"
+  />
+</Frame>
+
+会出现一个对话框，提示你输入远程 MCP 服务器 URL。此 URL 应由服务器开发者或管理员提供。输入完整的 URL，确保它包含正确的协议（https://）和任何必要的路径组成部分。
+
+<Frame>
+  <img
+    src="/images/quickstart-remote/2-connect.png"
+    alt="用于输入远程 MCP 服务器 URL 的对话框"
+  />
+</Frame>
+
+输入 URL 后，点击 "Add" 以继续连接。
+
+</Step>
+
+<Step title="完成认证">
+大多数远程 MCP 服务器都需要认证，以确保对其资源的安全访问。认证过程因服务器实现而异，但通常涉及 OAuth、API 密钥或用户名/密码组合。
+
+<Frame>
+  <img
+    src="/images/quickstart-remote/3-auth.png"
+    alt="远程 MCP 服务器的认证界面"
+  />
+</Frame>
+
+按照服务器提供的认证提示操作。这可能会将你重定向到第三方认证提供方，或在 Claude 内显示一个表单。认证完成后，Claude 将与远程服务器建立安全连接。
+
+</Step>
+
+<Step title="访问资源和提示">
+成功连接后，远程服务器的资源和提示将在你的 Claude 对话中变得可用。你可以通过点击消息输入区中的回形针图标来访问它们，这会打开附件菜单。
+
+<Frame>
+  <img
+    src="/images/quickstart-remote/4-select-resources-menu.png"
+    alt="显示可用资源的附件菜单"
+  />
+</Frame>
+
+该菜单显示来自你所连接服务器的所有可用资源和提示。选择你想要包含在对话中的项目。这些资源为 Claude 提供来自你外部工具的上下文和信息。
+
+<Frame>
+  <img src="/images/quickstart-remote/5-select-prompts-resources.png" alt="从菜单中选择特定的资源和提示" />
+</Frame>
+</Step>
+
+<Step title="配置工具权限">
+远程 MCP 服务器常常暴露多个具有不同能力的工具。你可以通过在连接器设置中配置权限，来控制允许 Claude 使用哪些工具。这确保 Claude 只执行你已明确授权的操作。
+
+<Frame>
+  <img
+    src="/images/quickstart-remote/6-configure-tools.png"
+    alt="工具权限配置界面"
+  />
+</Frame>
+
+返回到 Connectors 设置并点击你已连接的服务器。在这里你可以启用或禁用特定工具、设置使用限制，并根据你的需要配置其他安全参数。
+
+</Step>
+</Steps>
+
+## 使用远程 MCP 服务器的最佳实践
+
+在使用远程 MCP 服务器时，请考虑以下建议，以确保安全高效的体验：
+
+**安全考量**：在连接之前，务必验证远程 MCP 服务器的真实性。只连接来自受信任来源的服务器，并审查认证过程中所请求的权限。在授予对敏感数据或系统的访问权限时要谨慎。
+
+**管理多个连接器**：你可以同时连接到多个远程 MCP 服务器。按用途或项目组织你的连接器以保持清晰。定期审查并移除你不再使用的连接器，以保持工作区的整洁和安全。
+
+## 后续步骤
+
+现在你已经将 Claude 连接到了一个远程 MCP 服务器，你可以在对话中探索它的能力。尝试使用已连接的工具来自动化任务、访问外部数据，或与你现有的工作流集成。
+
+<CardGroup cols={2}>
+  <Card
+    title="构建你自己的远程服务器"
+    icon="cloud"
+    href="https://support.anthropic.com/en/articles/11503834-building-custom-connectors-via-remote-mcp-servers"
+  >
+    创建自定义的远程 MCP 服务器，以与专有工具和服务集成
+  </Card>
+  <Card
+    title="探索可用的服务器"
+    icon="grid"
+    href="https://github.com/modelcontextprotocol/servers"
+  >
+    浏览我们收集的官方和社区创建的 MCP 服务器
+  </Card>
+  <Card
+    title="连接本地服务器"
+    icon="computer"
+    href="/docs/2025-11-25/develop/connect-local-servers"
+  >
+    了解如何将 Claude Desktop 连接到本地 MCP 服务器以进行直接的系统访问
+  </Card>
+  <Card
+    title="理解架构"
+    icon="book"
+    href="/docs/2025-11-25/learn/architecture"
+  >
+    深入了解 MCP 如何工作及其架构
+  </Card>
+</CardGroup>
+
+远程 MCP 服务器为扩展 Claude 的能力解锁了强大的可能性。随着你逐渐熟悉这些集成，你会发现精简工作流并更高效地完成复杂任务的新方式。

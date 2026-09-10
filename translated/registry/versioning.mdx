@@ -1,0 +1,171 @@
+---
+title: 为已发布的 MCP 服务器设定版本
+sidebarTitle: 版本控制
+---
+
+<Note>
+  MCP 注册表目前处于预览阶段。在正式发布之前可能发生破坏性变更或数据重置。如果你遇到任何问题，请在 [GitHub](https://github.com/modelcontextprotocol/registry/issues) 上报告。
+</Note>
+
+MCP 服务器**必须（MUST）**在 `server.json` 中定义一个版本字符串。例如：
+
+```json server.json highlight={6}
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.username/email-integration-mcp",
+  "title": "Email Integration",
+  "description": "Send emails and manage email accounts",
+  "version": "1.0.0",
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "@username/email-integration-mcp",
+      "version": "1.0.0",
+      "transport": {
+        "type": "stdio"
+      }
+    }
+  ]
+}
+```
+
+对于该服务器的每一次发布，版本字符串**必须（MUST）**是唯一的。一旦发布，版本字符串（及其他元数据）便不可更改。
+
+## 版本格式
+
+MCP 注册表推荐使用[语义化版本控制](https://semver.org/)，但支持任何版本字符串格式。当一个服务器被发布时，MCP 注册表会尝试将其版本解析为语义化版本字符串以便排序，并在适当时将该版本标记为 "latest"。如果解析失败，该版本将始终被标记为 "latest"。
+
+<Warning>
+
+如果一个服务器使用语义化版本字符串，但发布了一个**不**符合语义化版本控制的新版本，那么即使按排序该新版本本应排在语义化版本字符串之前，它也会被标记为 "latest"。
+
+</Warning>
+
+作为一种防错机制，MCP 注册表禁止看起来指代版本范围的版本字符串。
+
+| 示例           | 类型                | 建议                            |
+| -------------- | ------------------- | ------------------------------ |
+| `1.0.0`        | 语义化版本          | **推荐**                        |
+| `2.1.3-alpha`  | 语义化预发布        | **推荐**                        |
+| `1.0.0-beta.1` | 语义化预发布        | **推荐**                        |
+| `3.0.0-rc.2`   | 语义化预发布        | **推荐**                        |
+| `2025.11.25`   | 语义化日期          | 推荐                            |
+| `2025.6.18`    | 语义化日期          | 推荐 **（⚠️注意！⚠️）**          |
+| `2025.06.18`   | 非语义化日期        | 允许 **（⚠️注意！⚠️）**          |
+| `2025-06-18`   | 非语义化日期        | 允许                            |
+| `v1.0`         | 带前缀的版本        | 允许                            |
+| `^1.2.3`       | 版本范围            | 禁止                            |
+| `~1.2.3`       | 版本范围            | 禁止                            |
+| `>=1.2.3`      | 版本范围            | 禁止                            |
+| `<=1.2.3`      | 版本范围            | 禁止                            |
+| `>1.2.3`       | 版本范围            | 禁止                            |
+| `<1.2.3`       | 版本范围            | 禁止                            |
+| `1.x`          | 版本范围            | 禁止                            |
+| `1.2.*`        | 版本范围            | 禁止                            |
+| `1 - 2`        | 版本范围            | 禁止                            |
+| `1.2 \|\| 1.3` | 版本范围            | 禁止                            |
+
+## 最佳实践
+
+### 使用语义化版本控制
+
+为版本字符串使用[语义化版本控制](https://semver.org/)。
+
+### 使服务器版本与软件包版本对齐
+
+对于本地服务器，使服务器版本与底层软件包版本对齐，以避免混淆：
+
+```json server.json highlight={2,7}
+{
+  "version": "1.2.3",
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "@my-username/my-server",
+      "version": "1.2.3",
+      "transport": {
+        "type": "stdio"
+      }
+    }
+  ]
+}
+```
+
+如果有多个底层软件包，使用服务器版本来表示整体的发布版本：
+
+```json server.json highlight={2,7,15}
+{
+  "version": "1.3.0",
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "@my-username/my-server",
+      "version": "1.3.0",
+      "transport": {
+        "type": "stdio"
+      }
+    },
+    {
+      "registryType": "nuget",
+      "identifier": "MyUsername.MyServer",
+      "version": "1.0.0",
+      "transport": {
+        "type": "stdio"
+      }
+    }
+  ]
+}
+```
+
+### 使服务器版本与远程 API 版本对齐
+
+对于带有 API 版本的远程服务器，服务器版本应与 API 版本对齐：
+
+```json server.json highlight={2,6}
+{
+  "version": "2.1.0",
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://api.myservice.com/mcp/v2.1"
+    }
+  ]
+}
+```
+
+### 对仅涉及注册表的更新使用预发布版本
+
+如果你预计会多次发布某个服务器，而**不**更改底层软件包或远程 URL——例如为了更新元数据的其他部分——请使用语义化预发布版本：
+
+```json server.json highlight={2}
+{
+  "version": "1.2.3-1",
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "@my-username/my-server",
+      "version": "1.2.3",
+      "transport": {
+        "type": "stdio"
+      }
+    }
+  ]
+}
+```
+
+<Warning>
+
+依据语义化版本控制，诸如 `1.2.3-1` 之类的预发布版本排序在诸如 `1.2.3` 之类的常规语义化版本之前。因此，如果你在某个常规版本**之后**发布其对应的预发布版本，该预发布版本将**不**会被标记为 "latest"。
+
+</Warning>
+
+## 对聚合器的建议
+
+MCP 注册表聚合器**应当（SHOULD）**：
+
+1. 在可能时尝试将版本解释为语义化版本
+2. 使用以下版本比较规则：
+   - 如果某个版本被标记为 "latest"，将其视为更新的版本
+   - 如果两个版本都是有效的语义化版本，使用语义化版本控制的比较规则
+   - 如果两个版本都不是有效的语义化版本，比较发布时间戳
+   - 如果一个版本是有效的语义化版本而另一个不是，将语义化版本视为更新的版本

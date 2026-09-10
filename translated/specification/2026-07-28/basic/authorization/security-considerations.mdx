@@ -1,0 +1,112 @@
+---
+title: 授权安全考量
+sidebarTitle: 安全考量
+---
+
+<div id="enable-section-numbers" />
+
+本文档概述实现者在构建 MCP 客户端和服务器时**必须（MUST）**考虑的安全要求。
+
+此外，实现者**必须（MUST）**遵循 [OAuth 2.1 第 7 节 "Security Considerations"](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1-13#name-security-considerations)中概述的 OAuth 2.1 安全最佳实践。
+
+## 令牌 Audience 绑定与校验
+
+[RFC 8707](https://www.rfc-editor.org/rfc/rfc8707.html) Resource Indicators **在授权服务器支持该能力时**，通过将令牌绑定到其预期的 audience 提供关键的安全益处。为支持当前和未来的采用：
+
+- MCP 客户端**必须（MUST）**在授权和令牌请求中包含 `resource` 参数，如 [Resource 参数实现](/specification/2026-07-28/basic/authorization#resource-parameter-implementation)一节所指定
+- MCP 服务器**必须（MUST）**校验向它们出示的令牌是专门为它们的使用而签发的
+
+[安全最佳实践文档](/docs/2026-07-28/tutorials/security/security_best_practices#token-passthrough)概述了为何令牌 audience 校验至关重要，以及为何令牌透传被明确禁止。
+
+## 令牌盗窃
+
+获得客户端所存储的令牌，或服务器上缓存或记录的令牌的攻击者，可以用对资源服务器看起来合法的请求访问受保护资源。
+
+客户端和服务器**必须（MUST）**实现安全的令牌存储并遵循 OAuth 最佳实践，如 [OAuth 2.1 第 7.1 节](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1-13#section-7.1)中所概述。
+
+授权服务器**应当（SHOULD）**签发短期访问令牌以减少泄露令牌的影响。对于公共客户端，授权服务器**必须（MUST）**如 [OAuth 2.1 第 4.3.1 节 "Token Endpoint Extension"](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1-13#section-4.3.1)所述轮换刷新令牌。
+
+## 通信安全
+
+实现**必须（MUST）**遵循 [OAuth 2.1 第 1.5 节 "Communication Security"](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1-13#section-1.5)。
+
+具体而言：
+
+1. 所有授权服务器端点**必须（MUST）**通过 HTTPS 提供。
+1. 所有重定向 URI **必须（MUST）**要么是 `localhost`，要么使用 HTTPS。
+
+## 授权码保护
+
+获得授权响应中所含授权码访问权限的攻击者可以尝试将授权码兑换为访问令牌，或以其他方式利用该授权码。（在 [OAuth 2.1 第 7.5 节](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1-13#section-7.5)中有进一步描述）
+
+为缓解这一点，MCP 客户端**必须（MUST）**根据 [OAuth 2.1 第 7.5.2 节](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1-13#section-7.5.2)实现 PKCE，并**必须（MUST）**在继续授权之前验证 PKCE 支持。PKCE 通过要求客户端创建一个秘密的 verifier-challenge 对来帮助防止授权码拦截和注入攻击，确保只有原始请求者才能将授权码交换为令牌。
+
+MCP 客户端在技术上有能力时**必须（MUST）**使用 `S256` code challenge 方法，如 [OAuth 2.1 第 4.1.1 节](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1-13#section-4.1.1)所要求。
+
+由于 OAuth 2.1 和 PKCE 规范未定义供客户端发现 PKCE 支持的机制，MCP 客户端**必须（MUST）**依赖授权服务器元数据来验证此能力：
+
+- **OAuth 2.0 Authorization Server Metadata**：如果 `code_challenge_methods_supported` 缺失，授权服务器不支持 PKCE，MCP 客户端**必须（MUST）**拒绝继续。
+
+- **OpenID Connect Discovery 1.0**：虽然 [OpenID Provider Metadata](https://openid.net/specs/openid-connect-discovery-1_0.html#ProviderMetadata) 未定义 `code_challenge_methods_supported`，但此字段通常被 OpenID 提供方包含。MCP 客户端**必须（MUST）**验证提供方元数据响应中存在 `code_challenge_methods_supported`。如果该字段缺失，MCP 客户端**必须（MUST）**拒绝继续。
+
+提供 OpenID Connect Discovery 1.0 的授权服务器**必须（MUST）**在其元数据中包含 `code_challenge_methods_supported` 以确保 MCP 兼容性。
+
+## 混淆攻击（Mix-Up Attacks）
+
+控制 MCP 客户端所交互的某个授权服务器的攻击者可能试图让客户端向它发送由另一个诚实的授权服务器签发的授权码或令牌（一种混淆攻击，在 [RFC9207 第 1 节](https://datatracker.ietf.org/doc/html/rfc9207#section-1)中有描述）。[授权响应校验](/specification/2026-07-28/basic/authorization#authorization-response-validation)指定了所需的缓解措施。
+
+## 开放重定向
+
+攻击者可能构造恶意的重定向 URI 以将用户导向钓鱼站点。
+
+MCP 客户端**必须（MUST）**在授权服务器处注册重定向 URI。
+
+授权服务器**必须（MUST）**对照预注册的值校验精确的重定向 URI，以防止重定向攻击。
+
+MCP 客户端**应当（SHOULD）**在授权码流程中使用并验证 state 参数，并丢弃任何不包含原始 state 或与之不匹配的结果。
+
+授权服务器**必须（MUST）**采取预防措施防止将用户代理重定向到不受信任的 URI，遵循 [OAuth 2.1 第 7.12.2 节](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1-13#section-7.12.2)中列出的建议。
+
+授权服务器**应当（SHOULD）**只在它信任重定向 URI 时才自动重定向用户代理。如果该 URI 不受信任，授权服务器可以（MAY）告知用户并依靠用户做出正确的决定。
+
+## 客户端 ID 元数据文档安全
+
+在实现[客户端 ID 元数据文档](/specification/2026-07-28/basic/authorization/client-registration#client-id-metadata-documents)时，授权服务器**必须（MUST）**考虑 [OAuth Client ID Metadata Document 第 6 节](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-client-id-metadata-document-00#name-security-considerations)中详述的安全影响。关键考量包括：
+
+### 授权服务器滥用防护
+
+获取元数据文档的授权服务器**应当（SHOULD）**考虑[服务器端请求伪造（SSRF）](https://developer.mozilla.org/docs/Web/Security/Attacks/SSRF)风险，如 [OAuth Client ID Metadata Document：Server Side Request Forgery (SSRF) Attacks](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-client-id-metadata-document-00#name-server-side-request-forgery)中所述。
+
+### Localhost 重定向 URI 风险
+
+客户端 ID 元数据文档本身无法防止 `localhost` URL 冒充。
+
+授权服务器：
+
+- **应当（SHOULD）**为仅 `localhost` 的重定向 URI 显示额外警告
+- **可以（MAY）**要求额外的证明（attestation）机制以增强安全性
+- **必须（MUST）**在授权期间清晰地显示重定向 URI 主机名
+
+### 信任策略
+
+授权服务器**可以（MAY）**为接受客户端 ID 元数据文档实现基于域名的信任策略，如客户端 ID 元数据文档规范的[第 6.4 节](https://www.ietf.org/archive/id/draft-ietf-oauth-client-id-metadata-document-00.html#section-6.4)和[第 6.8 节](https://www.ietf.org/archive/id/draft-ietf-oauth-client-id-metadata-document-00.html#section-6.8)中所述。
+
+## 混淆代理问题
+
+攻击者可以利用充当第三方 API 中间方的 MCP 服务器，导致[混淆代理漏洞](/docs/2026-07-28/tutorials/security/security_best_practices#confused-deputy-problem)。通过使用窃取的授权码，他们可以在未经用户同意的情况下获取访问令牌。
+
+使用静态 client ID 的 MCP 代理服务器在转发到第三方授权服务器（可能需要额外同意）之前，**必须（MUST）**为每个[动态注册的客户端](/specification/2026-07-28/basic/authorization/client-registration#dynamic-client-registration)获得用户同意。
+
+## 访问令牌权限限制
+
+如果 MCP 服务器接受为其他资源签发的令牌，攻击者可以获得未授权的访问，或以其他方式危及 MCP 服务器。
+
+MCP 服务器**必须（MUST）**在处理请求之前校验访问令牌，确保访问令牌是专门为 MCP 服务器签发的，并采取所有必要步骤以确保不向未授权方返回任何数据。
+
+MCP 服务器**必须（MUST）**遵循 [OAuth 2.1 第 5.2 节](https://www.ietf.org/archive/id/draft-ietf-oauth-v2-1-13.html#section-5.2)中的指南来校验入站令牌。
+
+MCP 服务器**必须（MUST）**只接受专门为它们自己准备的令牌，并**必须（MUST）**拒绝不将它们包含在 audience claim 中的令牌，或以其他方式验证它们是令牌的预期接收方。详情参见[安全最佳实践的令牌透传一节](/docs/2026-07-28/tutorials/security/security_best_practices#token-passthrough)。
+
+如果 MCP 服务器向上游 API 发起请求，它可能作为它们的 OAuth 客户端。在上游 API 使用的访问令牌是一个单独的令牌，由上游授权服务器签发。MCP 服务器**不得（MUST NOT）**透传它从 MCP 客户端收到的令牌。
+
+MCP 客户端**必须（MUST）**实现并使用 [RFC 8707 - Resource Indicators for OAuth 2.0](https://www.rfc-editor.org/rfc/rfc8707.html)中定义的 `resource` 参数，以显式指定正在为其请求令牌的目标资源。此要求与 [RFC 9728 第 7.4 节](https://datatracker.ietf.org/doc/html/rfc9728#section-7.4)中的建议对齐。这确保访问令牌被绑定到其预期资源，且不能在不同服务之间被滥用。

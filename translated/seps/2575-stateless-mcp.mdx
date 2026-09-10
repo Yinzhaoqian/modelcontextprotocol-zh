@@ -1,0 +1,519 @@
+---
+title: "SEP-2575：使 MCP 无状态"
+sidebarTitle: "SEP-2575"
+---
+
+- **状态（Status）**: Final
+- **类型（Type）**: Standards Track
+- **创建（Created）**: 2025-06-18
+- **作者（Author(s)）**: Jonathan Hefner (@jonathanhefner), Mark Roth (@markdroth),
+  Shaun Smith (@evalstate), Harvey Tuch (@htuch), Kurtis Van Gent (@kurtisvg)
+- **担保人（Sponsor）**: Kurtis Van Gent (@kurtisvg)
+- **PR**: https://github.com/modelcontextprotocol/modelcontextprotocol/pull/2575
+
+## 摘要
+
+一个真正无状态的协议——每个请求都是自包含的，且可以孤立地被理解——因其固有的简单性、可扩展性和可靠性而极为可取。当前的模型上下文协议（MCP）默认不是无状态的。规范要求一个初始化握手，在客户端和服务器之间确立一个会话状态，该状态在连接期间持续存在。
+
+这种固有的有状态性使得在规模上运行 MCP 变得困难。例如，将 MCP 服务器置于标准负载均衡器之后具有挑战性，因为客户端的会话与持有其状态的特定服务器实例耦合。
+
+本提案概述了一系列变更，以**使无状态 MCP 成为默认**，为协议复杂性和状态采纳一种"按需付费（pay as you go）"模型。在此模型下，我们默认提供简单、无状态的特性，仅在确实需要有状态、长期连接功能的情况下才引入其开销。
+
+具体而言，本 SEP 提议移除建立状态的初始化握手，并用离散的、无状态的替代方案取而代之。这一初始步骤允许每个请求被独立处理，简化服务器端逻辑，并为健壮、可扩展的部署铺平道路。
+
+## 动机
+
+模型上下文协议（MCP）规范当前强制一个有状态的初始化握手。这一设计选择为可扩展性、可靠性和实现简单性带来了显著挑战。本 SEP 的动机在于解决这些不足。
+
+### 有状态性的问题
+
+核心问题在于服务器必须保留先前请求的会话状态才能理解后续请求。这与现代云原生系统的设计直接对立，后者因其弹性和可扩展性而青睐无状态服务。
+
+1. **对可扩展性的阻碍：** 最关键的问题是对有状态 MCP 进行负载均衡的困难。简单的无状态负载均衡器（例如 L4/L7 轮询）无法使用，因为它会将客户端的请求路由到不同的后端服务器，而其中没有一个持有正确的会话状态。运营者被迫实现复杂而脆弱的解决方案，如粘性会话（sticky session），将客户端绑定到特定服务器。这使基础设施复杂化，可能导致负载分布不均，并使横向扩展服务变得棘手。
+2. **糟糕的弹性和容错：** 在有状态模型中，如果处理某客户端会话的特定服务器实例失败，该会话状态就丢失了。客户端必须检测连接失败、重新建立连接（很可能通过负载均衡器连到新的服务器实例），并再次执行整个初始化握手。这一过程具有扰乱性且低效，围绕"可恢复性"增加了复杂性。
+3. **增加的实现复杂性：** 当前模型给开发者施加了显著负担。
+   - **服务器端：** 开发者必须实现逻辑来创建、管理并最终垃圾回收每客户端会话状态。这是缺陷和内存泄漏的常见来源。
+   - **客户端端：** 开发者必须编写复杂代码来管理持久连接、处理不可避免的网络故障和重连，包括断开后重新同步状态的逻辑。
+
+## 设计原则
+
+本提案为协议复杂性确立一种"按需付费"模型，遵循以下按偏好排序的原则：
+
+1. **优先无状态：** 只要可能，请求就必须自包含，提供服务器处理它所需的全部信息，而不依赖先前请求的状态。
+2. **优先状态引用：** 如果完全无状态的交换不切实际，则应在每个请求中传递对状态的引用。
+3. **将有状态性视为最后手段：** 有状态逻辑和长期流式连接的复杂性，应仅在没有更简单替代方案来解决某个关键用例时才被接受。
+
+### 传输一致性
+
+这些无状态原则在所有传输间一致应用至关重要。保持 `stdio` 和 `http` 实现同步确保了**统一的开发者体验**，允许核心协议语义学一次、处处应用。这种一致性简化了与传输无关的库和工具的创建，并防止了不同传输行为根本不同的协议碎片化。单一、连贯的协议模型对健康的生态至关重要。
+
+## 规范
+
+### 概览
+
+本规范从根本上将 MCP 交互模型重构为**无状态优先**。目前，MCP 在交换任何资源之前要求一个强制的三方初始化握手。此握手协商并确立几项关键信息：
+
+1. MCP 协议版本
+2. 服务器能力和 `serverInfo`
+3. 客户端能力和 `clientInfo`
+
+此初始化握手的要求**强制确立一个状态**，该状态被期望在客户端与服务器之间的后续通信中持续存在。此外，通过将这些协商捆绑进单一初始化阶段，规范在它们之间——特别是能力交换与强制连接生命周期之间——创造了一种隐含的关联。
+
+本提案是**移除初始化握手**，并将其功能"解绑"为离散的、无状态的组件。我们将提供新的、更清晰定义的机制，让客户端和服务器无需一个强制创建状态的周期即可交换这些信息。
+
+> **注：** 会话管理（传输级和应用级）由 [SEP-2322][SEP-2322] 和 [SEP-2567][SEP-2567] 单独处理。本 SEP 专注于移除初始化握手，并为版本协商、发现和能力提供无状态替代方案。
+
+### 协议版本
+
+为使请求自包含，此前在握手期间协商的元数据现在必须随**每个请求**包含。
+
+#### HTTP
+
+对于 HTTP 传输，协议版本**必须（MUST）**作为一个 **HTTP 头部**传递。头部值**必须（MUST）**与请求载荷 `_meta` 字段中提供的值匹配；否则服务器**必须（MUST）**返回 `400 Bad Request`（见 [SEP-2243][SEP-2243]）。
+
+- `MCP-Protocol-Version: 2025-06-18`
+  - **目的**：告知服务器客户端在此特定请求上使用哪个版本的 MCP 规范。
+  - **要求**：此头部是**强制的（MANDATORY）**。服务器应拒绝缺失或不受支持版本的请求。
+  - 此头部**必须（MUST）**与下文规定的请求中提供的值匹配。
+
+#### 逐请求版本
+
+`protocol-version` **必须（MUST）**直接嵌入请求载荷的 `_meta` 字段。对于 HTTP，此 \_meta **必须（MUST）**与关联的 HTTP 头部匹配，否则服务器应返回 400 Bad Request。
+
+以下 diff 说明了对 `RequestMetaObject` 所需的更改：
+
+```ts
+export interface RequestMetaObject extends MetaObject {
+  progressToken?: ProgressToken;
++ /**
++  * The MCP Protocol Version being used for this request.
++  */
++ "io.modelcontextprotocol/protocolVersion": string;
+  // Additional per-request fields (clientInfo, clientCapabilities, logLevel)
+  // are introduced in the Per-Request Client Capabilities section below.
+}
+```
+
+#### 不受支持的协议版本
+
+如果服务器收到一个它未实现协议版本的请求（无论该版本对服务器未知，还是是服务器已选择不支持的已知版本，例如实验性或草案版本），它**必须（MUST）**返回一个 JSON-RPC 错误响应。对于 HTTP，响应状态码**必须（MUST）**为 `400 Bad Request`。该错误**必须（MUST）**符合以下结构：
+
+```ts
+export const UNSUPPORTED_PROTOCOL_VERSION = -32022;
+
+export interface UnsupportedProtocolVersionError extends Omit<
+  JSONRPCErrorResponse,
+  "error"
+> {
+  error: Error & {
+    code: typeof UNSUPPORTED_PROTOCOL_VERSION;
+    data: {
+      /**
+       * An array of protocol version strings that the server supports.
+       */
+      supported: string[];
+      /**
+       * The protocol version that was requested by the client.
+       */
+      requested: string;
+    };
+  };
+}
+```
+
+#### 版本协商流程
+
+没有初始化握手，版本协商内联发生：
+
+1. 客户端发送一个请求，在 `MCP-Protocol-Version` 头部和 `io.modelcontextprotocol/protocolVersion` `_meta` 字段中带其偏好的协议版本。
+2. 如果服务器支持该版本，它正常处理请求。
+3. 如果服务器不支持所请求的版本，它返回一个包含其 `supported` 版本列表的 `UnsupportedProtocolVersionError`。
+4. 客户端从列表中选择一个双方都支持的版本并重试。
+
+或者，客户端**可以（MAY）**先调用 `server/discover`，在发送任何其他请求之前了解服务器所支持的版本。
+
+### 服务器能力发现
+
+为允许客户端适配不同的服务器实现，本规范引入一个**发现 RPC**。这为服务器公告其所支持的协议版本和能力提供了标准机制。
+
+服务器**必须（MUST）**实现 `server/discover`。客户端**可以（MAY）**调用它，但不被要求——客户端可自由调用任何 RPC 而无需先调用发现端点。如果客户端调用一个不受支持的 RPC，服务器**必须（MUST）**返回一个 `Method not found` JSON-RPC 错误（`-32601`）。对于 HTTP，响应状态码**必须（MUST）**为 `404 Not Found`。
+
+#### `server/discover` RPC
+
+- **目的**：允许客户端向服务器查询其所支持的协议版本、能力和其他元数据。
+
+**请求 Schema：**
+
+```ts
+export interface DiscoverRequest extends Request {
+  method: "server/discover";
+  params?: {};
+}
+```
+
+**响应 Schema：**
+
+```ts
+export interface DiscoverResult extends Result {
+  /**
+   * A list of MCP Protocol Version strings that this server supports.
+   * The client should choose a version from this list for use in
+   * subsequent requests.
+   */
+  supportedVersions: string[];
+
+  /**
+   * An object detailing the capabilities of the server.
+   */
+  capabilities: ServerCapabilities;
+
+  /**
+   * Information about the server software implementation.
+   */
+  serverInfo: Implementation;
+
+  /**
+   * Natural language instructions describing how to use the server and
+   * its features. This can be used by clients to improve an LLM's
+   * understanding of available tools (e.g., by including it in a system prompt).
+   */
+  instructions?: string;
+}
+```
+
+### 逐请求客户端能力
+
+为完成与初始握手的解耦，客户端能力不再在初始化时协商一次。相反，客户端**必须（MUST）**在每个请求上指定其能力。这确保服务器始终充分知晓客户端能为该特定事务处理哪些可选特性。空的能力对象意味着客户端不支持任何可选能力——服务器**不得（MUST NOT）**从先前请求推断能力。
+
+#### 逐请求元数据 Schema
+
+每个请求的 `_meta` 携带一小组此前存在于初始化握手中的字段。完整的 `RequestMetaObject` 形态：
+
+```ts
+export interface RequestMetaObject extends MetaObject {
+  progressToken?: ProgressToken;
+  /**
+   * The MCP Protocol Version being used for this request.
+   */
+  "io.modelcontextprotocol/protocolVersion": string;
+  /**
+   * Identifies the client software.
+   */
+  "io.modelcontextprotocol/clientInfo": Implementation;
+  /**
+   * Capabilities of the client for this specific request.
+   */
+  "io.modelcontextprotocol/clientCapabilities": ClientCapabilities;
+  /**
+   * The desired log level for this request.
+   */
+  "io.modelcontextprotocol/logLevel"?: LoggingLevel;
+}
+```
+
+字段语义：
+
+- `"io.modelcontextprotocol/protocolVersion"`：`string` —— MCP 协议版本。**必需。** 协商细节见上文协议版本一节。
+- `"io.modelcontextprotocol/clientInfo"`：`Implementation` —— 标识客户端软件。**必需。** `Implementation` schema 要求 `name` 和 `version`；其他字段可选。
+- `"io.modelcontextprotocol/clientCapabilities"`：`ClientCapabilities` —— 客户端对此请求的能力。**必需。**
+- `"io.modelcontextprotocol/logLevel"`：`LoggingLevel` —— 此请求所需的日志级别。**可选。** 如果缺失，服务器**不得（MUST NOT）**为此请求发送任何日志通知。客户端通过显式设置级别来选择加入日志消息。替代 `logging/setLevel` RPC。
+
+根（Roots）有意不作为逐请求 `_meta` 字段包含。需要客户端根的服务器**必须（MUST）**通过 MRTR `ListRootsRequest` 机制请求它们（见 [SEP-2322][SEP-2322]），这避免了在每个请求上放置可能很大的根列表，并遵循"按需付费"原则。
+
+缺少任何必需字段的请求是格式错误的；服务器**必须（MUST）**以 `INVALID_PARAMS`（对于 HTTP 为 `400 Bad Request`）拒绝它。
+
+#### 响应流式传输
+
+这些声明的能力管辖服务器可以在响应流中包含什么。[SEP-2322][SEP-2322]（MRTR）定义了服务器到客户端交互如何通过 `IncompleteResult` 内联嵌入响应中；本 SEP 规定那些交互受 `RequestMetaObject` 中声明的逐请求 `clientCapabilities` 管辖。
+
+对于 HTTP，任何请求的响应**可以（MAY）**作为 SSE 流（`Content-Type: text/event-stream`）而非单个 JSON 对象投递。只有通知（例如 `notifications/progress`、`notifications/message`）在此流上作为独立消息流动，随后是最终结果。服务器到客户端交互（采样、征询、listRoots）**不**作为独立请求发送——它们作为输入请求嵌入在从特定请求路径（例如 `CallTool`、`GetPrompt`、`ListResources`）返回的 `IncompleteResult` 中。客户端满足这些输入请求并重试原始请求。
+
+#### 请求取消
+
+客户端如何取消进行中的请求取决于传输：
+
+- **HTTP。** 关闭 SSE 响应流**必须（MUST）**被服务器视为该请求的取消。由于每个请求有其自己的响应流，传输层断开是明确的。
+- **STDIO。** 客户端**必须（MUST）**发送一个引用请求 ID 的 `notifications/cancelled` 通知。STDIO 有单一共享通道，因此没有可关闭的每请求流。
+
+服务器**应当（SHOULD）**尽快停止对已取消请求的工作，并**不得（MUST NOT）**为其发送任何进一步的消息。
+
+##### 可恢复流被移除
+
+由于连接掉线现在隐式取消一个请求，可恢复的 SSE 流（通过 `Last-Event-ID` 重连）被移除。它们与默认无状态的范式相矛盾：恢复将要求服务器跨连接失败保留每请求状态。
+
+需要持久性或可恢复性的工作负载**必须（MUST）**改用任务原语，它为连接掉线后获取结果提供了显式机制。
+
+#### 缺失的必需能力
+
+服务器**不得（MUST NOT）**依赖客户端未声明的能力。如果处理某请求需要客户端未在其 `clientCapabilities` 中声明的能力，服务器**必须（MUST）**返回一个指明缺失能力的 JSON-RPC 错误。对于 HTTP，响应状态码**必须（MUST）**为 `400 Bad Request`。
+
+```ts
+export const MISSING_REQUIRED_CLIENT_CAPABILITY = -32021;
+
+export interface MissingRequiredClientCapabilityError extends Omit<
+  JSONRPCErrorResponse,
+  "error"
+> {
+  error: Error & {
+    code: typeof MISSING_REQUIRED_CLIENT_CAPABILITY;
+    data: {
+      /**
+       * The capabilities the server requires from the client
+       * to process this request.
+       */
+      requiredCapabilities: ClientCapabilities;
+    };
+  };
+}
+```
+
+### `subscriptions/listen` RPC
+
+本 SEP 引入一个新的 `subscriptions/listen` RPC，替代此前的 HTTP GET 端点，并确保 HTTP 和 STDIO 之间行为一致。客户端用它打开一个长期通道，以在特定请求的上下文之外接收通知。
+
+Streamable HTTP 用于服务器到客户端消息的 HTTP GET 端点在本版本的协议中**被移除**。所有通信使用 POST。
+
+依据 [SEP-2260][SEP-2260]，只有通知（而非请求）在此通道上流动；服务器发起的请求使用 MRTR（见上文响应流式传输），并作用于特定的客户端请求。
+
+#### 请求 Schema
+
+```ts
+export interface SubscriptionsListenRequest extends Request {
+  method: "subscriptions/listen";
+  params: {
+    _meta: {
+      "io.modelcontextprotocol/protocolVersion": string;
+      "io.modelcontextprotocol/clientInfo": Implementation;
+      "io.modelcontextprotocol/clientCapabilities": ClientCapabilities;
+      // ... other meta fields
+    };
+
+    /**
+     * The notifications the client wants to receive on this stream.
+     * Each notification type is opt-in; the server **MUST NOT** send
+     * notification types the client has not explicitly requested here.
+     */
+    notifications: {
+      /**
+       * If true, receive notifications/tools/list_changed.
+       */
+      toolsListChanged?: boolean;
+
+      /**
+       * If true, receive notifications/prompts/list_changed.
+       */
+      promptsListChanged?: boolean;
+
+      /**
+       * If true, receive notifications/resources/list_changed.
+       */
+      resourcesListChanged?: boolean;
+
+      /**
+       * Subscribe to notifications/resources/updated for specific
+       * resource URIs. Replaces the resources/subscribe RPC.
+       */
+      resourceSubscriptions?: string[];
+    };
+  };
+}
+```
+
+`notifications` 字段是**必需的**，客户端**必须（MUST）**显式选择加入它想接收的每一种通知类型。如果 `notifications` 内的某个字段被省略（或设为 `false`），服务器**不得（MUST NOT）**发送该类型的通知。
+
+#### 确认通知
+
+服务器首先发送此通知以确认订阅已建立。订阅是长期的，没有自然的"完成结果"；它在以下情况结束：
+
+- 客户端显式取消它（在 HTTP 上关闭 SSE 流，或在 STDIO 上发送 `notifications/cancelled`）；
+- 底层连接被关闭（HTTP 超时、TCP 断开、STDIO 进程退出）；或
+- 服务器拆除它（例如关闭），在这种情况下它**必须（MUST）**关闭 SSE 流（HTTP）或发送引用该订阅请求 ID 的 `notifications/cancelled`（STDIO）。
+
+```ts
+export interface SubscriptionsAcknowledgedNotification extends Notification {
+  method: "notifications/subscriptions/acknowledged";
+  params: {
+    /**
+     * The notification subscriptions the server has agreed to honor.
+     * Only includes notification types the server actually supports.
+     * If the client requested an unsupported notification type
+     * (e.g., promptsListChanged when the server has no prompts),
+     * it is omitted from this set.
+     */
+    notifications: {
+      toolsListChanged?: boolean;
+      promptsListChanged?: boolean;
+      resourcesListChanged?: boolean;
+      resourceSubscriptions?: string[];
+    };
+  };
+}
+```
+
+#### 多个并发订阅
+
+客户端**可以（MAY）**同时拥有多个活跃订阅（例如一个监听工具列表变化，另一个监听资源更新）。每个订阅由其 `SubscriptionsListenRequest` 的 JSON-RPC 请求 ID 标识。
+
+为允许 STDIO 客户端在单一共享通道上对属于不同订阅的通知进行解复用，作为活跃订阅一部分投递的每条通知**必须（MUST）**在 `_meta` 中包含该订阅的请求 ID：
+
+```json
+{
+  "jsonrpc": "2.0",
+  "method": "notifications/tools/list_changed",
+  "params": {
+    "_meta": {
+      "io.modelcontextprotocol/subscriptionId": "<original listen request id>"
+    }
+  }
+}
+```
+
+这一相同的关联模式适用于其他需要与特定请求关联的服务器到客户端通知，例如 `notifications/progress`（它使用发起请求的 ID）。
+
+#### 停止订阅
+
+- **HTTP。** 关闭 SSE 响应流停止订阅。
+- **STDIO。** 客户端发送引用 listen 请求 ID 的 `notifications/cancelled`。服务器**必须（MUST）**停止为该订阅发送通知。
+
+#### 传输行为
+
+**HTTP。** 客户端通过 `POST` 发送 `SubscriptionsListenRequest`。服务器的响应是一个打开的 SSE 流（`Content-Type: text/event-stream`），此流上的第一条 JSON-RPC 消息**必须（MUST）**是 `SubscriptionsAcknowledgedNotification`。
+
+**STDIO。** 客户端可随时发送 `SubscriptionsListenRequest`。服务器**必须（MUST）**通过发送 `SubscriptionsAcknowledgedNotification` 确认它。后续通知在双向 STDIO 通道上流动，每条如上所述标记有该订阅的请求 ID。如果连接终止（例如服务器崩溃并重启），客户端**必须（MUST）**重新发送 `SubscriptionsListenRequest` 以重新建立其订阅。
+
+### 已弃用和已移除的 RPC
+
+为简化协议并与迈向逐请求能力的举措对齐，以下 RPC 方法和通知被移除：
+
+- `initialize` / `notifications/initialized`：初始化握手被移除。版本协商通过 `MCP-Protocol-Version` 头部和 `_meta` 字段逐请求处理。能力发现由 `server/discover` 处理。
+- `logging/setLevel`：移除。日志级别现在通过 `'io.modelcontextprotocol/logLevel'` `_meta` 字段逐请求指定。没有替代 RPC。
+- `roots/list`：作为顶层服务器到客户端 RPC 移除。需要客户端根的服务器**必须（MUST）**通过 MRTR `ListRootsRequest` 机制请求它们（见 SEP-2322）。
+- `notifications/roots/list_changed`：移除。根通过 MRTR 按需获取，因此无需变更通知。
+- `resources/subscribe` / `resources/unsubscribe`：这些方法被移除。资源订阅本质上有状态——服务器必须记住每个客户端订阅了哪些资源。相反，客户端在 `subscriptions/listen` 请求的 `notifications` 参数中声明它想要更新的资源。服务器在 listen 流上为匹配的资源发送 `notifications/resources/updated`。
+- `ping`：**双向**移除。服务器到客户端 ping 被移除，因为服务器不再能独立发送请求。客户端到服务器 ping 也被移除，因为任何正常的 RPC 调用已经证明服务器存活，而传输层机制（HTTP keep-alive、SSE 注释、STDIO 进程状态）更恰当地处理连接健康检查。
+
+## 理由
+
+### 默认无状态优先
+
+本 SEP 的主要设计决策是移除强制的初始化握手，使无状态交互成为协议的默认模型。这一选择植根于"按需付费"原则，以及使 MCP 与现代云原生架构对齐的愿望。通过将最简单的交互模型设为默认，我们降低了进入门槛，并为最常见的用例减少了实现复杂性。这立即实现了直接的横向扩展并改善弹性，因为任何请求都可以由任何服务器实例处理。
+
+#### 所考虑的替代方案：可选握手
+
+我们考虑过的一个替代方案是保留既有的有状态握手但使其可选。在此模型中，客户端可以选择执行握手以建立持久会话，或跳过它并发送自包含请求。
+
+#### 为何被否决：
+
+支持两个并行的交互模型会极大地增加协议和每个实现的复杂性。服务器和客户端需要构建、测试和维护两条独立的逻辑路径，导致更大的缺陷表面。它还违反了"为核心功能提供一种清晰、显而易见方式"的设计原则。通过作出干净的切断，我们确保整个生态能够向前推进，并从更简单、更可扩展、更健壮的基础中受益。
+
+### 显式会话管理
+
+本提案最初包含专门的 `sessions/create` 和 `sessions/delete` RPC 来管理逻辑会话的生命周期。
+
+会话管理现在由 [SEP-2567][SEP-2567] 单独处理，它提议完全移除会话并用显式状态句柄替代。这与核心维护者作出的[会话 vs 无会话决定][sessions-decision]对齐。
+
+### 关注点分离
+
+本提案的一个核心原则是将单体的初始化握手"解绑"为一套离散的、单一目的的 RPC。原始握手将协议协商和能力发现的关注点混入单一、复杂的交互。新设计显式地分离这些：
+
+- **发现**：完全由 `server/discover` 处理。
+- **能力**：通过 `_meta` 字段或 `subscriptions/listen` RPC 逐请求处理。
+
+这样做的理由是创造一个更模块化、更灵活、更易理解的协议。每个组件现在都有单一、定义明确的职责。这允许客户端只使用它们需要的协议部分，遵循我们的"按需付费"原则。
+
+#### 所考虑的替代方案：单体握手
+
+我们本可以保留一个单一、单体的握手 RPC，并简单地向它添加更多参数和复杂逻辑以支持无状态优先模型。
+
+#### 为何被否决：
+
+一个包揽一切的 RPC 难以实现、测试和演进。它迫使所有客户端，即便最简单的，也要知晓协议最复杂的特性。通过分离这些关注点，我们使协议更易于学习和正确实现，同时也使其为未来更灵活、更可扩展。
+
+## 向后兼容性
+
+虽然本提案试图保留既有功能和用例，但本提案引入了一个**根本性的、向后不兼容的变更**。因此，它将需要一个新版本的协议。
+
+### 支持多个版本
+
+虽然本 SEP 移除了 `initialize` 握手，但希望同时支持新旧客户端的服务器**可以（MAY）**这样做。此类服务器可以继续实现旧的 `initialize` RPC 来处理遗留客户端，同时也为更新的客户端暴露新的无状态 RPC（`server/discover` 等）。
+
+服务器和客户端都应能够适当地处理版本变化。下面概述两个示例场景，其中 vPrev 表示本 SEP 之前的版本，vAfter 表示其之后的版本。
+
+#### 客户端（支持 vPrev）→ 服务器（vPrev, vPost）
+
+1. 客户端发送初始化
+2. 服务器支持 vPrev，因此按规范返回初始化
+3. 客户端和服务器按 `vPrev` 通信。
+
+#### 客户端（支持 vPrev, vPost）→ 服务器（vPrev）
+
+对于 HTTP，客户端可以尝试任何 vPost 请求（例如带 MCP 协议版本头部的 `tools/list`）。服务器返回 `400 Bad Request`（或 `Unsupported protocol version`）；客户端为未来的请求回退到 vPrev（并执行初始化）。
+
+对于 STDIO，客户端无法依赖逐请求错误来检测服务器的版本。同时支持一个 vPost（不要求初始化）**和**一个确实要求 `initialize` 的遗留版本的客户端，**应当（SHOULD）**先用 `server/discover` 探测以确定使用哪个：
+
+1. 客户端发送 `server/discover`，将 MCP 协议版本 `_meta` 字段设为其偏好的 vPost。
+2. 如果服务器支持 vPost（或客户端也支持的任何 vPost 风格版本），客户端为后续请求使用所发现的版本。
+3. 如果服务器返回 `Unsupported protocol version` 或 `Method not found`，客户端回退到其支持的遗留版本并执行 `initialize` 握手。
+
+只支持 vPost 风格版本的客户端无需探测——它只需使用其偏好版本并正常处理 `Unsupported protocol version` 错误。
+
+## 安全影响
+
+没有会话握手，每个请求都必须被独立地认证和授权。实现**必须（MUST）**确保认证不会因初始化阶段的移除而被绕过。
+
+除逐请求认证外，本提案不引入额外的安全关切。
+
+## 参考实现
+
+// TODO
+
+## 常见问题
+
+### 什么是协议层无状态性？
+
+[维基百科](https://en.wikipedia.org/wiki/Stateless_protocol)将无状态协议定义为：
+
+> 无状态协议是一种通信协议，其中接收方不得保留先前请求的会话状态。发送方将相关的会话状态传递给接收方，使得每个请求都可以孤立地被理解，即不参照接收方保留的先前请求的会话状态。
+
+这**不**意味着你不能在无状态协议之上构建有状态应用。HTTP 就是一个无状态协议的例子，如今大部分 Web 都建立在其上。然而它确实意味着状态不能存在于*协议本身*，而应在请求中指定状态（或者退而求其次，一个供服务器或客户端跟踪的状态引用）。
+
+### 这使 MCP 成为一个完全无状态的协议吗？
+
+并非完全（因此是"默认"）。取决于你对"请求"的解读，所提到的 SSE 流（客户端发起和服务器发起的）往往在一个流的上下文内有多个请求。然而，这些流被约束在单个 HTTP 请求内且使用可选，意味着其复杂性既受约束，又在情况需要时可选择使用。
+
+### 为何 STDIO 也无状态很重要？
+
+MCP 使用的传输应仅仅是一个实现细节。如果协议的一个版本支持无法干净地映射到协议另一个版本的功能，它们实际上就是两个不同的协议。
+
+这使开发者能够轻松地将其服务从一个传输切换到另一个，而无需对其应用行为作重大更改，并使不同传输之间的正确代理更容易。否则，这些不同实现之间将继续存在特性差距和分裂，导致混淆和不兼容。
+
+### `server/discover` 与 MCP Server Card 有何关系？
+
+`server/discover` RPC 与 [MCP Server Card][SEP-2127] 提案重叠，后者为基于 HTTP 的发现定义了一个 `.well-known/mcp.json` 文档。两种机制都被有意保留：Server Card 很适合 HTTP（无需认证、可缓存、可索引），而 `server/discover` 提供一个在 HTTP 和 STDIO 传输间一致工作的统一 RPC 接口。二者在适用之处应就内容对齐。
+
+## 开放问题
+
+### 什么该放在 `_meta` 中 vs. 作为顶层协议字段？
+
+本 SEP 将若干此前握手协商的值（`protocolVersion`、`clientInfo`、`roots`、`logLevel`、`clientCapabilities`）放入 `io.modelcontextprotocol/` 命名空间下的逐请求 `_meta` 字段。这遵循规范对由 schema 中定义保留的"特定目的元数据"的允许。
+
+然而，这有随时间过度加载 `_meta` 的风险——到什么程度我们才再次添加顶层字段？一个可能的区分：必需的协议层字段（例如 `protocolVersion`）也许更适合作为顶层字段，而可选的或扩展提供的值留在 `_meta` 中。此问题值得在本 SEP 定稿前更广泛讨论。
+
+### `clientInfo` 应是 `ClientCapabilities` 的一部分吗？
+
+目前，`clientInfo`（`Implementation` 类型）和 `clientCapabilities`（`ClientCapabilities` 类型）是分开的字段。在逐请求模型中，为所有客户端元数据设一个单一字段会减少开销。然而，`clientInfo` 服务于与能力（特性协商）不同的目的（身份/UI）。`clientInfo` 应被并入 `ClientCapabilities`、保持为独立的逐请求 `_meta` 字段，还是通过完全不同的机制（例如仅通过 `subscriptions/listen` 发送）处理？
+
+## SEP 成为 Final 之后的变更
+
+本 SEP 作为被接受内容的历史记录保存。下面的列表跟踪本 SEP 达到 Final 状态之后对规范所作的变更。权威、最新的要求请参阅当前[规范](https://modelcontextprotocol.io/specification)。
+
+- **客户端身份成为可选的请求元数据。** [#3002](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/3002) 使 `io.modelcontextprotocol/clientInfo` 可选。客户端**应当（SHOULD）**在每个请求上包含它，除非被特别配置为不这样做。
+- **服务器身份移到可选的结果元数据。** [#3002](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/3002) 在结果 `_meta` 中引入 `io.modelcontextprotocol/serverInfo`，并移除顶层 `DiscoverResult.serverInfo` 字段以避免重复表示。服务器**应当（SHOULD）**在每个结果上包含此元数据，除非被特别配置为不这样做。
+- **订阅获得一个优雅的完成结果。** [#2953](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/2953) 为服务器发起的优雅关闭定义了一个 `subscriptions/listen` 结果，替代了本 SEP 关于订阅没有自然完成结果的陈述。服务器**应当（SHOULD）**在关闭流之前发送此结果。
+
+[SEP-2127]: https://github.com/modelcontextprotocol/modelcontextprotocol/pull/2127
+[SEP-2243]: https://github.com/modelcontextprotocol/modelcontextprotocol/pull/2243
+[SEP-2260]: https://github.com/modelcontextprotocol/modelcontextprotocol/pull/2260
+[SEP-2322]: https://github.com/modelcontextprotocol/modelcontextprotocol/pull/2322
+[SEP-2567]: https://github.com/modelcontextprotocol/modelcontextprotocol/pull/2567
+[sessions-decision]: https://github.com/modelcontextprotocol/transports-wg/blob/main/docs/sessions-vs-sessionless-decision.md

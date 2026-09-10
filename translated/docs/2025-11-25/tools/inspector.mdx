@@ -1,0 +1,157 @@
+---
+title: MCP Inspector
+description: 深入介绍如何使用 MCP Inspector 测试和调试模型上下文协议服务器
+---
+
+[MCP Inspector](https://github.com/modelcontextprotocol/inspector) 是一个用于测试和调试 MCP 服务器的交互式开发者工具。虽然[调试指南](/docs/2025-11-25/tools/debugging)将 Inspector 作为整体调试工具集的一部分进行介绍，但本文档对 Inspector 的特性和能力进行详细的探讨。
+
+## 开始使用
+
+### 安装与基本用法
+
+Inspector 通过 `npx` 直接运行，无需安装：
+
+```bash
+npx @modelcontextprotocol/inspector <command>
+```
+
+```bash
+npx @modelcontextprotocol/inspector <command> <arg1> <arg2>
+```
+
+#### 检查来自 npm 或 PyPI 的服务器
+
+一种常见方式是启动来自 [npm](https://npmjs.com) 或 [PyPI](https://pypi.org) 的服务器包。
+
+<Tabs>
+
+  <Tab title="npm package">
+
+```bash
+npx -y @modelcontextprotocol/inspector npx <package-name> <args>
+# For example
+npx -y @modelcontextprotocol/inspector npx @modelcontextprotocol/server-filesystem /Users/username/Desktop
+```
+
+  </Tab>
+
+  <Tab title="PyPI package">
+
+```bash
+npx @modelcontextprotocol/inspector uvx <package-name> <args>
+# For example
+npx @modelcontextprotocol/inspector uvx mcp-server-git --repository ~/code/mcp/servers.git
+```
+
+  </Tab>
+</Tabs>
+
+#### 检查本地开发的服务器
+
+要检查在本地开发或作为仓库下载的服务器，最常见的方式是：
+
+<Tabs>
+  <Tab title="TypeScript">
+
+```bash
+npx @modelcontextprotocol/inspector node path/to/server/index.js args...
+```
+
+  </Tab>
+  <Tab title="Python">
+
+```bash
+npx @modelcontextprotocol/inspector \
+  uv \
+  --directory path/to/server \
+  run \
+  package-name \
+  args...
+```
+
+  </Tab>
+</Tabs>
+
+请仔细阅读任何随附的 README 以获取最准确的说明。
+
+## 特性概览
+
+<Frame caption="The MCP Inspector interface">
+  <img src="/images/mcp-inspector.png" />
+</Frame>
+
+Inspector 提供了若干用于与你的 MCP 服务器交互的特性：
+
+### 服务器连接面板
+
+- 允许选择用于连接服务器的[传输](/specification/2025-11-25/basic/transports)
+- 对于本地服务器，支持自定义命令行参数和环境
+
+### 资源标签页
+
+- 列出所有可用的资源
+- 显示资源元数据（MIME 类型、描述）
+- 允许检查资源内容
+- 支持订阅测试
+
+### 提示标签页
+
+- 显示可用的提示模板
+- 显示提示的参数和描述
+- 支持使用自定义参数测试提示
+- 预览生成的消息
+
+### 工具标签页
+
+- 列出可用的工具
+- 显示工具的 schema 和描述
+- 支持使用自定义输入测试工具
+- 显示工具执行结果
+
+### 通知面板
+
+- 呈现从服务器记录的所有日志
+- 显示从服务器接收到的通知
+
+## 最佳实践
+
+### 开发工作流
+
+1. 开始开发
+   - 用你的服务器启动 Inspector
+   - 验证基本连通性
+   - 检查能力协商
+
+2. 迭代测试
+   - 修改服务器
+   - 重新构建服务器
+   - 重新连接 Inspector
+   - 测试受影响的特性
+   - 监控消息
+
+3. 测试边界情形
+   - 无效输入
+   - 缺少提示参数
+   - 并发操作
+   - 验证错误处理和错误响应
+
+## 后续步骤
+
+<CardGroup cols={2}>
+  <Card
+    title="Inspector Repository"
+    icon="github"
+    href="https://github.com/modelcontextprotocol/inspector"
+  >
+    查看 MCP Inspector 源代码
+  </Card>
+
+  <Card
+    title="Debugging Guide"
+    icon="bug"
+    href="/docs/2025-11-25/tools/debugging"
+  >
+    了解更广泛的调试策略
+  </Card>
+
+</CardGroup>

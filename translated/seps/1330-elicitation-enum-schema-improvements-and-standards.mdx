@@ -1,0 +1,421 @@
+---
+title: "SEP-1330：征询枚举 Schema 的改进与标准合规"
+sidebarTitle: "SEP-1330"
+---
+
+- **状态（Status）**: Final
+- **类型（Type）**: Standards Track
+- **创建（Created）**: 2025-08-11
+- **作者（Author(s)）**: chughtapan
+- **Issue**: #1330
+
+## 摘要
+
+本 SEP 提议改进 MCP 中的枚举 schema 定义，弃用非标准的 `enumNames` 属性，转而采用符合 JSON Schema 的模式，并在单选 schema 之外引入对多选枚举 schema 的额外支持。新的 schema 已针对 JSON 规范进行了验证。
+
+**Schema 变更：** https://github.com/modelcontextprotocol/modelcontextprotocol/pull/1148
+TypeScript SDK 变更：https://github.com/modelcontextprotocol/typescript-sdk/pull/1077
+Python SDK 变更：https://github.com/modelcontextprotocol/python-sdk/pull/1246
+**客户端实现：** https://github.com/evalstate/fast-agent/pull/324/files
+**可运行演示：** https://asciinema.org/a/anBvJdqEmTjw0JkKYOooQa5Ta
+
+## 动机
+
+既有的枚举 schema 使用一种非标准方式为枚举值添加标题。它还将征询（以及未来任何应采用 `EnumSchema` 的其他 schema 对象）中枚举的使用限制在单选模型。要求用户选择多个条目是一种常见模式。在 UI 中，这相当于使用复选框还是单选按钮的区别。
+
+出于这些原因，我们提议对 `EnumSchema` 作出以下非破坏性的小改进，以改善用户和开发者体验。
+
+- 将既有的 `EnumSchema` 保留为"遗留（Legacy）"
+  - 它使用非标准方式为枚举值添加标题
+  - 将其标记为 Legacy，但目前仍支持它
+  - 依据 @dsp-ant 的意见，当我们有了适当的弃用策略时，将把它标记为已弃用
+- 引入无标题（Untitled）和有标题（Titled）枚举的区分
+  - 如果枚举值本身足够，则无需为每个值单独指定标题
+  - 如果枚举值不适合显示，则可以为每个值指定标题
+- 引入单选（Single）和多选（Multi-select）枚举的区分
+  - 如果只能选择一个值，可以使用单选 schema
+  - 如果可以选择多个值，可以使用多选 schema
+- 在 `ElicitResponse` 中，添加数组作为一种 `additionalProperty` 类型
+  - 允许将枚举值的多重选择返回给服务器
+
+## 规范
+
+### 1. 将当前带非标准 `enumNames` 属性的 `EnumSchema` 标记为"遗留"
+
+当前 MCP 规范使用非标准的 `enumNames` 属性为枚举值提供显示名称。我们提议将 `enumNames` 属性标记为遗留，建议使用 `TitledSingleSelectEnum`，即我们下面定义的符合标准的枚举类型。
+
+```typescript
+// Continue to support the current EnumSchema as Legacy
+
+/**
+ * Legacy: Use TitledSingleSelectEnumSchema instead.
+ * This interface will be removed in a future version.
+ */
+export interface LegacyEnumSchema {
+  type: "string";
+  title?: string;
+  description?: string;
+  enum: string[];
+  enumNames?: string[]; // Titles for enum values (non-standard, legacy)
+}
+```
+
+### 2. 定义单选枚举（有标题和无标题两种）
+
+枚举可能需要也可能不需要标题。枚举值可能是人类可读的、适合显示的。在这种情况下，使用 JSON Schema 关键字 `enum` 的无标题实现更简单。添加标题则要求将 `enum` 数组替换为一个使用 `const` 和 `title` 的对象数组。
+
+```typescript
+// Single select enum without titles
+export type UntitledSingleSelectEnumSchema = {
+  type: "string";
+  title?: string;
+  description?: string;
+  enum: string[]; // Plain enum without titles
+};
+
+// Single select enum with titles
+export type TitledSingleSelectEnumSchema = {
+  type: "string";
+  title?: string;
+  description?: string;
+  oneOf: Array<{
+    const: string; // Enum value
+    title: string; // Display name for enum value
+  }>;
+};
+
+// Combined single selection enumeration
+export type SingleSelectEnumSchema =
+  UntitledSingleSelectEnumSchema | TitledSingleSelectEnumSchema;
+```
+
+### 3. 引入多选枚举（有标题和无标题两种）
+
+虽然征询不支持数组和对象等任意 JSON 类型，以便客户端能够轻松显示选择项，但多选枚举可以轻松实现。
+
+```typescript
+// Multiple select enums without titles
+export type UntitledMultiSelectEnumSchema = {
+  type: "array";
+  title?: string;
+  description?: string;
+  minItems?: number; // Minimum number of items to choose
+  maxItems?: number; // Maximum number of items to choose
+  items: {
+    type: "string";
+    enum: string[]; // Plain enum without titles
+  };
+};
+
+// Multiple select enums with titles
+export type TitledMultiSelectEnumSchema = {
+  type: "array";
+  title?: string;
+  description?: string;
+  minItems?: number; // Minimum number of items to choose
+  maxItems?: number; // Maximum number of items to choose
+  items: {
+    oneOf: Array<{
+      const: string; // Enum value
+      title: string; // Display name for enum value
+    }>;
+  };
+};
+
+// Combined Multiple select enumeration
+export type MultiSelectEnumSchema =
+  UntitledMultiSelectEnumSchema | TitledMultiSelectEnumSchema;
+```
+
+### 4. 将所有类别合并为 `EnumSchema`
+
+最终的 `EnumSchema` 将遗留、多选和单选 schema 汇总为一，定义为：
+
+```typescript
+// Combined legacy, multiple, and single select enumeration
+export type EnumSchema =
+  SingleSelectEnumSchema | MultiSelectEnumSchema | LegacyEnumSchema;
+```
+
+### 5. 扩展 ElicitResult
+
+当前的征询结果 schema 只允许返回基本类型。我们扩展它以包含用于 MultiSelectEnum 的字符串数组：
+
+```typescript
+export interface ElicitResult extends Result {
+  action: "accept" | "decline" | "cancel";
+  content?: { [key: string]: string | number | boolean | string[] }; // string[] is new
+}
+```
+
+## 实例 Schema 示例
+
+### 无标题单选（无变化）
+
+```json
+{
+  "type": "string",
+  "title": "Color Selection",
+  "description": "Choose your favorite color",
+  "enum": ["Red", "Green", "Blue"],
+  "default": "Green"
+}
+```
+
+### 遗留的有标题单选
+
+```json
+{
+  "type": "string",
+  "title": "Color Selection",
+  "description": "Choose your favorite color",
+  "enum": ["#FF0000", "#00FF00", "#0000FF"],
+  “enumNames”: ["Red", "Green", "Blue"],
+  "default": "Green"
+}
+```
+
+### 有标题单选
+
+```json
+{
+  "type": "string",
+  "title": "Color Selection",
+  "description": "Choose your favorite color",
+  "oneOf": [
+    { "const": "#FF0000", "title": "Red" },
+    { "const": "#00FF00", "title": "Green" },
+    { "const": "#0000FF", "title": "Blue" }
+  ],
+  "default": "#00FF00"
+}
+```
+
+### 无标题多选
+
+```json
+{
+  "type": "array",
+  "title": "Color Selection",
+  "description": "Choose your favorite colors",
+  "minItems": 1,
+  "maxItems": 3,
+  "items": {
+    "type": "string",
+    "enum": ["Red", "Green", "Blue"]
+  },
+  "default": ["Green"]
+}
+```
+
+### 有标题多选
+
+```json
+{
+  "type": "array",
+  "title": "Color Selection",
+  "description": "Choose your favorite colors",
+  "minItems": 1,
+  "maxItems": 3,
+  "items": {
+    "anyOf": [
+      { "const": "#FF0000", "title": "Red" },
+      { "const": "#00FF00", "title": "Green" },
+      { "const": "#0000FF", "title": "Blue" }
+    ]
+  },
+  "default": ["Green"]
+}
+```
+
+## 理由
+
+1. **标准合规**：与官方 JSON Schema 规范对齐。标准模式可与既有的 JSON Schema 校验器配合工作
+2. **灵活性**：为单选和多选枚举同时支持纯枚举和带显示名称的枚举。
+3. **客户端实现：** 表明实现一组复选框相较单个复选框的额外开销极小：https://github.com/evalstate/fast-agent/pull/324/files
+
+## 向后兼容性
+
+`LegacyEnumSchema` 类型在迁移期间保持向后兼容。使用 `enumNames` 的既有实现将继续工作，直到实现协议全局的弃用策略、且此 schema 被移除。
+
+## 参考实现
+
+**Schema 变更：** https://github.com/modelcontextprotocol/modelcontextprotocol/pull/1148
+TypeScript SDK 变更：https://github.com/modelcontextprotocol/typescript-sdk/pull/1077
+Python SDK 变更：https://github.com/modelcontextprotocol/python-sdk/pull/1246
+**客户端实现：** https://github.com/evalstate/fast-agent/pull/324/files
+**可运行演示：** https://asciinema.org/a/anBvJdqEmTjw0JkKYOooQa5Ta
+
+## 安全考量
+
+未识别出安全影响。此变更纯粹关于 schema 结构和标准合规。
+
+## 附录
+
+### 验证
+
+使用 https://www.jsonschemavalidator.net/ 中的 JSON Schema 校验器所存储的验证，我们验证了：
+
+- 本文档中所有示例实例 schema 针对下一节所提议的 JSON 元 schema `EnumSchema`。
+- 针对本文档中示例实例 schema 的有效值和无效值。
+
+#### 遗留单选
+
+- `EnumSchema` 验证一个[带标题的遗留单选实例 schema](https://www.jsonschemavalidator.net/s/lsK7Bn0C)
+- 带标题的遗留单选实例 schema 验证[一个正确的单选](https://www.jsonschemavalidator.net/s/GSk7rnRe)
+- 带标题的遗留单选实例 schema 验证[一个不正确的单选](https://www.jsonschemavalidator.net/s/3kYvxsVP)
+
+#### 单选
+
+- `EnumSchema` 验证一个[无标题的单选实例 schema](https://www.jsonschemavalidator.net/s/MBlHW5IQ)
+- `EnumSchema` 验证一个[带标题的单选实例 schema](https://www.jsonschemavalidator.net/s/s38xt4JV)
+- 无标题单选实例 schema 验证[一个正确的单选](https://www.jsonschemavalidator.net/s/M0hkYoeG)
+- 无标题单选实例 schema 拒绝[一个不正确的单选](https://www.jsonschemavalidator.net/s/3Try4BCt)
+- 带标题单选实例 schema 验证[一个正确的单选](https://www.jsonschemavalidator.net/s/4oDbv9yt)
+- 带标题单选实例 schema 拒绝[一个不正确的单选](https://www.jsonschemavalidator.net/s/A2KlNzLH)
+
+#### 多选
+
+- `EnumSchema` 验证[无标题的多选实例 schema](https://www.jsonschemavalidator.net/s/4uc3Ndsq)
+- `EnumSchema` 验证[带标题的多选实例 schema](https://www.jsonschemavalidator.net/s/TmkIqqXI)
+- 无标题多选实例 schema 验证[一个正确的多选](https://www.jsonschemavalidator.net/s/IE8Bkvtg)
+  无标题多选实例 schema 拒绝[一个不正确的多选](https://www.jsonschemavalidator.net/s/8tlqjUgW)
+  带标题多选实例 schema 验证[一个正确的多选](https://www.jsonschemavalidator.net/s/Nb1Rw1qa)
+  带标题多选实例 schema 拒绝[一个不正确的多选](https://www.jsonschemavalidator.net/s/MRfyqrVC)
+
+### JSON 元 schema
+
+这是我们对替换规范 `schema.json` 中当前 `EnumSchema` 的提议。
+
+```json
+{
+  "$schema": "https://json-schema.org/draft-07/schema",
+  "definitions": {
+    // New Definitions Follow
+    "UntitledSingleSelectEnumSchema": {
+      "type": "object",
+      "properties": {
+        "type": { "const": "string" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "enum": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 1
+        }
+      },
+      "required": ["type", "enum"],
+      "additionalProperties": false
+    },
+
+    "UntitledMultiSelectEnumSchema": {
+      "type": "object",
+      "properties": {
+        "type": { "const": "array" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "minItems": {
+          "type": "number",
+          "minimum": 0
+        },
+        "maxItems": {
+          "type": "number",
+          "minimum": 0
+        },
+        "items": {
+          "type": "object",
+          "properties": {
+            "type": { "const": "string" },
+            "enum": {
+              "type": "array",
+              "items": { "type": "string" },
+              "minItems": 1
+            }
+          },
+          "required": ["type", "enum"],
+          "additionalProperties": false
+        }
+      },
+      "required": ["type", "items"],
+      "additionalProperties": false
+    },
+
+    "TitledSingleSelectEnumSchema": {
+      "type": "object",
+      "required": ["type", "anyOf"],
+      "properties": {
+        "type": { "const": "string" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "anyOf": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["const", "title"],
+            "properties": {
+              "const": { "type": "string" },
+              "title": { "type": "string" }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+
+    "TitledMultiSelectEnumSchema": {
+      "type": "object",
+      "required": ["type", "anyOf"],
+      "properties": {
+        "type": { "const": "array" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "anyOf": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["const", "title"],
+            "properties": {
+              "const": { "type": "string" },
+              "title": { "type": "string" }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+
+    "LegacyEnumSchema": {
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "string"
+        },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "enum": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "enumNames": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
+      "required": ["enum", "type"],
+      "type": "object"
+    },
+
+    "EnumSchema": {
+      "oneOf": [
+        { "$ref": "#/definitions/UntitledSingleSelectEnumSchema" },
+        { "$ref": "#/definitions/UntitledMultiSelectEnumSchema" },
+        { "$ref": "#/definitions/TitledSingleSelectEnumSchema" },
+        { "$ref": "#/definitions/TitledMultiSelectEnumSchema" },
+        { "$ref": "#/definitions/LegacyEnumSchema" }
+      ]
+    }
+  }
+}
+```

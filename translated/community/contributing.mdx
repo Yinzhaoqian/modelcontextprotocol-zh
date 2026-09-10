@@ -1,0 +1,538 @@
+---
+title: 为 MCP 做贡献
+description: 如何为模型上下文协议项目做贡献
+---
+
+模型上下文协议（MCP）是一个欢迎社区贡献的开源项目。本指南将带你了解开始所需的一切。
+
+## 开始之前
+
+### 前置条件
+
+在贡献之前，确保你已安装并准备好以下内容：
+
+- **[Git](https://git-scm.com/downloads)** —— 用于克隆仓库和提交变更
+- **[Node.js 24+](https://nodejs.org/)** —— 构建和测试我们的项目所必需
+- **npm** —— 随 Node.js 附带，用于依赖管理
+- **[GitHub 账户](https://github.com/signup)** —— 用于提交 pull request 和 issue
+- **特定语言的工具链** —— 如果为某个 SDK 做贡献，你需要该语言相应的开发环境（例如 Python、Rust、Go）
+
+验证你的设置：
+
+```bash
+node --version  # Should be 24.x or higher
+npm --version   # Should be 11.x or higher
+git --version   # Any recent version
+```
+
+<Note>
+  这些命令在 macOS、Linux 和 Windows 上的表现相同，因此你在任何平台上都可以开始。
+</Note>
+
+### 仓库结构
+
+MCP 横跨 GitHub 上 [`modelcontextprotocol`](https://github.com/modelcontextprotocol) 组织中的多个仓库。以下是几个值得一看的重要子项目：
+
+| 仓库                                                                                                        | 内容                      |
+| ----------------------------------------------------------------------------------------------------------- | ------------------------- |
+| [`modelcontextprotocol/modelcontextprotocol`](https://github.com/modelcontextprotocol/modelcontextprotocol) | 规范、文档、SEP           |
+| [`modelcontextprotocol/typescript-sdk`](https://github.com/modelcontextprotocol/typescript-sdk)             | TypeScript/JavaScript SDK |
+| [`modelcontextprotocol/python-sdk`](https://github.com/modelcontextprotocol/python-sdk)                     | Python SDK                |
+| [`modelcontextprotocol/go-sdk`](https://github.com/modelcontextprotocol/go-sdk)                             | Go SDK                    |
+| [`modelcontextprotocol/java-sdk`](https://github.com/modelcontextprotocol/java-sdk)                         | Java SDK                  |
+| [`modelcontextprotocol/kotlin-sdk`](https://github.com/modelcontextprotocol/kotlin-sdk)                     | Kotlin SDK                |
+| [`modelcontextprotocol/csharp-sdk`](https://github.com/modelcontextprotocol/csharp-sdk)                     | C# SDK                    |
+| [`modelcontextprotocol/swift-sdk`](https://github.com/modelcontextprotocol/swift-sdk)                       | Swift SDK                 |
+| [`modelcontextprotocol/rust-sdk`](https://github.com/modelcontextprotocol/rust-sdk)                         | Rust SDK                  |
+| [`modelcontextprotocol/ruby-sdk`](https://github.com/modelcontextprotocol/ruby-sdk)                         | Ruby SDK                  |
+| [`modelcontextprotocol/php-sdk`](https://github.com/modelcontextprotocol/php-sdk)                           | PHP SDK                   |
+
+在本指南全文中，**规范仓库**指 `modelcontextprotocol/modelcontextprotocol`，它包含协议规范、本文档站点，以及[规范增强提案（SEP）](/community/sep-guidelines)。
+
+### 项目角色
+
+MCP 遵循一套[治理模型](/community/governance)，具有不同层级的职责：
+
+- **贡献者** —— 任何提交 issue、提交 PR 或参与讨论的人（就是你！）
+- **维护者** —— 管理特定领域，如 SDK、文档或[工作组](/community/working-interest-groups)
+- **核心维护者** —— 引导项目整体方向、评审 SEP，并监督规范
+
+你可以在 [`MAINTAINERS.md`](https://github.com/modelcontextprotocol/modelcontextprotocol/blob/main/MAINTAINERS.md) 文件中找到当前的维护者列表。
+
+维护者在这里帮助你成功！如果你有疑问或需要贡献方面的指导，请不要犹豫，尽管联系。
+
+## 你的首次贡献
+
+如果你是 MCP 新人、初次为其生态做贡献，请从这里开始。
+
+<Note>
+  虽然我们以规范仓库为例，但关键模式同样适用于其他 MCP 仓库。
+</Note>
+
+### 第 1 步：搭建你的环境
+
+搭建本地环境，以便你在提交变更之前测试和验证它们。
+
+<Steps>
+<Step title="Fork 仓库">
+
+点击[仓库页面](https://github.com/modelcontextprotocol/modelcontextprotocol)上的 **Fork** 按钮以创建你自己的副本。这为你提供了一个个人工作空间，你可以在其中进行更改而不影响主项目。
+
+</Step>
+<Step title="克隆你的 fork">
+
+```bash
+git clone https://github.com/YOUR-USERNAME/modelcontextprotocol.git
+cd modelcontextprotocol
+```
+
+将 `YOUR-USERNAME` 替换为你的 GitHub 用户名。
+
+</Step>
+<Step title="安装依赖">
+
+```bash
+npm install
+```
+
+这会安装 schema 生成、文档构建和验证所需的工具。
+
+</Step>
+<Step title="验证一切正常">
+
+```bash
+npm run check
+```
+
+这会运行 TypeScript 编译、schema 验证、示例验证、文档链接检查和格式检查。如果全部通过，你的环境就没问题，你已准备好贡献。
+
+</Step>
+</Steps>
+
+如果 `npm run check` 失败，参见下方的[故障排查](#故障排查)。
+
+### 第 2 步：找到可以着手的事
+
+虽然你在仓库中看到的许多被跟踪的条目可能令人望而生畏，尤其对新人而言，但有很多地方可以让你从首次改进开始：
+
+1. **文档改进** —— 帮我们修复拼写错误、不清晰的解释、失效的链接或不完整的示例
+2. **标记为 `good first issue` 的 issue** —— 处理[规范仓库](https://github.com/modelcontextprotocol/modelcontextprotocol/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22)以及我们 SDK 仓库中打了标签的 issue
+3. **Schema 示例** —— 向 `schema/draft/examples/` 添加示例，让开发者更容易理解协议原语
+
+### 第 3 步：进行你的更改
+
+在一个专用分支中创建你的更改。
+
+<Steps>
+<Step title="创建分支">
+
+```bash
+git checkout -b fix/your-description
+```
+
+使用一个能反映你更改的描述性分支名，例如 `fix/typo-in-tools-doc` 或 `feat/add-example-for-resources`。
+
+</Step>
+<Step title="进行更改">
+
+编辑你本地副本中的相关文件。如果你在编辑 schema 文件，记得运行 `npm run generate:schema` 以重新生成 JSON schema 和文档。
+
+</Step>
+<Step title="运行检查">
+
+```bash
+npm run check
+```
+
+在提交之前修复任何问题。如果你有格式错误，`npm run format` 可以自动修复其中大部分。
+
+</Step>
+<Step title="以清晰的消息提交">
+
+```bash
+git commit -m "Fix typo in tools documentation"
+```
+
+编写一条简明的消息，描述你更改了什么以及为什么。如适用，引用 issue 编号（例如 `Fix typo in tools documentation (#123)`）。
+
+</Step>
+</Steps>
+
+### 第 4 步：提交 Pull Request
+
+当你准备就绪时，推送你的分支并开一个 pull request。
+
+<Steps>
+<Step title="推送你的分支">
+
+```bash
+git push origin fix/your-description
+```
+
+</Step>
+<Step title="在 GitHub 上开一个 PR">
+
+你可以使用 [GitHub CLI](https://cli.github.com/) 让这个过程更简单：
+
+```bash
+gh pr create --fill
+```
+
+或者，导航到你在 GitHub 上的 fork，点击 **Compare & pull request**。
+
+</Step>
+<Step title="填写 PR 模板">
+
+对你的更改提供清晰的描述，并链接任何相关的 issue。
+
+</Step>
+<Step title="等待评审">
+
+维护者通常在 1-5 个工作日内回应。
+
+</Step>
+</Steps>
+
+<Tip>
+  就是这样，**恭喜你完成首次贡献**！每一次改进，无论多小，都有助于让 MCP 对每个人都更好。
+</Tip>
+
+### 什么构成好的贡献
+
+遵循这些模式，帮助我们快速评审你的贡献：
+
+| 更难评审                                     | 深思熟虑且有影响力                               |
+| -------------------------------------------- | ------------------------------------------------ |
+| 含无关更改的大型 PR                          | 聚焦于一个问题的 PR                              |
+| 无功能更改的代码重新格式化                   | 附清晰解释的 bug 修复                            |
+| 含糊的提交消息（"fixed stuff"）              | 链接到 issue 的描述性提交                        |
+| 提交时 CI 检查失败                           | 请求评审前所有 CI 测试通过                       |
+| 复制既有文档                                 | 记录一个未被记录的特性或边界情况                |
+
+## 贡献类型
+
+不同的贡献视其范围遵循不同的流程。
+
+<Tip>
+  不确定你的更改属于哪一类？在开始任何重大工作之前，先在 [MCP 贡献者 Discord](/community/communication#discord) 中询问。
+</Tip>
+
+### 小更改（直接 PR）
+
+对于以下内容，只需直接向仓库提交一个 pull request：
+
+- Bug 修复和拼写更正
+- 文档改进，例如让一个含糊或不清晰的段落变得清晰
+- 为既有特性添加示例
+- 不实质性改变规范或 SDK 行为的次要 schema 修复
+- 测试改进
+
+### 重大更改（需要 SEP）
+
+任何改变 MCP 规范的更改都需要遵循[规范增强提案（SEP）](/community/sep-guidelines)流程。这包括但不限于：
+
+- 新的协议特性或 API 方法
+- 对既有行为的破坏性变更
+- 对消息格式或 schema 结构的更改
+- 新的互操作性标准
+- 治理或流程变更
+
+以下是几个需要遵循 SEP 步骤的具体例子：
+
+- 添加一个新的 RPC 方法，如 `tools/execute`
+- 更改认证和授权的工作方式
+- 添加一个新的能力协商字段
+- 修改传输层规范
+
+## 使用规范仓库
+
+一旦你确定了[你要做的贡献类型](#贡献类型)，以下是如何使用规范仓库。
+
+### Schema 更改
+
+TypeScript schema（`schema/draft/schema.ts`）是协议的**真实来源（source of truth）**。它定义了客户端和服务器交换的每一种消息类型、请求/响应结构，以及原语（工具、资源、提示）。所有语言的 SDK 实现者都依赖此 schema 来构建合规的实现。
+
+当你运行 `npm run generate:schema` 时，它会生成：
+
+- 用于验证的 JSON schema（`schema/draft/schema.json`）
+- Schema 参考文档（`docs/specification/draft/schema.mdx`）
+
+要修改 schema：
+
+<Steps>
+<Step title="编辑 TypeScript schema">
+
+在 `schema/draft/schema.ts` 中进行你的更改。
+
+</Step>
+<Step title="添加示例（可选）">
+
+在 `schema/draft/examples/[TypeName]/` 中添加 JSON 示例（例如 `Tool/my-example.json`）。使用 `@example` + `@includeCode` JSDoc 标记在 schema 中引用它们。
+
+</Step>
+<Step title="生成 JSON schema 和文档">
+
+```bash
+npm run generate:schema
+```
+
+</Step>
+<Step title="验证你的更改">
+
+```bash
+npm run check
+```
+
+</Step>
+</Steps>
+
+### 文档更改
+
+文档以 [MDX 格式](https://mdxjs.com/)（带 JSX 组件的 Markdown）编写，由 [Mintlify](https://mintlify.com/) 驱动。`docs/` 目录包含：
+
+- `docs/docs/` —— 用于开始上手和使用 MCP 构建的指南和教程
+- `docs/specification/` —— 正式的协议规范（按日期版本化）
+
+以下是你如何为我们的文档做贡献：
+
+<Steps>
+<Step title="启动本地文档服务器">
+
+```bash
+npm run serve:docs
+```
+
+这会在 `http://localhost:3000` 启动一个带热重载的实时预览。
+
+</Step>
+<Step title="进行更改">
+
+编辑相关的 `.mdx` 文件。你可以使用 [Mintlify 组件](https://www.mintlify.com/docs/components)，如 `<Note>`、`<Tip>`、`<Steps>` 和 `<Card>`，以获得更丰富的格式。
+
+</Step>
+<Step title="检查问题">
+
+```bash
+npm run check:docs
+```
+
+这会验证格式、失效链接和其他常见问题。
+
+</Step>
+</Steps>
+
+### 重大协议更改
+
+对于重大更改，遵循 [SEP 流程](/community/sep-guidelines)。在花费大量时间撰写规范提案之前，务必遵循这些最佳实践。
+
+<Steps>
+  <Step title="先验证你的想法">
+    在[兴趣组](/community/working-interest-groups)中或在 [Discord](https://discord.gg/6CSzBmMkjX) 上讨论。
+  </Step>
+  <Step title="构建一个原型">
+    演示你想法的实际应用。
+  </Step>
+  <Step title="寻找一位担保人">
+    一位来自[维护者列表](https://github.com/modelcontextprotocol/modelcontextprotocol/blob/main/MAINTAINERS.md)、会拥护你提案的维护者。
+  </Step>
+  <Step title="撰写 SEP">
+    遵循 [SEP 指南](/community/sep-guidelines)。
+  </Step>
+</Steps>
+
+## 使用 SDK 仓库
+
+MCP 维护着多种语言的官方 SDK。欢迎贡献——无论你是在修复 bug、改进性能、添加特性还是增强文档。
+
+<Note>
+  每个 SDK 都有其自己的仓库、维护者和贡献指南。有些 SDK 是与更大的合作伙伴组织（如 Google、Microsoft、JetBrains 等）协作维护的，因此各仓库之间的流程可能略有不同。
+</Note>
+
+### 为 SDK 做贡献之前
+
+在深入代码之前，遵循这些步骤。
+
+<Steps>
+  <Step title="先开一个 issue">
+    在开始重大工作之前，开一个 issue 讨论你的方法。这有助于避免重复劳动、确保你的贡献与该 SDK 的方向一致，并给维护者提供一个提供早期反馈的机会。
+  </Step>
+  <Step title="加入 SDK 频道">
+    在 [Discord](https://discord.gg/6CSzBmMkjX) 中找到相关频道（例如 `#typescript-sdk-dev`、`#python-sdk-dev`）。
+  </Step>
+  <Step title="阅读该 SDK 的 CONTRIBUTING.md">
+    每个仓库都有其自己的 `CONTRIBUTING.md`，其中有关于搭建开发环境、编码标准、提交消息约定和 PR 要求的具体说明。
+  </Step>
+  <Step title="编写测试">
+    所有贡献都应包含适当的测试覆盖。Bug 修复应包含一个复现该问题的测试，新特性应有覆盖预期行为的测试。这有助于维护 SDK 的可靠性并防止回归。
+  </Step>
+</Steps>
+
+### SDK 仓库
+
+<CardGroup cols={2}>
+  <Card
+    title="TypeScript SDK"
+    icon="square-js"
+    href="https://github.com/modelcontextprotocol/typescript-sdk"
+  />
+  <Card
+    title="Python SDK"
+    icon="python"
+    href="https://github.com/modelcontextprotocol/python-sdk"
+  />
+  <Card
+    title="Go SDK"
+    icon="golang"
+    href="https://github.com/modelcontextprotocol/go-sdk"
+  />
+  <Card
+    title="Kotlin SDK"
+    icon="square-k"
+    href="https://github.com/modelcontextprotocol/kotlin-sdk"
+  />
+  <Card
+    title="Java SDK"
+    icon="java"
+    href="https://github.com/modelcontextprotocol/java-sdk"
+  />
+  <Card
+    title="C# SDK"
+    icon="square-c"
+    href="https://github.com/modelcontextprotocol/csharp-sdk"
+  />
+  <Card
+    title="Swift SDK"
+    icon="swift"
+    href="https://github.com/modelcontextprotocol/swift-sdk"
+  />
+  <Card
+    title="Rust SDK"
+    icon="rust"
+    href="https://github.com/modelcontextprotocol/rust-sdk"
+  />
+  <Card
+    title="Ruby SDK"
+    icon="gem"
+    href="https://github.com/modelcontextprotocol/ruby-sdk"
+  />
+  <Card
+    title="PHP SDK"
+    icon="php"
+    href="https://github.com/modelcontextprotocol/php-sdk"
+  />
+</CardGroup>
+
+## 获取帮助
+
+### 沟通渠道
+
+有疑问或需要指导？MCP 社区在这里帮助你。
+
+- **[Discord](/community/communication#discord)** —— 与贡献者和维护者的实时讨论，聚焦于 MCP 贡献（而非一般的 MCP 支持）
+- **[GitHub Discussions](https://github.com/modelcontextprotocol/modelcontextprotocol/discussions)** —— 探索和对话：**特性请求**、问题、路线图规划，以及在成为具体任务之前需要意见的提案
+- **[GitHub Issues](https://github.com/modelcontextprotocol/modelcontextprotocol/issues)** —— 可执行的工作：带可复现步骤的缺陷报告、文档修复，以及定义明确、可供实现的任务（而非特性请求）
+
+这种区分有助于维护者聚焦于已可实现的工作，同时给想法留出发展空间。如果你不确定某事是否已可作为 issue，先从一个讨论开始。完整指南参见我们的[贡献者沟通](/community/communication)文档。
+
+关于协议讨论，加入 [工作组](/community/working-interest-groups)频道，如 `#auth-wg` 或 `#server-identity-wg`。关于 SDK 帮助，找到你所用语言的频道（例如 `#typescript-sdk-dev`）。
+
+### 为 SEP 寻找担保人
+
+**担保人**是拥护你的 SEP 走完评审流程的核心维护者或维护者。他们提供反馈、帮助完善你的提案，并在核心维护者会议上呈现它。
+
+<Warning>
+  每个 SEP 都需要一位担保人才能推进。6 个月内未找到担保人的 SEP 会被标记为**休眠（dormant）**。休眠的 SEP 不会被直接拒绝——如果日后找到担保人，或该提案被重新评估为有需要，它们可以复活。
+</Warning>
+
+要寻找担保人：
+
+<Steps>
+  <Step title="找到相关的维护者">
+    查看[维护者列表](https://github.com/modelcontextprotocol/modelcontextprotocol/blob/main/MAINTAINERS.md)，找到在你领域工作的维护者。
+  </Step>
+  <Step title="在你的 PR 中标记维护者">
+    标记 1-2 位相关维护者（不要骚扰所有人）。
+  </Step>
+  <Step title="在 Discord 中分享">
+    在相关的 Discord 频道发布你的 PR 以提高可见性。
+  </Step>
+  <Step title="如有需要则跟进">
+    如果 2 周后无回应，在 `#general` 中询问或联系一位核心维护者。
+  </Step>
+</Steps>
+
+维护者定期评审开放中的提案，但响应时间因复杂度和可用性而异。
+
+## 故障排查
+
+有时事情不按计划进行——这完全正常！以下是常见问题的解决方案。如果你仍然卡住，请不要犹豫，在 [Discord](/community/communication#discord) 中寻求帮助。社区很友好，乐意帮你脱困。
+
+### `npm run check` 失败
+
+常见原因：
+
+- **Node.js 版本不对** —— 确保你有 Node.js 24+
+- **缺少依赖** —— 再次运行 `npm install`
+- **Schema 不同步** —— 运行 `npm run generate:schema`
+- **格式问题** —— 运行 `npm run format` 自动修复
+
+### 我的 PR 已经无人问津好几周了
+
+1. 确保所有 CI 检查通过
+2. 在评论中礼貌地 ping 你希望的评审者
+3. 在相关的 Discord 频道询问
+4. 对于紧急问题，联系一位核心维护者
+
+### 我为我的 SEP 找不到担保人
+
+1. 确保你的想法已先在 Discord 或某个兴趣组中讨论过
+2. 已展现出社区兴趣的提案更有可能找到担保人
+3. 考虑你的更改是否可能过大——它能否拆分成更小的 SEP？
+
+### 我的 SEP 被拒了
+
+不要往心里去——SEP 被拒并不意味着你的想法糟糕。SEP 可能因多种原因被拒：时机、范围、竞争性的优先级，或仅仅因为协议尚未准备好接受那项更改。你收到的反馈很有价值，且往往指向一条前进的路。
+
+拒绝并非永久。你面前有几个选择：
+
+1. **处理反馈并重新提交** —— 拒绝往往附带具体的关切。处理那些关切并重新提交可能是正确的前进之路。
+2. **在 Discord 中讨论** —— 与维护者交谈，以更好地理解那些关切。有时一次简短的对话就能揭示一条更简单的前进之路。
+3. **尝试一种不同的方法** —— 提交一个以不同方式解决同一问题的新 SEP，融入你所学到的东西。
+4. **等待合适的时机** —— 情况会变。新的用例涌现，社区壮大，优先级转移。今天被拒的想法明天可能受到欢迎。
+
+## 范围外
+
+本指南涵盖对 **MCP 核心项目**的贡献——规范、官方 SDK 和文档。
+
+构建你自己的 MCP 服务器、客户端或工具**不**在此涵盖之列。关于使用 MCP 构建的指导，参见我们的文档：
+
+- [构建服务器](/docs/develop/build-server)
+- [构建客户端](/docs/develop/build-client)
+- [示例服务器](/examples)
+
+如果你构建了想与社区分享的东西，可以将其提交到 [MCP 注册表](/registry/about)。
+
+## AI 贡献
+
+我们欢迎使用 Claude 或 ChatGPT 等 AI 工具来帮助你的贡献！如果你确实使用了 AI 辅助，只需在你的 pull request 或 issue 中告知我们——简短说明你如何使用它（起草文档、生成代码、头脑风暴等）即可。
+
+关键在于你理解并能为你的贡献负责：
+
+- **你懂它** —— 你理解这些更改做了什么，并能解释它们
+- **你知道为什么** —— 你能阐明为何需要该更改
+- **你验证过它** —— 你已测试或验证它按预期工作
+
+你可以在 [AI_POLICY.md](https://github.com/modelcontextprotocol/modelcontextprotocol/blob/main/AI_POLICY.md) 中阅读完整政策。
+
+## 行为准则
+
+所有贡献者都必须遵循[行为准则](https://github.com/modelcontextprotocol/modelcontextprotocol/blob/main/CODE_OF_CONDUCT.md)。我们期望在所有渠道中进行相互尊重、专业且包容的互动。
+
+## 许可证
+
+通过贡献，你同意你的贡献将依据以下许可证授权：
+
+- **代码和规范**：Apache License 2.0
+- **文档**（规范除外）：CC-BY 4.0
+
+详情参见 [LICENSE](https://github.com/modelcontextprotocol/modelcontextprotocol/blob/main/LICENSE) 文件。

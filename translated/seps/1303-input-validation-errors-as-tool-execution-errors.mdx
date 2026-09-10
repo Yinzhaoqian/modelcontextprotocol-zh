@@ -1,0 +1,180 @@
+---
+title: "SEP-1303：将输入校验错误作为工具执行错误"
+sidebarTitle: "SEP-1303"
+---
+
+- **状态（Status）**: Final
+- **类型（Type）**: Standards Track
+- **创建（Created）**: 2025-08-05
+- **作者（Author(s)）**: @fredericbarthelet
+- **Issue**: #1303
+
+## 摘要
+
+本 SEP 提议将工具输入校验错误视为工具执行错误（Tool Execution Error）而非协议错误（Protocol Error）。此变更将使语言模型能够在其上下文窗口中收到校验错误反馈，从而无需人工干预即可自我纠正并成功完成任务，显著提高任务完成率。
+
+## 动机
+
+语言模型可以从工具输入校验错误消息中学习，并相应地用纠正后的参数重试 tools/call，但前提是它们在其上下文窗口中收到了错误反馈。协议错误在应用层被 MCP 客户端捕获。只有工具执行错误会作为 JSON-RPC 响应转发回模型。在当前规范下，模型看不到这些错误消息，因而无法自我纠正，导致反复失败和糟糕的用户体验。
+
+### 问题陈述
+
+设想一个航班预订工具，它使用以下 `zod` 校验 schema 来校验出发日期：
+
+```typescript
+departureDate: z.string()
+  .regex(/^\d{2}\/\d{2}\/\d{4}$/, "date must be in dd/mm/yyyy format")
+  .superRefine((dateStr, ctx) => {
+    const date = parseDateFr(dateStr);
+    if (date.getTime() < Date.now()) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message:
+          "Dates must be in the future. Current date is " +
+          formatDateFr(new Date()),
+      });
+    }
+    return true;
+  })
+  .describe("Departure date in dd/mm/yyyy format");
+```
+
+工具期望的输入 JSON schema 只能描述正则表达式语句。而"日期是否在过去"这一实际的程序化检查无法在此处用 JSON schema 表达。即便模型提供了一个语法正确、能通过 JSON schema 校验的日期，也无法保证它在未来。当校验错误被抛出并作为协议错误返回时：
+
+1. 模型收不到解释为何该日期被拒绝的错误消息
+2. 模型多次重复相同的错误（例如，当用户只指定日和月或相对日期时，Cursor 通常一贯地发送 2024 年的日期，并重复相同的 tools/call 请求 3 次，却得不到任何关于工具调用为何失败的信息）
+3. 任务失败，尽管模型在获得适当反馈时本能够自我纠正
+4. 用户感到沮丧，不得不手动干预
+
+### 本提案的收益
+
+1. **更高的任务完成率**：模型可以在无人工干预的情况下自我纠正校验错误
+2. **更好的用户体验**：减少失败、更快完成任务
+3. **利用模型能力**：现代 LLM 擅长理解并响应错误消息
+4. **减少 API 调用**：模型在首次出错时即自我纠正，重试次数更少
+
+## 规范
+
+### 当前行为
+
+[工具错误规范](https://modelcontextprotocol.io/specification/2025-06-18/server/tools#error-handling)目前提供的指导含糊：
+
+- "无效参数（Invalid arguments）"应视为协议错误
+- "无效输入数据（Invalid input data）"应视为工具执行错误
+
+这种含糊导致实现不一致，宝贵的错误反馈由此丢失。
+
+### 提议的变更
+
+以以下变更澄清规范：
+
+1. 从**协议错误**中移除"无效参数（invalid argument）"类别。
+2. **工具执行错误**应用于所有工具参数校验失败（将 `invalid argument` 和 `invalid input data` 合并到一个新的 `input validation errors`（输入校验错误）类别下）
+
+### 规范文本变更
+
+更新错误处理章节，纳入：
+
+```
+## Error Handling
+
+Tools use two error reporting mechanisms:
+
+1. **Protocol Errors**: Standard JSON-RPC errors for issues like:
+
+   - Unknown tools
+   - Server errors
+
+2. **Tool Execution Errors**: Reported in tool results with `isError: true`:
+   - API failures
+   - Input validation errors
+   - Business logic errors
+```
+
+## 实现
+
+### 变更前（协议错误）
+
+```typescript
+// Model submits past date
+request: {
+  ...
+  method: "tools/call",
+  params: {
+    name: "book_flight",
+    arguments: {
+      departureDate: "12/12/2024"  // Past date
+    }
+  }
+}
+
+// Server returns Protocol Error
+response: {
+  ...
+  error: {
+    code: -32602,
+    message: "Invalid params"
+  }
+}
+
+// Model retries blindly with another past date
+// This cycle repeats until failure
+```
+
+### 变更后（工具执行错误）
+
+```typescript
+// Model submits past date
+request: {
+  ...
+  method: "tools/call",
+  params: {
+    name: "book_flight",
+    arguments: {
+      departureDate: "12/12/2024"  // Past date
+    }
+  }
+}
+
+// Server returns Tool Execution Error (visible to model)
+response: {
+  ...
+  "result": {
+    "content": [
+      {
+        "type": "text",
+        "text": "Dates must be in the future. Current date is 08/08/2025"
+      }
+    ],
+    "isError": true
+  }
+}
+
+// Model understands the error and corrects itself
+request: {
+  method: "tools/call",
+  params: {
+    name: "book_flight",
+    arguments: {
+      departureDate: "12/12/2025"  // Future date
+    }
+  }
+}
+```
+
+## 向后兼容性
+
+此变更向后兼容，因为它：
+
+- 不改变协议结构
+- 只澄清既有的含糊行为
+- 保留所有既有的错误类型和格式
+- 在不破坏既有实现的前提下改进行为
+
+实现了这一澄清后行为的服务器将提供更好的模型自我恢复能力，同时继续与所有既有客户端协同工作。
+
+## 参考资料
+
+- [MCP 工具错误处理规范](https://modelcontextprotocol.io/specification/2025-06-18/server/tools#error-handling)
+- [Better MCP tools/call Error Responses: Help Your AI Recover Gracefully](https://dev.to/alpic/better-mcp-toolscall-error-responses-help-your-ai-recover-gracefully-15c7)
+- 相关 Issue：https://github.com/modelcontextprotocol/typescript-sdk/pull/824

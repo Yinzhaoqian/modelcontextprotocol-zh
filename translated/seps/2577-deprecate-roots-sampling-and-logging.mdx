@@ -1,0 +1,232 @@
+---
+title: "SEP-2577：弃用根、采样和日志"
+sidebarTitle: "SEP-2577"
+---
+
+- **状态（Status）**: Final
+- **类型（Type）**: Standards Track
+- **创建（Created）**: 2026-04-14
+- **作者（Author(s)）**: Kurtis Van Gent (@kurtisvg)
+- **担保人（Sponsor）**: @kurtisvg
+- **PR**: #2577
+
+> **注**：本 SEP 以一个假设性的 SEP 为前提，即 MCP 认为某个规范版本在其原始发布日期之后一年内受支持。此处描述的弃用时间线假定该政策已到位。
+
+## 摘要
+
+本 SEP 弃用以下核心协议特性：
+
+- **根（Roots）**（`roots/list`、`notifications/roots/list_changed`）
+- **采样（Sampling）**（`sampling/createMessage`、`ClientCapabilities.tasks.requests.sampling`）
+- **日志（Logging）**（`logging/setLevel`、`notifications/message`）
+
+这些特性从包含本 SEP 的规范版本（预计 2026 年 6 月）开始被弃用。它们将在该版本发布后一年内发布的所有规范版本中继续完全可用。
+
+假定另一个单独 SEP 所提议的"每版本支持一年"政策成立，那些后续版本中的每一个也将在其自身发布后一年内继续支持这些特性。这为实现提供了在特性被完全移除之前的一个延长迁移窗口。
+
+在弃用期间，线路层行为不变。不移除任何类型，不更改能力协商，也不破坏任何既有实现。弃用充当向生态发出的信号，提示停止在这些特性之上构建，并为其最终移除做计划。
+
+## 动机
+
+MCP 规范力求保持最小化和聚焦。采用度低、与既有替代方案重叠，或相对其价值施加不成比例实现负担的特性，是移除的候选。将此类特性保留在核心规范中会增加每个客户端和服务器的负担、拖慢协议演进，并使规范更难学习。以下三个特性符合这些标准。
+
+弃用这些特性是在最近一次核心贡献者会议上提议的。本 SEP 以一份具体的实现计划将该提议正式化。参见[讨论 #2536][discussion-2536]。
+
+### 根
+
+根提供关于服务器应在哪些目录或文件上操作的"信息性指引"。实际上：
+
+- **采用度低**：很少有客户端实现根支持，也很少有服务器依赖它。[特性支持矩阵][feature-matrix]显示客户端覆盖有限。
+- **语义含糊**：规范将根描述为信息性的——服务器不被要求尊重它们，这降低了它们的效用。
+- **重叠的替代方案**：工作目录上下文可以通过工具参数、资源 URI、服务器配置或环境变量提供——所有这些都更显式。
+
+### 采样
+
+采样允许服务器从客户端请求 LLM 补全。虽然在概念上强大，但它在采用上一直挣扎：
+
+- **实现复杂**：正确的采样实现需要人在环路的批准、模型选择逻辑、安全考量，以及（自 SEP-1577 起）工具循环支持。这种复杂性导致了客户端采用度低。
+- **采用度低**：[特性支持矩阵][feature-matrix]显示，尽管该特性自 2024 年 11 月规范起就已可用，但很少有客户端支持采样。
+- **直接替代方案**：需要 LLM 能力的服务器可以直接与 LLM 提供方 API 集成，从而对模型选择、参数和流式获得完全控制。
+
+### 日志
+
+日志允许服务器通过协议向客户端发送结构化日志消息：
+
+- **重叠的基础设施**：标准日志机制（stdio 传输的 stderr、用于结构化可观测性的 OpenTelemetry）成熟、被广泛采用，且比应用协议通道更适合做日志。
+- **相对复杂性价值低**：向核心规范添加日志消息类型、严重性级别和 `logging/setLevel` 请求，增加了所有客户端和服务器的实现表面。
+
+[discussion-2536]: https://github.com/modelcontextprotocol/modelcontextprotocol/discussions/2536
+[feature-matrix]: https://modelcontextprotocol.io/clients#feature-support-matrix
+
+## 规范
+
+### 变更概览
+
+1. 在 schema 中用 `@deprecated` 标注标记被弃用的特性
+2. 向特性文档页面添加弃用通知
+3. 弃用期间不作线路层协议变更
+
+### Schema 变更
+
+向 `schema/draft/schema.ts` 中的以下条目添加 `@deprecated` JSDoc 标注。不移除任何类型、接口或联合成员。
+
+#### 被弃用的能力
+
+| 能力                                         | 位置                                   |
+| -------------------------------------------- | -------------------------------------- |
+| `ClientCapabilities.roots`                   | 列出根的客户端能力                     |
+| `ClientCapabilities.sampling`                | LLM 采样的客户端能力                   |
+| `ClientCapabilities.tasks.requests.sampling` | 任务增强采样的子能力                   |
+| `ServerCapabilities.logging`                 | 日志消息的服务器能力                   |
+
+#### 被弃用的类型 —— 根
+
+| 类型                           | 描述                                      |
+| ------------------------------ | ----------------------------------------- |
+| `Root`                         | 代表一个根目录或文件                      |
+| `ListRootsRequest`             | `roots/list` 的服务器到客户端请求         |
+| `ListRootsResult`              | 包含根数组的结果                          |
+| `ListRootsResultResponse`      | JSON-RPC 响应封装                         |
+| `RootsListChangedNotification` | 根变化时的客户端通知                      |
+
+#### 被弃用的类型 —— 采样
+
+| 类型                          | 描述                                           |
+| ----------------------------- | ---------------------------------------------- |
+| `CreateMessageRequestParams`  | `sampling/createMessage` 的参数                |
+| `CreateMessageRequest`        | 采样的服务器到客户端请求                       |
+| `CreateMessageResult`         | 采样请求的结果                                 |
+| `CreateMessageResultResponse` | JSON-RPC 响应封装                              |
+| `SamplingMessage`             | 采样对话中的一条消息                           |
+| `SamplingMessageContentBlock` | 采样消息的内容块联合                           |
+| `ToolChoice`                  | 采样期间控制模型工具选择                       |
+| `ToolUseContent`              | 采样消息中的工具使用内容块                     |
+| `ToolResultContent`           | 采样消息中的工具结果内容块                     |
+| `ModelPreferences`            | 模型选择的服务器偏好                           |
+| `ModelHint`                   | 模型选择的提示                                 |
+
+#### 被弃用的类型 —— 日志
+
+| 类型                               | 描述                                    |
+| ---------------------------------- | --------------------------------------- |
+| `LoggingLevel`                     | Syslog 严重性级别枚举                   |
+| `SetLevelRequestParams`            | `logging/setLevel` 的参数               |
+| `SetLevelRequest`                  | 设置级别的客户端到服务器请求            |
+| `SetLevelResultResponse`           | JSON-RPC 响应封装                       |
+| `LoggingMessageNotificationParams` | 日志消息通知的参数                      |
+| `LoggingMessageNotification`       | 服务器到客户端的日志消息                |
+
+#### 标注格式
+
+每个被弃用的条目**应当（SHOULD）**获得一个带简短说明的 JSDoc `@deprecated` 标记：
+
+```typescript
+/**
+ * Present if the client supports listing roots.
+ *
+ * @deprecated Deprecated as of this specification version. Will be included
+ * in all versions released within one year, then may be removed.
+ */
+roots?: {
+  listChanged?: boolean;
+};
+```
+
+#### 联合类型
+
+以下联合类型引用了被弃用的类型，但在弃用期间**不得（MUST NOT）**修改。它们将在被弃用类型被移除时更新：
+
+- `ClientNotification`（包含 `RootsListChangedNotification`）
+- `ClientResult`（包含 `CreateMessageResult`、`ListRootsResult`）
+- `ServerRequest`（包含 `CreateMessageRequest`、`ListRootsRequest`）
+- `ServerNotification`（包含 `LoggingMessageNotification`）
+
+### 文档变更
+
+在每个特性文档页面的标题之后、顶部添加一个弃用警告块：
+
+**`docs/specification/draft/client/roots.mdx`：**
+
+```mdx
+<Warning>
+**Deprecated**: The Roots feature is deprecated as of this specification
+version. It will remain fully functional in all specification versions released
+within one year of the <YYYY-MM-DD> release. Each of those versions will
+continue to support it for one year after its own release.
+</Warning>
+```
+
+**`docs/specification/draft/client/sampling.mdx`：**
+
+```mdx
+<Warning>
+**Deprecated**: The Sampling feature is deprecated as of this specification
+version. It will remain fully functional in all specification versions released
+within one year of the <YYYY-MM-DD> release. Each of those versions will
+continue to support it for one year after its own release.
+</Warning>
+```
+
+**`docs/specification/draft/server/utilities/logging.mdx`：**
+
+```mdx
+<Warning>
+**Deprecated**: The Logging feature is deprecated as of this specification
+version. It will remain fully functional in all specification versions released
+within one year of the <YYYY-MM-DD> release. Each of those versions will
+continue to support it for one year after its own release.
+</Warning>
+```
+
+### 能力协商
+
+在弃用期间，能力协商**不变**：
+
+- 支持被弃用特性的客户端和服务器**应当（SHOULD）**继续声明相应的能力。
+- 遇到被弃用能力的实现**必须（MUST）**仍然正确处理它们。
+- 当协商被弃用能力时，实现**应当（SHOULD）**发出警告（例如在日志或开发者工具中）。
+- 新实现**不应当（SHOULD NOT）**添加对被弃用特性的支持，除非为了与既有对端的向后兼容而需要。
+
+### 时间线
+
+- **弃用**：在下一个规范版本中（当前计划为 2026 年 6 月）。
+- **纳入后续版本**：在本版本发布后一年内发布的所有规范版本**必须（MUST）**继续将这些特性作为已弃用纳入。
+- **逐版本支持**：依据另一个单独 SEP 所提议的"每版本支持一年"政策，包含这些特性的每个版本将在该版本发布后一年内支持它们。
+- **移除**：在本版本发布一年之后发布的规范版本**可以（MAY）**完全移除这些特性。
+
+## 理由
+
+### 为何弃用而非移入扩展？
+
+这些特性已经在许多客户端和服务器中实现。扩展机制（SEP-2133）规定，除非提供了某个扩展，否则实现必须表现得如同该扩展不存在。将这一逻辑改造进既有 SDK——尤其是跨多个协议版本——会很复杂且易出错。弃用后再移除的扰动更小：实现可以在过渡期间继续按原样使用这些特性，然后在特性被移除时直接停止。
+
+### 为何弃用而非立即移除？
+
+虽然这些特性的采用度低，但它们仍在使用中。立即移除它们会给用户、客户端和服务器所有者以及 SDK 构建者造成不必要的动荡和扰动。弃用窗口通过让生态按自己的节奏迁移，将这一影响降至最低。
+
+### 为何专门选这三个特性？
+
+它们在一次核心贡献者会议中被识别为采用度对复杂性之比最弱的特性。每一个在协议之外都有可行的替代方案，且没有一个对定义 MCP 的核心资源/工具/提示交互模型至关重要。参见[讨论 #2536][discussion-2536]。
+
+## 向后兼容性
+
+在弃用期间，**不存在向后兼容问题**。所有被弃用的特性继续以相同方式工作。不引入线路层变更。
+
+移除之后（在本版本发布一年之后发布的规范版本中）：
+
+- 协商包含这些特性的较旧协议版本的实现，仍将通过该版本的 schema 访问它们。
+- 协商已移除这些特性之版本的实现，将不再能访问它们。
+
+## 安全影响
+
+弃用这些特性对安全有**净正面**效果：
+
+- **采样**是三者中安全最敏感的。它允许服务器通过客户端请求 LLM 补全，为提示注入和数据窃取创造了攻击面。移除它降低了这一风险。
+- **根**向服务器暴露关于客户端文件系统的信息。移除它降低了服务器利用根信息尝试目录遍历或访问预期边界之外文件的风险。
+- **日志**的安全影响极小，但移除它简化了协议表面。
+
+弃用不引入新的安全关切。
+
+## 参考实现
+
+无需参考实现。本 SEP 仅将既有功能标记为已弃用——不引入新的协议行为。

@@ -1,0 +1,306 @@
+---
+title: "SEP-1036：用于安全带外交互的 URL 模式征询"
+sidebarTitle: "SEP-1036"
+---
+
+- **状态（Status）**: Final
+- **类型（Type）**: Standards Track
+- **创建（Created）**: 2025-07-22
+- **作者（Author(s)）**: Nate Barbettini (@nbarbettini) and Wils Dawson (@wdawson)
+- **Issue**: #1036
+
+## 摘要
+
+本 SEP 为既有的征询客户端能力引入一个新的 `url` 模式，实现绕过 MCP 客户端的安全带外（out-of-band）交互。URL 模式征询处理了表单模式征询无法处理的敏感用例，例如收集敏感凭据、为外部（第三方）授权执行 OAuth 流，以及处理支付，而*不*将敏感数据暴露给 MCP 客户端。通过将用户引导至其浏览器中的受信任 URL，此模式在实现与第三方服务丰富集成的同时保持安全边界。
+
+## 动机
+
+当前的 MCP 规范（2025-06-18）提供了一种征询机制，通过结构化的带内（in-band）请求从用户处收集非敏感信息（最常见的设想是 MCP 客户端渲染一个表单来从终端用户收集数据）。然而，若干关键用例要求交互不得经过 MCP 客户端：
+
+1. 敏感数据收集：API 密钥、密码和其他凭据绝不能经过中间系统传输。
+2. 外部授权：MCP 服务器常常需要代表用户访问第三方 API。MCP 授权规范只涵盖客户端到服务器的授权，不涵盖服务器到第三方的授权。[安全最佳实践](https://modelcontextprotocol.io/specification/2025-06-18/basic/security_best_practices)文档明确禁止令牌透传（token passthrough），需要一种用于外部（第三方）OAuth 流的安全机制。这是从 #234 和 #284 讨论中浮现的一个特别重要的驱动因素。
+3. 支付和订阅流：金融交易需要 PCI 合规和安全的支付处理，这无法通过带内数据收集实现。
+
+如果没有针对这些交互的标准化机制，MCP 服务器必须诉诸非标准的变通办法或不安全的实践，例如通过带内的表单式征询请求 API 密钥。本 SEP 通过引入一种 URL 征询模式来弥补这些缺口，该模式利用已确立的 Web 安全模式来安全地处理敏感交互。
+
+URL 征询与 [MCP 授权](https://modelcontextprotocol.io/specification/2025-06-18/basic/authorization)有本质不同。URL 征询不用于授权 MCP 客户端对 MCP 服务器的访问（那由 MCP 授权直接处理）。相反，它用于 MCP 服务器需要代表用户获取敏感信息或第三方授权的场景。MCP 客户端的 bearer 令牌保持不变，客户端的唯一职责是向用户提供关于服务器希望其打开的征询 URL 的上下文。
+
+## 规范
+
+### 概览
+
+征询被更新为支持两种模式：
+
+- **表单模式（form mode，带内）**：服务器可以用可选的 JSON schema 从用户处请求结构化数据以校验响应（此处无变化，除了为既有能力添加一个名称）
+- **URL 模式（url mode，带外）**：服务器可以将用户引导至外部 URL，以进行不得经过 MCP 客户端的敏感交互
+
+### 能力
+
+支持征询的客户端**必须（MUST）**在初始化期间声明 `elicitation` 能力：
+
+```json
+{
+  "capabilities": {
+    "elicitation": {
+      "form": {},
+      "url": {}
+    }
+  }
+}
+```
+
+为向后兼容，空的能力对象等价于仅声明支持 `form` 模式：
+
+```jsonc
+{
+  "capabilities": {
+    "elicitation": {},
+  },
+}
+```
+
+声明 `elicitation` 能力的客户端**必须（MUST）**至少支持一种模式（`form` 或 `url`）。
+
+### 表单征询请求
+
+相较既有规范唯一的变化是在 `elicitation/create` 请求中添加一个 `mode` 字段：
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "elicitation/create",
+  "params": {
+    "mode": "form", // New field
+    "message": "Please provide your GitHub username",
+    "requestedSchema": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        }
+      },
+      "required": ["name"]
+    }
+  }
+}
+```
+
+### URL 征询请求
+
+URL 征询请求**必须（MUST）**指定 `mode: "url"` 并包含这些参数：
+
+| 名称            | 类型   | 描述                                                        |
+| --------------- | ------ | ------------------------------------------------------------------ |
+| `url`           | string | 用户应导航到的 URL。                                        |
+| `elicitationId` | string | 该征询的唯一标识符。                                        |
+| `message`       | string | 一条解释为何需要此交互的人类可读消息。                      |
+
+#### 示例：OAuth 授权流
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 3,
+  "method": "elicitation/create",
+  "params": {
+    "mode": "url",
+    "elicitationId": "550e8400-e29b-41d4-a716-446655440000",
+    "url": "https://github.com/login/oauth/authorize?client_id=abc123&state=xyz789&scope=repo",
+    "message": "Please authorize access to your GitHub repositories to continue."
+  }
+}
+```
+
+#### 响应动作
+
+URL 征询响应使用与表单征询相同的三动作模型：
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 3,
+  "result": {
+    "action": "accept" // or "decline" or "cancel"
+  }
+}
+```
+
+带 `action: "accept"` 的响应表示用户已同意该交互。交互在带外发生，除非服务器发送完成通知，否则客户端不知晓结果。
+
+#### 完成通知
+
+当由 URL 模式征询发起的带外交互完成时，服务器**应当（SHOULD）**发送一个 `notifications/elicitation/complete` 通知。这允许客户端在适当时以编程方式作出反应。
+
+- 该通知**必须（MUST）**只发送给发起该征询请求的客户端。
+- 该通知**必须（MUST）**包含在原始 `elicitation/create` 请求中确立的 `elicitationId`。
+- 客户端**必须（MUST）**忽略引用未知或已完成 ID 的通知。
+- 如果完成通知始终未到达，客户端**应当（SHOULD）**为用户提供一种手动继续交互的方式。
+
+客户端**可以（MAY）**使用该通知来自动重试收到 URL 征询必需错误的请求、更新用户界面，或以其他方式继续交互。然而，由于通知的投递无法保证，客户端不得无限期等待来自服务器的通知。
+
+```json
+{
+  "jsonrpc": "2.0",
+  "method": "notifications/elicitation/complete",
+  "params": {
+    "elicitationId": "550e8400-e29b-41d4-a716-446655440000"
+  }
+}
+```
+
+#### URL 征询必需错误
+
+当某个请求在征询完成前无法处理时，服务器**可以（MAY）**返回一个 `URLElicitationRequiredError`（错误码 `-32042`）来表明需要一次 URL 模式征询。除非用户交互确实需要 URL 模式征询，否则服务器**不得（MUST NOT）**返回此错误。
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 2,
+  "error": {
+    "code": -32042,
+    "message": "This request requires more information.",
+    "data": {
+      "elicitations": [
+        {
+          "mode": "url",
+          "elicitationId": "550e8400-e29b-41d4-a716-446655440000",
+          "url": "https://oauth.example.com/authorize?client_id=abc123&response_type=code&...",
+          "message": "Authorization is required to access your Example Co files."
+        }
+      ]
+    }
+  }
+}
+```
+
+错误中返回的任何征询**必须（MUST）**是 URL 模式征询并包含一个 `elicitationId`。
+
+返回 `URLElicitationRequiredError` 等价于发送一个 `elicitation/create` 请求。服务器可以返回错误（而非发送单独的 `elicitation/create` 请求），作为对客户端的一种便利，以明确某个特定征询与失败的客户端请求直接相关。
+
+客户端必须将 `URLElicitationRequiredError` 响应视为等价于 `elicitation/create` 请求。客户端可以在征询成功完成后（例如在收到完成通知后）自动重试失败的请求。
+
+## 理由
+
+### 设计决策
+
+**为何扩展征询而非创建新机制？**
+
+最初，我们考虑为带外交互创建一个单独的机制（在 #475 中讨论）。然而，在与 MCP 维护者讨论后，我们决定扩展既有的征询规范，因为：
+
+1. 两种机制服务于相同的根本目的：从用户处收集信息
+2. 为相同目的设置两个相似但独立的机制令人困惑且易出错
+3. `mode` 参数干净地分离了两种交互模式
+
+**为何客户端不能自行执行交互？**
+
+人们很容易建议 MCP 客户端自行执行交互，例如充当对第三方授权服务器的 OAuth 客户端。然而，有若干理由说明这不是个好主意：
+
+- 如果 MCP 客户端从第三方授权服务器获取用户令牌，MCP 服务器就会成为一个[令牌透传](https://modelcontextprotocol.io/specification/2025-06-18/basic/security_best_practices#token-passthrough)服务器，这是明确禁止的。
+- 类似地，对于支付类流，MCP 客户端需要执行 PCI 合规的支付处理，这不是对 MCP 客户端所期望的要求。
+
+**为何服务器不阻塞（等待）征询完成？**
+
+URL 模式征询请求在设计上是异步或"断开"的流，因为它们所支持的交互本质上是异步的。支付流、外部授权等可能需要数分钟或更久才能完成，在某些情况下（若被终端用户放弃）永远不会完成。
+
+**为何在表单模式中禁止 URL？**
+
+明确规定 URL 何时可以（何时不可以）在征询请求中发送，改善了客户端的安全态势。通过在规范中清晰声明 URL *仅*允许出现在 URL 模式征询请求的 `url` 字段中，客户端实现者可以实现与安全模型一致的 UX 模式。例如，客户端可以拒绝在表单模式征询请求中将 URL 渲染为可点击的超链接，从而降低用户点击恶意服务器发送的恶意 URL 的可能性。
+
+### 所考虑的替代方案
+
+1. **令牌透传**：仅仅将 MCP 客户端的令牌传递给外部服务，因《安全最佳实践》中记录的安全关切而被否决。让 MCP 客户端获取额外令牌并将其传递给 MCP 服务器，出于相同原因被否决。
+
+2. **OAuth 专用能力**：曾考虑为使用 OAuth 的外部（第三方）授权创建一个专用能力，但被否决，转而采用支持多种用例的更通用的 URL 模式征询方式。
+
+### 社区反馈
+
+本提案纳入了来自 #475、#234 和 #284 讨论以及 Discord 上 #auth-wg 工作组的大量社区反馈。社区识别出以下需求：
+
+- 无客户端暴露的安全凭据收集
+- 独立于 MCP 授权的外部授权模式
+- 支付和订阅流支持
+- 清晰的安全边界和信任模型
+
+## 向后兼容性
+
+本 SEP 引入以下破坏性变更：
+
+1. **能力声明**：客户端现在必须指定其支持哪些征询模式：
+
+   ```json
+   {
+     "capabilities": {
+       "elicitation": {
+         "form": {},
+         "url": {}
+       }
+     }
+   }
+   ```
+
+   此前，客户端只声明 `"elicitation": {}`，不带模式说明。
+
+2. **Mode 参数**：所有 `elicitation/create` 请求现在都必须包含一个 `mode` 参数（`"form"` 或 `"url"`）。
+
+### 迁移路径
+
+为便于迁移：
+
+- 服务器**应当（SHOULD）**在发送模式特定请求之前检查客户端能力
+- 客户端**可以（MAY）**初期只支持表单模式以保持兼容
+- 既有的表单征询实现在添加 mode 参数后继续工作
+
+# 参考实现
+
+TypeScript 的客户端/服务器实现：[feat/url-elicitation](https://github.com/modelcontextprotocol/typescript-sdk/compare/main...ArcadeAI:mcp-typescript-sdk:feat/url-elicitation)
+
+讲解视频：https://drive.google.com/file/d/1llCFS9wmkK_RUgi5B-zHfUUgy-CNb0n0/view?usp=sharing
+
+## 安全影响
+
+本 SEP 引入了若干安全考量：
+
+### URL 安全要求
+
+1. **SSRF 防范**：客户端必须验证 URL 以防止服务器端请求伪造攻击
+2. **协议限制**：URL 征询仅允许 HTTPS URL
+3. **域名验证**：客户端必须向用户清晰显示目标域名
+
+### 信任边界
+
+URL 征询显式地创造了清晰的信任边界：
+
+- MCP 客户端绝不会看到 MCP 服务器经由 URL 征询获取的敏感数据
+- MCP 服务器必须独立验证用户身份
+- 第三方服务通过安全的浏览器上下文直接与用户交互
+
+### 身份验证
+
+服务器必须验证完成 URL 征询的用户与发起请求的用户是同一人。验证用户身份不得依赖来自客户端的不可信输入（例如用户输入）。
+
+### 实现要求
+
+1. **客户端必须**：
+   - 使用防止检视用户输入的安全浏览器上下文
+   - 为 SSRF 防护验证 URL
+   - 在打开 URL 之前获得明确的用户同意
+   - 清晰显示目标域名
+
+2. **服务器必须**：
+   - 将征询状态绑定到已认证的用户会话
+   - 在 URL 征询流的开始和结束验证用户身份
+   - 实施适当的限速
+
+3. **双方应当**：
+   - 出于审计目的记录安全事件
+   - 为征询请求实现超时机制
+   - 为安全失败提供清晰的错误消息
+
+### 与既有安全措施的关系
+
+本提案建立在既有 MCP 安全措施之上并对其加以补充：
+
+- 在既有 MCP 授权框架内工作（MCP 授权不受本提案影响）
+- 遵循关于令牌处理的《安全最佳实践》
+- 保持客户端-服务器授权与服务器-第三方授权之间的关注点分离

@@ -1,0 +1,99 @@
+---
+title: 路线图
+description: 模型上下文协议路线图，涵盖核心维护者与工作组为下一个规范版本推进的优先领域，以及它们如何塑造 SEP 评审。
+---
+
+<Info>最后更新：**2026-08-22**</Info>
+
+本页概述了核心维护者对协议在未来六到十二个月的愿景，重点介绍面向下一个规范更新及更远期的目标。它描述了我们主要的战略目标，以及来自[工作组和兴趣组](/community/working-interest-groups)的预期交付物。
+
+<Note>
+
+本路线图反映的是当前的思考，而非确定的承诺。优先事项可能变化，某些条目可能以不同于所述的方式交付或被推迟，而这里未列出的工作仍可能被纳入某个版本。
+
+</Note>
+
+## SEP 优先级排序
+
+**落在以下优先领域内的[规范增强提案](/community/sep-guidelines)（SEP）会获得加速评审，并且最有可能被接受。** 这些领域之外的 SEP 不会被自动拒绝，但可以预期排队更久、对理由的门槛更高。维护者的评审时间稀缺。我们首先把它用在这里。
+
+如果你正在考虑撰写 SEP，先从确定它属于哪个优先领域入手，并将其提交给相关工作组，然后带着该组的支持提出提案。有工作组支撑、并与本路线图有清晰联系的 SEP 推进最快。完整流程参见 [SEP 指南](/community/sep-guidelines)。
+
+每个优先领域都指明了负责它的核心维护者，任何有兴趣贡献的人都可以在 [Discord](/community/communication#discord) 上联系他们。每个领域下列出的条目是本路线图周期优先安排的交付物。每个领域的其余部分是开放范围，工作组应在其中定义并贡献进一步的工作。
+
+## 优先领域
+
+### 1. 代理式消息传递原语
+
+核心维护者：[**Caitie McCaffrey**](https://github.com/CaitieM20)、[**Clare Liguori**](https://github.com/clareliguori)、[**Peter Alexander**](https://github.com/pja-ant)
+
+代理式工作负载需要超越请求-响应的[消息传递模式](/specification/2026-07-28/basic/patterns)：运行数分钟的工作、会推送的服务器、流式返回的结果，以及一种在执行中途引导工作的方式。MCP 已经围绕此发展出一组概念，包括 [Tasks](/extensions/tasks/overview)、[`subscriptions/listen`](/specification/2026-07-28/basic/patterns/subscriptions) 和[进度通知](/specification/2026-07-28/basic/patterns/progress)，分散在多个工作组中。风险在于针对"服务器尚未完成"存在三种答案，而它们不共享生命周期、取消模型或错误呈现。我们希望它们能够组合。
+
+**本路线图周期：**
+
+- **服务器发起的事件**：[Triggers & Events 工作组](/community/working-groups/triggers-events)。用于推送投递的通道和订阅，包括 webhook。随着我们通过 Tasks 和其他事件承接异步工作负载，我们需要一些扩展，让服务器能在工作完成时告知客户端，而不必纯粹依赖代价高昂的客户端轮询。
+- **一次组合评审**：[Agents](/community/working-groups/agents)、Transports 和 [Triggers & Events](/community/working-groups/triggers-events) 工作组。正在成形的原语（如 Tasks 和 Triggers）需要彼此干净地组合，并契合具体用例。
+
+除此之外，我们预期 Tasks（[SEP-2663](/seps/2663-tasks-extension)）会有持续的工作，以最终将该扩展纳入核心协议。
+
+### 2. HTTP 原生传输的统一与加固
+
+核心维护者：[**Kurtis Van Gent**](https://github.com/kurtisvg)、[**Nick Cooper**](https://github.com/nickcoai)
+
+[2026-07-28 版本](/specification/2026-07-28/changelog)让远程 MCP 服务器成为一种普通的 HTTP 工作负载，而我们越来越依赖 HTTP 的特性（如头部和状态码）来承载传输层信息。每一个 HTTP 原生特性都需要第二套 stdio 专用设计，否则在本地便无法工作。SDK 维护着两条传输流水线，而协议元数据如今在 HTTP 头部和消息字段之间重复，服务器不得不交叉验证。我们想要一种统一的传输模型，并在其之上采用标准的 HTTP 实践。
+
+**本路线图周期：**
+
+- **HTTP over stdio**：Transports 工作组。以 Streamable HTTP 作为唯一绑定，为本地服务器通过 stdin/stdout 进行通信。我们相信可以在 stdio 之上使用 HTTP/2 来获得多路复用的 HTTP 传输，同时保留子进程的安全性和生命周期保证。
+- **缓存**：Transports 工作组。最近的协议修订在缓存方面取得进展，为列表结果和资源读取添加了 `ttlMs` 和 `cacheScope`（[SEP-2549](/seps/2549-TTL-for-list-results)）。作为这项工作的一部分，我们希望扩展缓存方法以支持 ETag，这应能为原语（尤其是工具调用）的结果提供版本控制。
+
+除此之外，我们希望审视所有面向层的标准化错误处理、在 [SEP-2575](/seps/2575-stateless-mcp) 之后对工具列表进行能力作用域限定，以及以安全的方式为服务器提供配置选项。
+
+### 3. 代理身份与企业就绪的安全
+
+核心维护者：[**Paul Carleton**](https://github.com/pcarleton)、[**Den Delimarsky**](https://github.com/localden)
+
+MCP 授权假设在同意时刻有一个带浏览器的人。而调用方越来越多地是代理：一个拥有自身身份的云工作负载，代表一个不在场的用户行事，或派生出应比其父级获得更窄权限的子代理。现有的 MCP 服务器依赖于粘贴的 API 密钥和长期有效的刷新令牌。我们需要一种标准化的方式让 MCP 服务器处理代理身份，并将通过采纳既有标准来持续改进安全。
+
+**本路线图周期：**
+
+- **DPoP**：代理身份工作组（在本路线图周期内组建）。敲定"占有证明演示"（Demonstrating Proof of Possession，DPoP）的规范，并聚焦于推动其广泛采用。
+- **代理身份与委托**：代理身份工作组。我们想要一种有明确主张的方式，让 MCP 服务器能通过代理自身的身份或用户委托的身份被访问。该工作将聚焦于工作负载身份联合（Workload Identity Federation，[SEP-1933](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/1933)）、[企业托管授权](/extensions/auth/enterprise-managed-authorization)所使用的身份断言 JWT 授权许可（ID-JAG），以及 [RFC 8693](https://www.rfc-editor.org/rfc/rfc8693) 令牌交换，并与 IETF OAuth 和 [WIMSE](https://datatracker.ietf.org/wg/wimse/about/) 工作组协调。
+
+除此之外，随着工作组组建，还有若干其他议题正在讨论中，可能进入范围，包括用于区分交互式客户端与无头代理的人类在场证明，以及其他代理身份相关的关切。
+
+### 4. 改进的原语
+
+核心维护者：[**Kurtis Van Gent**](https://github.com/kurtisvg)、[**Peter Alexander**](https://github.com/pja-ant)、[**Den Delimarsky**](https://github.com/localden)
+
+MCP 的工具调用接口一直表现良好。然而，`tools/call` 允许同时返回 `content` 和 `structuredContent`，这既让服务器作者也让客户端作者感到困惑，并产生了分歧的实现。我们希望在本路线图周期改进 `tools/call` 接口的形态，以获得更一致的语义。我们也反复听到社区反映，服务器需要更多选项来引导客户端穿过大量工具、资源和其他原语，因此我们正在围绕**渐进式发现**启动一项专门的工作，以定义一种实验性的服务器端发现机制应当是什么样子。
+
+**本路线图周期：**
+
+- **工具结果形态**：核心原语工作组（在本路线图周期内组建）。重新设计 `tools/call` 接口，以解决各返回类型之间的保真度差异，并精简对结构化和非结构化输出的处理。
+- **渐进式发现**：核心原语工作组。客户端按需了解服务器的工具和资源，而不是一开始就摄取整个目录，并与[HTTP 原生传输的统一与加固](#2-http-原生传输的统一与加固)下的缓存工作有明确的交互。
+- **原语标注**：核心原语工作组。规范中的[内容标注](/specification/2026-07-28/server/resources#annotations)声明了一段内容的预期受众和优先级。将它们应用于工具结果和资源可以解决 [SEP-2200](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/2200) 中所述的可见性混淆，但大多数实现者尚未采用这些标注，且可能不了解其用途。如果它们没有用处，我们应考虑弃用它们。
+
+此外，[File Uploads 工作组](/community/working-groups/file-uploads)继续推进范围受限的文件操作和类文件系统的资源语义（范围读取、层级列举）。
+
+### 5. 改进的 SDK 开发者体验
+
+核心维护者：[**Den Delimarsky**](https://github.com/localden)、[**David Soria Parra**](https://github.com/dsp-ant)
+
+我们的 SDK、参考服务器和快速上手都是手工维护的。尽管这行得通，但我们相信规范和一套经人工评审的合规测试套件可以作为真实来源（source of truth），从中派生出更多这类产物，从而让 SDK 和示例作为每个版本的一部分被重新生成和重新验证，而不是在版本发布之后再修复。
+
+**本路线图周期：**
+
+- **扩展契约**：[SDK 工作组](/community/working-groups/sdk)与核心维护者。扩展绑定哪个角色（宿主、客户端、服务器、代理），以及当能力被声明时各自做什么；SDK 必须原生支持什么；扩展如何打包；能力的增加作为对扩展的版本化变更；认证被视为其自身的一个领域。
+- **生成式产物实验**：[SDK 工作组](/community/working-groups/sdk)。从规范生成一个候选的 [Tier 1 SDK](/community/sdk-tiers) 及其配套的快速上手示例，依据[合规测试套件](/community/sdk-tiers#conformance-testing)验证两者，并发布结论和面向下一周期的建议，包括哪些层应当采用确定性代码生成、哪些应当由模型辅助。
+
+除此之外，我们希望重新审视参考服务器和快速上手仓库的所有权与时效性预期，并将由生成失败暴露出的规范清晰度问题视为文档缺陷。
+
+## 参与进来
+
+上述每个优先领域背后都有一个已有或正在围绕它组建的工作组，而且它们都还有容纳更多贡献者的空间。参与方式有多种：
+
+- **加入工作组或兴趣组**：参见[工作组和兴趣组](/community/working-interest-groups)页面以及[社区渠道](/community/communication)。
+- **提出或评论 SEP**：阅读 [SEP 指南](/community/sep-guidelines)，然后开一个或参与讨论。
+- **发起实验性扩展**：[SEP-2133](/seps/2133-extensions) 允许任何工作组或兴趣组在正式 SEP 之前，在一个 `experimental-ext-` 仓库中进行实验。
+- **直接贡献**：[贡献指南](/community/contributing)涵盖规范、SDK 和工具链。

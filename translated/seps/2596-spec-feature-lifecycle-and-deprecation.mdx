@@ -1,0 +1,196 @@
+---
+title: "SEP-2596：规范特性生命周期与弃用政策"
+sidebarTitle: "SEP-2596"
+---
+
+- **状态（Status）**: Final
+- **类型（Type）**: Process
+- **创建（Created）**: 2026-04-17
+- **作者（Author(s)）**: Den Delimarsky (@localden)
+- **担保人（Sponsor）**: @localden
+- **PR**: https://github.com/modelcontextprotocol/modelcontextprotocol/pull/2596
+
+## 摘要
+
+本 SEP 为模型上下文协议规范内的单个特性定义了一套生命周期，独立于规范文档本身的修订生命周期。它引入了三种特性状态（活跃、已弃用、已移除）、在它们之间流转的标准和程序、弃用与移除之间的最短窗口期，以及每次转换所需的文档。目标是提供一条可预测的时间线，供 SDK 作者和实现者在协议表面被淘汰时据以规划迁移。
+
+## 动机
+
+规范已经淘汰或发出淘汰信号的若干特性，但每个案例都是临时处理的：
+
+- HTTP+SSE 传输在 [Streamable HTTP 向后兼容指南][transports-compat]中被描述为"已弃用"，但未说明移除日期。
+- `includeContext` 值 `"thisServer"` 和 `"allServers"` 在 [`sampling/createMessage`][sampling-includecontext] 和 `schema.ts` 中被标记为"软弃用（soft-deprecated）"，并注明它们"可能在未来的规范版本中被移除"。
+- JSON-RPC 批处理在修订 `2025-03-26` 中添加，并在仅一个版本之后的 `2025-06-18` 中移除，没有弃用期。
+- 诸如合并 `Resource` 和 `ResourceTemplate`（[#1540][issue-1540]）以及弃用根、采样和日志（[SEP-2577][sep-2577]）之类的开放提案，都将淘汰既有表面，但没有可遵循的流程。
+
+这种不一致有代价。实现者无法分辨"已弃用"和"软弃用"是否意味着不同的东西，也不知道任一状态在移除前持续多久。诸如[讨论 #2177][disc-2177]（询问 SSE 传输实际何时会被移除）之类的社区问题没有可指向的政策。在 [NYC 维护者会议][nyc-2026-03-31]上，大型实现者将对过去协议版本的无限期支持描述为"腐蚀性技术债"。[稳定优先于速度][design-principles]设计原则观察到"从\[规范\]中移除几乎不可能"，但对确有必要移除的情况未提供路径。
+
+核心维护者在 [2026 年 4 月 1 日会议][cm-2026-04-01]上一致认为，MCP 需要"一个正式的版本状态和一个既定的弃用周期"，"方向已同意，机制待定"。本 SEP 提议那些机制。
+
+## 规范
+
+### 适用范围
+
+本政策规范 MCP 核心规范的**特性**：协议消息、能力、传输、schema 类型和规范性行为要求。它不规范 SDK 特定 API 的独立生命周期、注册表政策，或规范文档本身的修订生命周期（草案、当前、最终），后者在[版本控制指南][versioning]中定义。
+
+请注意，"Final"在本文档中有两种含义：一个规范*修订*在被后一个取代时为 Final（依据版本控制指南），而一个 *SEP* 在其状态按 [SEP 指南][sep-guidelines]推进时达到 Final。上下文可消除歧义；在无法消除之处，本文档显式写作"该 SEP 达到 Final"或"Final 修订"。
+
+### 特性状态
+
+一个规范特性恰好处于以下三种状态之一：
+
+| 状态           | 含义                                                                                                                                                          | 对实现者的预期                                                                                                             |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| **活跃**       | 该特性是当前规范修订的一部分，无移除计划。                                                                                                                    | 按照该特性的规范性要求实现。                                                                                               |
+| **已弃用**     | 该特性仍保留在规范中，但已被安排移除。已记录一条迁移路径（见下文）。                                                                                          | 新的实现**不应当（SHOULD NOT）**采用该特性。既有实现**应当（SHOULD）**在最早移除日期之前迁移。                             |
+| **已移除**     | 该特性已从 `draft` 中删除，并将在下一个当前修订中缺席。它在其最后出现的最终修订中仍有记录。                                                                    | 面向该下一个当前修订的实现**不得（MUST NOT）**依赖该特性。                                                                 |
+
+术语"软弃用"被弃用。规范中的既有用法在本政策下被重新归类为已弃用（见[过渡](#transition)）。
+
+从规范中移除并不强制 SDK 从那些继续支持该特性曾为活跃或已弃用之较早修订的发布版本中丢弃它；该时间线由 SDK 自身的修订支持政策管辖（见[开放问题](#open-questions)）。
+
+已弃用的特性**可以（MAY）**通过一个取代弃用 SEP、并记录了情况变化的 SEP 恢复为活跃状态。恢复遵循与弃用相同的批准路径。如果该特性后来再次被弃用，则[弃用特性](#deprecating-a-feature)中的最短弃用窗口期将从新弃用生效的修订起重新计算。
+
+### 弃用一个特性
+
+当以下至少一项成立时，可以提议弃用某个特性：
+
+- 它已被另一个涵盖相同用例的特性所取代。
+- 它带来了无法就地缓解的安全、隐私或互操作性风险。
+- 生态遥测数据或 SDK 维护者共识表明，相对于其维护成本，其采用度微乎其微。
+
+弃用是一项规范变更，因此依据 [SEP 指南][sep-guidelines]需要一个 SEP。弃用 SEP **必须（MUST）**：
+
+1. 按名称标识该特性，并链接到其在 `schema.ts` 中的定义（在适用情况下）以及规范正文。
+2. 对照上述标准陈述理由。
+3. 记录迁移路径，或明确声明无需迁移。如果迁移路径指名了一个替代特性，该特性**必须（MUST）**在弃用生效的修订中处于活跃状态；替代特性与弃用**可以（MAY）**在同一修订中落地。当某特性所记录的替代仍仅在 `draft` 中时，该特性不在本政策下被弃用。
+4. 指定**最短弃用窗口期**：即该特性在有资格被移除之前**必须（MUST）**保持已弃用状态的月数，至少为十二个月。窗口期从该特性首次被标记为已弃用的规范修订发布之日起计算，而非从 SEP 达到 Final 之日起。该特性在窗口期结束当日或之后作为当前修订发布的第一个规范修订中变得有资格移除；该时点即为该特性的**最早移除**。
+
+当弃用 SEP 达到 Final 时，弃用即被安排：以下变更落地到草案规范（`schema/draft/` 和 `docs/specification/draft/`）。当承载这些变更的修订依据[版本控制指南][versioning]作为当前修订发布时，该特性即变为已弃用，最短弃用窗口期从该次发布开始计算。将时钟锚定到修订发布，意味着在同一修订中被弃用的每个特性共享一个最早移除，而非各自携带一个由其自身 SEP 恰好落地时间派生的日期。
+
+- 该特性在 `schema.ts` 中的条目会获得一个 `@deprecated` JSDoc 标记，引用弃用 SEP 以及弃用生效的修订。
+- 该特性的规范正文会获得一条带有相同信息的弃用通知。
+- 该修订的 `changelog.mdx` 会在 "Deprecated" 标题下获得一个条目。本 SEP 引入 "Deprecated" 和 "Removed" 作为与既有 Major/Minor/Other 分组并列的常设变更日志标题。
+- 该特性会被添加到[已弃用登记表](#the-deprecated-registry)，附带其弃用 SEP、其变为已弃用状态的修订、其迁移路径及其最早移除。
+
+### 已弃用登记表
+
+`docs/specification/draft/deprecated.mdx` 是一个单一页面，列出当前处于已弃用状态的每一个特性。它是"什么正在被淘汰、到什么时候"这一问题的权威答案，从而使实现者无需从散布在各修订变更日志中的弃用条目重新拼凑出这幅图景。每一行记录该特性、其弃用 SEP、其变为已弃用状态的修订、所记录的迁移路径及其最早移除。弃用添加一行；移除将该行移到同一页面的"已移除"分区，并附一个指向变更日志条目的链接，因此该页面也充当历史记录。登记表本身不带规范性约束力；它是一个派生视图，与逐特性通知和变更日志条目（它们才是规范性记录）保持一致。
+
+### Tier 1 SDK 义务
+
+特性生命周期的有效程度，取决于将其浮现给消费者的那些实现。上述规范产物记录了某特性为已弃用；Tier 1 SDK（依据 [SEP-1730][sep-1730]）将该记录传达给那些否则会因破坏而发现移除的实现者。一旦某特性变为已弃用所在的修订作为当前修订发布，Tier 1 SDK：
+
+- **必须（MUST）**在其下一个发布版本中，使用该语言的原生机制（例如 Java 中的 `@Deprecated`、.NET 中的 `[Obsolete]`、TypeScript 中的 `@deprecated` JSDoc、Go 中的 `Deprecated:` 文档约定）标记相应的 API 表面为已弃用，并在机制允许的情况下引用弃用 SEP 和最早移除日期。该标记适用于 SDK API 表面，且不以消费者所面向的规范修订为条件；将其浮现给仍在较早修订上的消费者是有意的前瞻信号。
+- **应当（SHOULD）**在已弃用特性被使用时发出运行时警告，使用该语言的惯用机制（例如 Python 的 `DeprecationWarning`、Node.js 的 `process.emitWarning`，或可配置的日志记录器）。运行时警告能触达那些从不阅读 API 文档的开发者，且是合规测试可以据以断言的可观测信号。
+
+这些义务是 Tier 1 状态的合规标准。始终未能浮现已弃用特性的 Tier 1 SDK，将受 [SEP-1730][sep-1730] 中的[等级降级流程][sep-1730-relegation]约束。
+
+### 移除一个特性
+
+1. 一旦某特性被设定为移除，移除将在最短弃用窗口期结束后，于发布准备期间，依据[治理决策流程][governance-decisions]由核心维护者酌情执行。移除不需要其自己的 SEP。在移除某特性之前，核心维护者**必须（MUST）**确认弃用 SEP 中指名的迁移目标（如有）仍处于活跃状态。
+2. 对弃用或移除的任何其他更改都需要一个 SEP，例如延长或缩短时间线（[加速移除](#expedited-removal)）或将特性恢复为活跃状态（[特性状态](#feature-states)）。
+
+请注意，特性可以保持已弃用状态而不被移除，其时间远长于最短弃用窗口期。
+
+SDK 将弃用作为 [SDK 分级体系][sep-1730]的一部分实现（见 [Tier 1 SDK 义务](#tier-1-sdk-obligations)）；移除对 SDK 维护者不施加额外要求。
+
+当作出移除决定时，该特性从 `schema/draft/schema.ts`（如存在）和草案规范正文中删除；该修订的 `changelog.mdx` 会在 "Removed" 标题下获得一个条目，链接到弃用 SEP 和该特性最后出现的 Final 修订；该特性的[登记表](#the-deprecated-registry)行移到"已移除"分区，并附一个指向该变更日志条目的链接。
+
+### 加速移除
+
+当特性带来活跃的安全风险时，即存在一个已发布安全公告的漏洞，或有记录的在野利用且不存在就地缓解措施，十二个月的下限**可以（MAY）**缩短。缩短窗口期需要依据[治理决策流程][governance-decisions]获得核心维护者批准，并记录在弃用 SEP 中，或在风险于该 SEP 已达 Final 之后才浮现的情况下，记录在一个引用它的简短加速移除 SEP 中。缩短后的窗口期仍**必须（MUST）**在特性变为已弃用与其最早移除之间提供至少九十天。
+
+### 角色
+
+| 行动                                           | 由谁                                                                          |
+| ---------------------------------------------- | ----------------------------------------------------------------------------- |
+| 提议弃用、延长或恢复                           | 任何贡献者，按照 SEP 流程                                                      |
+| 担保                                           | 一位维护者或核心维护者，按照 SEP 流程                                          |
+| 批准弃用 SEP                                    | 核心维护者，按照[治理决策流程][governance-decisions]                          |
+| 在发布准备期间决定一次移除                     | 核心维护者，按照[治理决策流程][governance-decisions]                          |
+| 批准延长或恢复 SEP                             | 核心维护者，按照[治理决策流程][governance-decisions]                          |
+| 批准加速移除                                   | 核心维护者，按照[治理决策流程][governance-decisions]                          |
+
+如同所有核心维护者决策，依据[治理角色][governance-roles]定义，首席维护者对上述每一项批准保留否决权。
+
+[governance-roles]: https://modelcontextprotocol.io/community/governance#roles
+
+### 过渡
+
+在本政策存在之前，规范中已有两个特性被描述为已弃用（见[动机](#motivation)）。当本 SEP 达到 Final 时，它们被归类为已弃用并种入[登记表](#the-deprecated-registry)；[弃用一个特性](#deprecating-a-feature)中的弃用 SEP 要求不追溯适用。每个案例的弃用决定都早于本政策；本节以新词汇记录它，使术语"已弃用"和"软弃用"今后承载单一的既定含义。
+
+两个特性在本 SEP 之前都已公开弃用远超过十二个月，因此最短弃用窗口期实际上已经过去；将其时钟重新锚定到未来的修订发布会重启一个生态已经拥有过的窗口。因此，每个特性从本 SEP 达到 Final 之日起获得三个月宽限期，之后才有资格被移除，与[加速移除](#expedited-removal)条款为最短允许窗口设定的下限相匹配。移除仍遵循[移除一个特性](#removing-a-feature)：一个发布准备期的核心维护者决定，而非宽限期结束时的自动事件。
+
+| 特性                                            | 迁移目标                             | 最早移除                                |
+| ----------------------------------------------- | ------------------------------------ | --------------------------------------- |
+| HTTP+SSE 传输                                   | [Streamable HTTP][transports-compat] | 本 SEP 达到 Final 之后三个月            |
+| `includeContext: "thisServer"` / `"allServers"` | 省略该字段或使用 `"none"`            | 跟随采样（[SEP-2577][sep-2577]）        |
+
+`includeContext` 是 `sampling/createMessage` 的一个参数。[SEP-2577][sep-2577] 将采样特性整体弃用；两个受影响的 `includeContext` 值跟随该特性的弃用时间表，而非携带独立的移除时钟，且不晚于采样本身被移除。
+
+此"祖父条款"仅适用于规范在本 SEP 达到 Final 之日已描述为已弃用的特性。之后的每一次弃用都完整遵循[弃用一个特性](#deprecating-a-feature)，而祖父条款特性的移除无例外地遵循[移除一个特性](#removing-a-feature)。
+
+当本 SEP 达到 Final 时，以下内容直接落地到 `draft/`，无单独的实现关卡：[版本控制指南][versioning]更新以引用本政策；创建 `deprecated.mdx` 并种入上述两个特性；向 `changelog.mdx` 添加带有两个条目的 "Deprecated" 标题；每个特性获得[弃用一个特性](#deprecating-a-feature)中描述的 `@deprecated` schema 标注和正文通知。对于 `includeContext`，标注作用于整个属性，因为逐值的 `@deprecated` 标记无法在字符串字面量联合上表达；HTTP+SSE 传输没有 `schema.ts` 类型，仅在传输正文中标注。
+
+## 理由
+
+### 为何采用独立于规范修订的状态模型？
+
+[版本控制指南][versioning]已经为规范*修订*定义了草案、当前和最终。那些状态描述整个文档的编辑成熟度，而对当前修订内某条消息或字段是否正在被淘汰只字未提。[Kubernetes 弃用政策][k8s-deprecation]、[Node.js 弃用周期][nodejs-deprecation] 以及诸如 [RFC 8996][rfc-8996]（在 TLS 协议族内弃用 TLS 1.0 和 1.1）之类的 IETF 实践，正是出于此原因，在其发布版本控制之外维护特性级弃用规则。
+
+### 为何弃用要 SEP 而移除不要？
+
+需要社区评审的审议是淘汰某特性的决定和迁移路径的选择；这正是弃用 SEP 所承载的。一旦它达到 Final，项目已承诺移除并确定了最早日期，因此按计划执行该决定不增加新的判断，为它单设第二个 SEP 是为流程而流程。有意的维护者决定仍以发布准备期的移除决定及[移除一个特性](#removing-a-feature)中的确认形式存在，与 [SEP-1730][sep-1730] 中晋升是维护者决定而非计时器到期的等级晋升程序相呼应。SEP 保留给那些确实改变已承诺结果的情况：延长窗口、恢复特性，或为安全风险缩短下限。这使流程与 [SEP 指南][sep-guidelines]将协议表面变更视为值得 SEP 相一致，同时不要求用 SEP 批准一个已经作出的变更。
+
+### 为何是十二个月？
+
+[NYC 维护者会议][nyc-2026-03-31]提出了"支持一年加弃用一年"模型，并记录了鉴于代理领域推进之快、对承诺更长窗口的迟疑。同一讨论指出即便该模型也可能成为 SDK 维护者的负担；本 SEP 保留十二个月下限，因为移除是允许式而非自动式的（[移除一个特性](#removing-a-feature)），因此特性保持已弃用的时间取决于生态需要多久，而非 SDK 与日历赛跑。从修订发布而非 SEP 日期度量窗口，使其可观测：这与 SDK 作者和实现者已经为修订本身跟踪的时钟相同。由于弃用只在其修订发布时生效，同一修订中引入的替代在这十二个月窗口本身内得到验证；为此无需一个单独的先前修订。该窗口跨越同一会议上讨论的六个月发布周期中的至少两个：一个供 SDK 维护者交付迁移支持，一个供下游采用。核心维护者可以让特性保持已弃用更长时间；十二个月是最短值。
+
+### 与 SEP-1400（语义化版本控制）的关系
+
+[SEP-1400][sep-1400] 提议以语义化版本控制替代基于日期的修订标识符。两个提案处理不同的问题：SEP-1400 关于修订如何编号，而本 SEP 关于修订内特性如何被淘汰。本 SEP 从修订*发布*而非修订*标识符*度量移除窗口，因此不依赖标识符方案；无论修订采用日期还是语义化版本，它都不变地适用。
+
+### 共识
+
+方向在 [NYC 维护者会议（2026 年 3 月 31 日）][nyc-2026-03-31]上达成，并在 [2026 年 4 月 1 日核心维护者会议][cm-2026-04-01]上确认，后者记录了"正式版本状态和 SDK 弃用周期（方向已同意，机制待定）"。社区需求可见于[讨论 #2177][disc-2177]（询问 SSE 移除何时发生）和[讨论 #1980][disc-1980]（要求叫停一个已丧失其目的的向后兼容要求）。
+
+## 向后兼容性
+
+本 SEP 引入一个流程，不改变协议行为。[过渡](#transition)一节为两个已经非正式弃用的特性分配了已弃用状态和最早移除。两者都没有说明的移除日期，因此使时间线显式化（为生态已有一年多时间迁移离开的特性设三个月宽限期）并不缩短给予实现者的任何承诺。
+
+## 安全影响
+
+未识别出安全影响。这是一项治理变更，没有新的协议表面、传输、认证流或信任边界。既定的弃用路径有一个间接的安全收益：它为项目提供了一个可预测的机制，用于淘汰后来被发现不安全的特性，这正是[加速移除](#expedited-removal)条款的用途。
+
+## 参考实现
+
+本 SEP 定义一个流程，没有参考实现。将该政策应用于两个既有非正式弃用的规范编辑在[过渡](#transition)中描述，并在本 SEP 达到 Final 时直接落地到 `draft/`。
+
+---
+
+## 开放问题
+
+- **规范修订支持窗口。** NYC 会议还讨论了 Tier 1 SDK 必须支持某个给定规范*修订*（区别于其中的某个特性）多久。该政策属于对 [SEP-1730][sep-1730] 的修订，但它决定本政策中的弃用窗口在实践中是否可观测。如果 Tier 1 SDK 只支持最新修订，那么在两个版本之间更新 SDK 的消费者可以直接从早于弃用的版本跳到晚于移除的版本，从而永远看不到 [Tier 1 SDK 义务](#tier-1-sdk-obligations)中的已弃用标记。要求 Tier 1 SDK 支持在一个至少等于十二个月弃用下限的尾随窗口内作为当前修订发布的所有修订，可弥合这一缺口。SEP-1730 的修订应与本 SEP 一并推进。
+- **"采用度微乎其微"标准的遥测来源。** 本政策允许基于采用度弃用，但项目今天没有共享遥测。在其存在之前，此标准依赖 SDK 维护者的证明。
+- **特性成熟度层级。** 本 SEP 对每个活跃特性应用统一的十二个月下限。[Kubernetes 弃用政策][k8s-deprecation]使用 alpha/beta/GA 层级，对较不成熟的特性采用较短窗口，那本可以让[动机](#motivation)中援引的 JSON-RPC 批处理回退无需长达一年的弃用即可完成。MCP 是否应采用一个带较短或零窗口的实验性层级，留待后续 SEP。
+- **线路层弃用信号。** [Tier 1 SDK 义务](#tier-1-sdk-obligations)将弃用警告放入官方 SDK；不使用官方 SDK 且不阅读变更日志的实现者，在移除前仍收不到警告。一个线路层信号（例如响应上的 `_meta` 弃用字段，类似于 Kubernetes 的 `Warning` 头部）将弥合这一缺口，但它是超出本 Process SEP 范围的 Standards Track 变更。
+
+[transports-compat]: https://modelcontextprotocol.io/specification/draft/basic/transports#backwards-compatibility
+[sampling-includecontext]: https://modelcontextprotocol.io/specification/draft/client/sampling
+[versioning]: https://modelcontextprotocol.io/docs/learn/versioning
+[design-principles]: https://modelcontextprotocol.io/community/design-principles
+[sep-guidelines]: https://modelcontextprotocol.io/community/sep-guidelines
+[governance-decisions]: https://modelcontextprotocol.io/community/governance#decision-process
+[sep-1730]: https://modelcontextprotocol.io/seps/1730-sdks-tiering-system
+[sep-1730-relegation]: https://modelcontextprotocol.io/seps/1730-sdks-tiering-system#tier-relegation-process
+[sep-1400]: https://github.com/modelcontextprotocol/modelcontextprotocol/issues/1400
+[issue-1540]: https://github.com/modelcontextprotocol/modelcontextprotocol/issues/1540
+[sep-2577]: https://modelcontextprotocol.io/seps/2577-deprecate-roots-sampling-and-logging
+[nyc-2026-03-31]: https://github.com/modelcontextprotocol/modelcontextprotocol/discussions/2547
+[cm-2026-04-01]: https://github.com/modelcontextprotocol/modelcontextprotocol/discussions/2536
+[disc-2177]: https://github.com/modelcontextprotocol/modelcontextprotocol/discussions/2177
+[disc-1980]: https://github.com/modelcontextprotocol/modelcontextprotocol/discussions/1980
+[k8s-deprecation]: https://kubernetes.io/docs/reference/using-api/deprecation-policy/
+[nodejs-deprecation]: https://nodejs.org/api/deprecations.html
+[rfc-8996]: https://www.rfc-editor.org/rfc/rfc8996

@@ -1,0 +1,266 @@
+---
+title: "SEP-2133：扩展"
+sidebarTitle: "SEP-2133"
+---
+
+- **状态（Status）**: Final
+- **类型（Type）**: Standards Track
+- **创建（Created）**: 2025-01-21
+- **作者（Author(s)）**: Peter Alexander (@pja-ant)
+- **担保人（Sponsor）**: None (seeking sponsor)
+- **PR**: https://github.com/modelcontextprotocol/modelcontextprotocol/pull/2133
+
+## 摘要
+
+本 SEP 为通过可选、可组合的扩展来扩展模型上下文协议确立一个轻量级框架。该提案为扩展定义了一套治理模型和呈现结构，使 MCP 生态能够在保持核心协议稳定的同时演进。扩展使得在不强制所有实现采用的情况下实验新能力成为可能，为社区提出、评审和采纳增强功能提供了清晰的扩展点。
+
+本 SEP 定义了官方扩展（由 MCP 维护者维护）和实验性扩展（工作组和兴趣组在正式接受之前，用于对扩展想法进行原型验证和协作的孵化路径）。外部维护的扩展可能会在更晚的阶段出现。
+
+## 动机
+
+MCP 目前缺乏任何关于扩展应如何提出或采纳的指引。没有流程，就不清楚这些扩展如何被治理、围绕实现有什么预期、它们应如何在规范中被引用，等等。
+
+## 规范
+
+### 定义
+
+MCP 扩展是对规范的可选补充，用于定义超出核心协议范围的能力。扩展所支持的功能可以是模块化的（例如认证等相对独立的特性）、专门化的（例如特定行业的逻辑），或实验性的（例如正在孵化、有可能被纳入核心的特性）。
+
+扩展通过一个唯一的**扩展标识符（extension identifier）**来标识，格式为：`{vendor-prefix}/{extension-name}`，例如 `io.modelcontextprotocol/oauth-client-credentials` 或 `com.example/websocket-transport`。这些名称遵循与 [\_meta 键](https://modelcontextprotocol.io/specification/draft/basic/index#meta)相同的规则，但前缀是强制的。
+
+为防止标识符冲突，供应商前缀**应当（SHOULD）**是扩展作者拥有或控制的反转域名（类似于 Java 包命名约定）。例如，拥有 `example.com` 的公司会使用 `com.example/` 作为其前缀。
+
+破坏性变更**必须（MUST）**使用新的标识符，例如 `io.modelcontextprotocol/oauth-client-credentials-v2`。破坏性变更是指任何会导致既有合规实现失败或行为异常的修改，包括：移除或重命名字段、更改字段类型、改变现有行为的语义，或添加新的必填字段。
+
+扩展可以有在客户端/服务器消息中发送、用于细粒度配置的设置。
+
+本 SEP 定义了*官方扩展*和*实验性扩展*。实验性扩展作为孵化路径在 MCP 组织内维护，但尚未被正式接受。*非官方扩展*不被 MCP 治理承认，可以由 MCP 组织之外的开发者引入和治理。
+
+### 官方扩展
+
+官方扩展位于 MCP GitHub 组织 https://github.com/modelcontextprotocol/ 内，由 MCP 维护者官方开发和推荐。官方扩展在其扩展标识符中使用 `io.modelcontextprotocol` 供应商前缀。
+
+**扩展仓库**是官方 modelcontextprotocol GitHub 组织内带有 `ext-` 前缀的仓库，例如 https://github.com/modelcontextprotocol/ext-auth。
+
+- 扩展仓库由核心维护者酌情创建，目的是将某一特定领域（例如 auth、transport、金融服务）的扩展分组。
+- 一个仓库有一组维护者（由 MAINTAINERS.md 标识），由核心维护者任命，负责该仓库及其中的扩展（例如 [ext-auth MAINTAINERS.md](https://github.com/modelcontextprotocol/ext-auth/blob/main/MAINTAINERS.md)、[ext-apps MAINTAINERS.md](https://github.com/modelcontextprotocol/ext-apps/blob/main/MAINTAINERS.md)）。
+- 扩展**应当（SHOULD）**有一个关联的工作组或兴趣组来指导其开发并收集社区意见。
+
+**扩展**是扩展仓库内的一份版本化规范文档，例如 https://github.com/modelcontextprotocol/ext-auth/blob/main/specification/draft/oauth-client-credentials.mdx
+
+- 扩展规范**必须（MUST）**使用与核心规范相同的语言（即 [[BCP 14](https://www.rfc-editor.org/info/bcp14)] [[RFC2119](https://datatracker.ietf.org/doc/html/rfc2119)] [[RFC8174](https://datatracker.ietf.org/doc/html/rfc8174)]），并**应当（SHOULD）**措辞得如同它们是核心规范的一部分。
+
+虽然日常治理委托给扩展仓库维护者，但核心维护者保留对官方扩展的最终权威，包括修改、弃用或移除任何扩展的能力。
+
+### 实验性扩展
+
+实验性扩展为工作组（WG）和兴趣组（IG）提供了一条孵化路径，以便在正式提交 SEP 之前促进发现、对想法进行原型验证，并就扩展概念展开协作。实验性扩展允许在中立治理下进行跨公司协作，并具有清晰的反垄断保护和 IP 明确性。
+
+**实验性扩展仓库**是官方 modelcontextprotocol GitHub 组织内带有 `experimental-ext-` 前缀的仓库，例如 `https://github.com/modelcontextprotocol/experimental-ext-interceptors`。
+
+- 任何维护者**可以（MAY）**在关联 SEP 仍处于草案状态时（或在 SEP 提交之前）创建一个实验性扩展仓库。
+- 实验性扩展**必须（MUST）**与某个工作组或兴趣组关联，其维护者负责该仓库的日常治理。
+- 实验性扩展仓库**必须（MUST）**清晰地标明其实验性/非官方状态（例如在 README 中），以避免与官方扩展混淆。
+- 来自实验性扩展的任何已发布软件包**必须（MUST）**使用清晰表明其实验性状态的命名。
+- 核心维护者保留对实验性扩展仓库的监管权，包括归档或移除它们的能力。
+
+要将实验性扩展晋升为官方状态，适用标准的 SEP 流程（Extensions Track）。实验性仓库以及孵化期间开发的任何参考实现**可以（MAY）**在 SEP 中被引用，以证明该扩展的实用性。
+
+### 生命周期
+
+#### 创建
+
+扩展**可以（MAY）**选择性地作为实验性扩展开始（见*实验性扩展*一节），以便在正式提交之前促进原型验证和协作。此孵化期受到鼓励，但不是必需的。
+
+要成为官方扩展，扩展通过[主 MCP 仓库](https://github.com/modelcontextprotocol/modelcontextprotocol/)中的一个 SEP 创建，使用[标准 SEP 指南](https://modelcontextprotocol.io/community/sep-guidelines)，但带有一个新类型：**Extensions Track**。此类型遵循与 Standards Track SEP 相同的评审和接受流程，但清晰地表明该提案针对的是扩展而非核心协议增补。SEP 必须指明将负责该扩展的工作组和扩展维护者。维护者如何任命见 [SEP-2148](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/2148)。
+
+扩展 SEP：
+
+- **应当（SHOULD）**在提交前于相关工作组中讨论和迭代。
+- 在评审前**必须（MUST）**在某个官方 SDK 中有至少一个参考实现，以确保该扩展实用且可实现。
+- **可以（MAY）**引用既有的实验性扩展仓库和孵化期间开发的实现。
+- 将由核心维护者评审，他们对将其纳入为官方扩展拥有最终权威。
+
+一经批准，作者**应当（SHOULD）**产出一个 PR，将该扩展引入扩展仓库并在主规范中引用（见*规范推荐*一节）。已批准的扩展**可以（MAY）**在额外的客户端/服务器/SDK 中实现（见 *SDK 实现*）。
+
+#### 迭代
+
+一经接受，扩展可以在无需核心维护者进一步评审的情况下迭代。扩展仓库维护者负责对扩展变更的评审和接受，并**应当（SHOULD）**通过相关工作组协调变更。由于扩展独立于核心协议，扩展可以随时更新和部署，但变更**必须（MUST）**确保在其设计中考虑到向后兼容性。
+
+#### 晋升到核心协议（可选）
+
+最终，一些扩展**可以（MAY）**转变为核心协议特性。这**应当（SHOULD）**作为带有单独核心维护者评审的 Standards Track SEP 处理。请注意，并非所有扩展都适合纳入核心协议（例如那些特定于某行业的），它们可能无限期保持为扩展。
+
+### 规范推荐
+
+扩展将从 MCP 网站上一个新页面 [modelcontextprotocol.io/extensions](http://modelcontextprotocol.io/extensions)（待创建）被引用，并附带指向其规范的链接。
+
+在适当情况下，指向相关扩展的链接也**可以（MAY）**被添加到核心规范中（例如 https://modelcontextprotocol.io/specification/draft/basic/authorization 可以链接到 ext-auth 扩展），但它们**必须（MUST）**被清晰地公告为可选扩展，且**应当（SHOULD）**仅为链接（而非规范文本的副本）。
+
+### SDK 实现
+
+SDK **可以（MAY）**实现扩展。在实现处，扩展**必须（MUST）**默认禁用并要求显式选择加入。SDK 文档**应当（SHOULD）**列出所支持的扩展。
+
+SDK 维护者对其 SDK 中的扩展支持拥有完全自主权：
+
+- 维护者独自负责其选择支持的任何扩展的实现和维护。
+- 维护者没有义务实现任何扩展或接受贡献的实现。扩展支持对于 100% 协议合规或即将到来的 SDK 合规等级而言不是必需的。
+- 本 SEP 不规定 SDK 应如何组织或打包扩展。维护者可以提供扩展点、插件系统或他们认为合适的任何其他机制。
+
+### 演进
+
+所有扩展**独立于**核心协议演进，即扩展的新版本**可以（MAY）**在未经核心维护者评审的情况下发布。对扩展的次要更新、缺陷修复和非破坏性增强不需要新的 SEP；这些变更由扩展仓库维护者管理。
+
+扩展**应当（SHOULD）**进行版本控制，但确切的版本控制方式在此不作规定。
+
+### 协商
+
+客户端和服务器分别在 [ClientCapabilities](https://modelcontextprotocol.io/specification/2025-06-18/schema#clientcapabilities) 和 [ServerCapabilities](https://modelcontextprotocol.io/specification/2025-06-18/schema#servercapabilities) 字段中，以及在 [Server Card](https://github.com/modelcontextprotocol/modelcontextprotocol/issues/1649)（当前进行中）中公告其对扩展的支持。
+
+将向每个引入一个新的 "extensions" 字段，它是从*扩展标识符*到逐扩展设置对象的映射。每个扩展指定其设置对象的 schema；空对象表示没有设置。
+
+#### 客户端能力
+
+客户端在 `initialize` 请求中公告扩展支持：
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "initialize",
+  "params": {
+    "protocolVersion": "2025-06-18",
+    "capabilities": {
+      "roots": {
+        "listChanged": true
+      },
+      "extensions": {
+        "io.modelcontextprotocol/ui": {
+          "mimeTypes": ["text/html;profile=mcp-app"]
+        }
+      }
+    },
+    "clientInfo": {
+      "name": "ExampleClient",
+      "version": "1.0.0"
+    }
+  }
+}
+```
+
+#### 服务器能力
+
+服务器在 `initialize` 响应中公告扩展支持：
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": {
+    "protocolVersion": "2025-06-18",
+    "capabilities": {
+      "tools": {},
+      "extensions": {
+        "io.modelcontextprotocol/ui": {}
+      }
+    },
+    "serverInfo": {
+      "name": "ExampleServer",
+      "version": "1.0.0"
+    }
+  }
+}
+```
+
+#### 服务器端能力检查
+
+服务器**应当（SHOULD）**在提供扩展特定特性之前检查客户端能力：
+
+```typescript
+const hasUISupport = clientCapabilities?.extensions?.[
+  "io.modelcontextprotocol/ui"
+]?.mimeTypes?.includes("text/html;profile=mcp-app");
+
+if (hasUISupport) {
+  // Register tools with UI features
+} else {
+  // Register text-only fallback
+}
+```
+
+#### 优雅降级
+
+如果一方支持某个扩展而另一方不支持，则支持的一方**必须（MUST）**要么回退到核心协议行为，要么在该扩展为强制性时以适当的错误拒绝该请求。扩展**应当（SHOULD）**记录其预期的回退行为。例如，提供 UI 增强工具的服务器，对于不支持 UI 扩展的客户端仍应返回有意义的文本内容，而要求特定认证扩展的服务器**可以（MAY）**拒绝来自不支持它的客户端的连接。
+
+### 法律要求
+
+#### 商标政策
+
+- 在扩展标识符中使用 MCP 商标不授予商标权利。第三方不得以暗示背书或关联的方式使用 'MCP'、'Model Context Protocol' 或令人混淆的相似标识。
+- MCP 不对扩展中所用术语的商标有效性作出判断。
+
+#### 反垄断
+
+- 扩展开发者承认，他们可能与其他参与者竞争、没有义务实现任何扩展、可自由开发相互竞争的扩展和协议，并可将其技术许可给第三方（包括用于竞争性解决方案）。
+- 官方扩展的地位不创设排他关系。
+- 扩展仓库维护者以个人身份行事，运用最佳技术判断。
+
+#### 许可
+
+官方扩展**必须（MUST）**在 Apache 2.0 许可证下提供。
+
+#### 贡献者许可授予
+
+通过向官方 MCP 扩展仓库提交贡献，你声明：
+
+1. 你拥有授予本协议中权利的法律权限
+2. 你的贡献是你的原创作品，或你拥有足够的权利提交它
+3. 你向 Linux Foundation 和规范的接收者授予永久、全球、非排他、免费、免版税、不可撤销的许可，以：
+   - 复制、准备衍生作品、公开展示、公开表演、再许可和分发该贡献
+   - 制造、委托制造、使用、许诺销售、销售、进口以及以其他方式转让实现
+
+#### 无其他权利
+
+除本节明确规定外，本协议下不授予任何其他专利、商标、版权或其他知识产权，包括通过默示、放弃或禁止反言。
+
+### 未作规定的部分
+
+本 SEP 并未规定扩展系统的所有方面。以下是本 SEP 未处理内容的一个不完整列表：
+
+- **Schema**：我们未规定扩展公告其如何修改 schema 的机制。
+- **依赖**：我们未规定扩展是否/如何依赖特定的核心协议版本，或与其他扩展（或扩展版本）的相互依赖。
+- **配置文件（Profiles）**：我们未规定分组扩展的方式。
+
+省略这些并非因为它们不重要，而是因为它们可能日后添加，且本 SEP 的目标仅仅是让一些初始的扩展结构起步，并将围绕扩展更复杂/更有争议方面的详细技术讨论推迟。
+
+## 理由
+
+这一扩展设计运用以下原则：
+
+- **从简开始**：意图是拥有一个相对简单的机制，让人们能以结构化的方式开始构建和提出扩展。
+- **清晰治理**：目前，焦点在于清晰的治理，而非实现细节。
+- **日后完善**：随着时间推移，一旦我们对扩展有更多经验，就可以适当调整方式。
+
+一些具体的设计选择：
+
+- **为何用扩展仓库而非单个/独立扩展？** 仓库提供了一个自然的分组和治理结构，允许仓库维护者对扩展强制执行结构和一致性。它避免了某领域不同扩展以不兼容方式工作的失败情形。同时提供了一种委派大部分治理工作的方式。
+- **为何不要求核心维护者评审官方扩展？** 委派评审允许扩展自主演进，而不被核心维护者评审这个已经（往往长达数月）的漫长流程所卡住。
+- **为何单独版本控制？** 扩展是对规范的补充且可选，因此无需将版本绑定在一起。单独的版本允许更快速的迭代。
+
+## 向后兼容性
+
+扩展框架本身对核心协议纯属增量，因此与核心规范不存在向后兼容问题。
+
+本 SEP 所述的设计与既有官方扩展（[ext-apps](https://github.com/modelcontextprotocol/ext-apps) 和 [ext-auth](https://github.com/modelcontextprotocol/ext-auth)）一致，它们已经使用此处所规定的能力协商和扩展标识符模式。
+
+然而，单个扩展可能有其自身的向后兼容关切。扩展**必须（MUST）**在其设计中考虑并顾及向后兼容性，既跨核心协议版本，也跨扩展版本。扩展内部的破坏性变更**必须（MUST）**使用新的扩展标识符（见*定义*一节）。扩展还**应当（SHOULD）**记录其对向后兼容性和稳定性的方式（例如扩展**可以（MAY）**将自身公告为"实验性"，表明它可能在无通知的情况下破坏）。
+
+## 安全影响
+
+扩展**必须（MUST）**在其所扩展的领域实现所有相关的安全最佳实践。
+
+客户端和服务器**应当（SHOULD）**将作为扩展一部分引入的任何新字段或数据视为不可信，并**应当（SHOULD）**全面校验它们。
+
+## 参考实现
+
+待提供。

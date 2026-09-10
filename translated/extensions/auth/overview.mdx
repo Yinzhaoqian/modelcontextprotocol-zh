@@ -1,0 +1,64 @@
+---
+title: 授权扩展
+sidebarTitle: 概览
+description: 面向模型上下文协议的补充性授权机制
+---
+
+[ext-auth 仓库](https://github.com/modelcontextprotocol/ext-auth)包含官方 MCP 扩展，用于添加超出核心 MCP 规范的授权能力。这些扩展针对的是标准 OAuth 2.0 授权码流并不合适的特定现实场景。
+
+<Card
+  title="modelcontextprotocol/ext-auth"
+  icon="github"
+  href="https://github.com/modelcontextprotocol/ext-auth"
+>
+  MCP 授权扩展的源代码、规范和参考实现。
+</Card>
+
+## 为什么需要授权扩展？
+
+核心 MCP 规范包含一个基于 OAuth 2.0 构建的健壮[授权框架](/specification/latest/basic/authorization)。该框架很好地处理了常见场景：用户交互式地授予某个 MCP 客户端权限，代表自己访问某个服务器。
+
+但并非每一种 MCP 部署都符合这种模式：
+
+- **机器对机器集成**没有人类参与其中。后台服务、CI 流水线和自动化工作流需要在没有交互式用户同意流程的情况下进行认证。
+- **企业环境**通常拥有集中式身份提供方（IdP），在所有应用间强制执行策略。要求员工逐一授权每个 MCP 服务器会产生摩擦，并绕过既有的安全控制。
+
+ext-auth 扩展弥补了这些缺口。
+
+## 可用的扩展
+
+<CardGroup cols={2}>
+  <Card
+    title="OAuth 客户端凭据"
+    icon="robot"
+    href="/extensions/auth/oauth-client-credentials"
+  >
+    使用 OAuth 2.0 客户端凭据流的机器对机器认证。无需用户交互。
+  </Card>
+  <Card
+    title="企业托管授权"
+    icon="building"
+    href="/extensions/auth/enterprise-managed-authorization"
+  >
+    通过企业身份提供方进行的集中式访问控制。员工通过其组织的 IdP 访问 MCP 服务器。
+  </Card>
+</CardGroup>
+
+## 选择合适的扩展
+
+| 场景                                             | 推荐的扩展                                                                             |
+| ---------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| 后台服务或守护进程访问 MCP 服务器                | [OAuth 客户端凭据](/extensions/auth/oauth-client-credentials)                          |
+| CI/CD 流水线调用 MCP 工具                        | [OAuth 客户端凭据](/extensions/auth/oauth-client-credentials)                          |
+| 服务器对服务器的 API 集成                        | [OAuth 客户端凭据](/extensions/auth/oauth-client-credentials)                          |
+| 企业员工在工作中访问 MCP 服务器                  | [企业托管授权](/extensions/auth/enterprise-managed-authorization)                      |
+| 组织范围的 MCP 访问策略强制执行                  | [企业托管授权](/extensions/auth/enterprise-managed-authorization)                      |
+| 标准的交互式用户授权                             | 核心 MCP 规范（无需扩展）                                                              |
+
+## 客户端支持
+
+授权扩展的支持情况因客户端而异。完整明细参见[客户端矩阵](/extensions/client-matrix)。两个扩展都需要 MCP 客户端的显式支持——它们绝不会默认激活。
+
+## 规范
+
+两个扩展都在 [ext-auth 仓库](https://github.com/modelcontextprotocol/ext-auth/tree/main/specification/draft)中规定。它们使用标准的 MCP [扩展协商](/extensions/overview#negotiation)机制：客户端在每个请求的 `_meta` 中发送的 `io.modelcontextprotocol/clientCapabilities` 的 `extensions` 字段里声明支持，服务器则在 [`server/discover`](/specification/draft/server/discover) 返回的能力中公告自身的支持。

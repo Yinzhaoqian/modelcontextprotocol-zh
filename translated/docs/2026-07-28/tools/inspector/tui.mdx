@@ -1,0 +1,78 @@
+---
+title: TUI 客户端
+description: "终端版 MCP Inspector：导航、标签页和键盘参考"
+---
+
+TUI 是 Inspector 的终端界面，具备与 Web 客户端相同的、对工具、资源和提示的交互式探索能力。可在通过 SSH 连接的远程主机上、受限环境中，或当你更愿意停留在终端里时使用它。
+
+```bash
+npx @modelcontextprotocol/inspector --tui node build/index.js   # 使用一个临时的 stdio 服务器
+```
+
+<Frame caption="TUI 已连接到一个服务器，位于 Tools 标签页，显示某个工具的输入 schema。">
+  <img src="/images/inspector/tui-tools.png" />
+</Frame>
+
+## 选择服务器
+
+与 CLI 不同，TUI 没有用于挑选单个条目的 `--server <name>` flag：它从目录（catalog）或配置文件读取其服务器，加载其中的每一个服务器，并让你从屏幕上的列表中挑选：
+
+```bash
+mcp-inspector --tui --catalog mcp.json   # 可写目录，若缺失则初始化为空（与 Web 客户端不同）
+mcp-inspector --tui --config mcp.json    # 只读会话，若不存在则报错
+```
+
+在既没有 `--catalog` 也没有 `--config`、且没有[临时目标](/docs/2026-07-28/tools/inspector/configuration#ad-hoc-targets)时，它使用默认的可写目录 `~/.mcp-inspector/mcp.json`。参见[配置与 flag](/docs/2026-07-28/tools/inspector/configuration)。
+
+## 标签页
+
+| 标签页        | 键  | 显示内容                                                                               |
+| ------------- | --- | ------------------------------------------------------------------------------------------- |
+| **Info**      | `i` | 服务器信息、能力和协商后的协议详情。                                 |
+| **Auth**      | `a` | 所选服务器的 OAuth 状态，外加一个 **Clear OAuth state** 操作。                   |
+| **Resources** | `r` | 浏览和读取资源。                                                                  |
+| **Prompts**   | `m` | 列出提示并带参数渲染它们。                                                |
+| **Tools**     | `t` | 查看工具并以类表单的输入执行它们。                                          |
+| **Protocol**  | `p` | JSON-RPC 请求/响应/通知历史。                                             |
+| **Network**   | `n` | 用于 SSE 和 [Streamable HTTP](/specification/latest/basic/transports) 服务器的 HTTP 流量。 |
+| **Console**   | `o` | 来自已连接 stdio 服务器进程的 `stderr`。                                             |
+
+这些快捷键为避免冲突而并非总是取首字母：**P**rotocol 取 `p`，因此 Pro**m**pts 取 `m`，而 **C**onsole 取 `o`，因为 `c` 是全局的 Connect 操作。
+
+## 导航
+
+| 键                              | 操作                                              |
+| -------------------------------- | --------------------------------------------------- |
+| `Left` / `Right` 方向键或 `Tab` | 切换标签页                                         |
+| `Up` / `Down` 方向键             | 在当前列表中移动                       |
+| `Enter`                          | 选择一项、执行一个工具，或获取一个资源 |
+| `c`                              | 连接到所选服务器                      |
+| `d`                              | 断开连接                                          |
+| `Esc` 或 `Ctrl+C`                | 退出                                                |
+
+## 为 HTTP 服务器授权
+
+1. 选择一个 HTTP 或 SSE 服务器并按 **`c`** 进行连接。
+2. 如果服务器需要授权，TUI 会自动启动 OAuth 并在浏览器中打开授权 URL。
+3. 当浏览器重定向抵达 TUI 的 loopback 监听器时，连接会自行完成，无需第二次按 **`c`**。
+4. 使用 **Auth** 标签页检查产生的 OAuth 状态，或将其清除。
+
+TUI 的回调监听器默认为 `http://127.0.0.1:6276/oauth/callback`。该端口是有意固定的：预先注册的（静态）OAuth 客户端、[客户端 ID 元数据文档（Client ID Metadata Document，CIMD）](/specification/latest/basic/authorization/client-registration#client-id-metadata-documents)，或企业托管的 IdP，都需要一个预先已知的重定向 URI。注册该 URI 一次，它就能跨会话工作。在你的浏览器位于另一台机器的远程主机上时，转发回调端口以使重定向到达此监听器；参见[回调 URL](/docs/2026-07-28/tools/inspector/authorization#callback-urls)。
+
+代价是同一时间只能有一个 TUI OAuth 流程占用该端口；第二个并发流程会以 `EADDRINUSE` 失败。要覆盖它，传入 `--callback-url` 或设置 `MCP_OAUTH_CALLBACK_URL`：为每个实例使用不同的固定端口，或者在你的授权服务器动态注册重定向 URI 时使用 `http://127.0.0.1:0/oauth/callback` 以获得由操作系统分配的临时端口。
+
+<Warning>
+  重定向 URI 必须**精确**匹配你所注册的内容。在授权服务器看来，`localhost` 和 `127.0.0.1` 是不同的 URI。
+</Warning>
+
+目录中的按服务器 OAuth 字段（静态 client id/secret、scope、企业托管标志）会被自动应用。安装范围的设置（CIMD、企业 IdP）来自 `~/.mcp-inspector/storage/client.json`，即 Web 客户端 **Client Settings** 对话框所写入的同一文件。用 `--client-config` 或 `MCP_CLIENT_CONFIG_PATH` 指向另一个文件。
+
+完整情况参见[授权](/docs/2026-07-28/tools/inspector/authorization)。
+
+<Frame caption="Auth 标签页。它显示与 Web 客户端的 Connection Info 相同的 OAuth 字段，或报告该服务器无需授权。">
+  <img src="/images/inspector/tui-auth.png" />
+</Frame>
+
+## 要求
+
+TUI 需要一个支持 raw-mode 的真实 TTY。它在无头（headless）CI 作业中无法有效运行；在那种场景下请使用 [CLI](/docs/2026-07-28/tools/inspector/cli)。

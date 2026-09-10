@@ -1,0 +1,125 @@
+---
+title: "SEP-973：为实现、资源、工具和提示暴露额外元数据"
+sidebarTitle: "SEP-973"
+---
+
+- **状态（Status）**: Final
+- **类型（Type）**: Standards Track
+- **创建（Created）**: 2025-07-15
+- **作者（Author(s)）**: @jesselumarie
+- **Issue**: #973
+
+## 摘要
+
+本 SEP 提议添加两个可选字段——`icons` 和 `websiteUrl`。`icons` 和 `websiteUrl` 将被添加到 `Implementation` schema 中，以便客户端能够在视觉上识别第三方实现并直接链接到它们的文档。`icons` 参数还将被添加到 `Tool`、`Resource` 和 `Prompt` schema 中。虽然服务器和客户端都可以对所有实现使用它，但我们预期它最初将用于服务器提供的实现。
+
+## 动机
+
+### 当前状态
+
+当前的实现只暴露带命名空间的元数据，迫使客户端显示没有视觉提示的通用标签。
+
+<img width="606" height="242" alt="Image" src="https://github.com/user-attachments/assets/0708a467-ed16-4654-8017-47fc30df9b23" />
+
+### 提议状态
+
+所提议的实现将允许我们添加视觉提示和文档链接，从而更容易在视觉上识别是哪个服务器／客户端提供了某个实现，例如斜杠命令界面中的一个工具：
+
+<img width="1104" height="780" alt="Image" src="https://github.com/user-attachments/assets/2989b847-8a35-4c49-bb73-d27828df4df6" />
+
+- **视觉提示（Visual Affordance）：** 图标让用户一眼就能清楚地看到正在使用哪个工具或资源来源。
+- **可发现性（Discoverability）：** 指向文档的链接（`websiteUrl`）允许客户端只需一次点击就将用户引导至更多信息。
+
+## 理由
+
+此设计建立在 Web manifest（MDN）的先前工作之上，并综合了社区反馈：
+
+- **PR 的整合：** 将 PR #417 和 PR #862 的变更合并为一个统一、连贯的增强。
+- **灵活的图标尺寸：** 支持多种图标尺寸（例如 `48x48`、`96x96`，或对矢量格式使用 `any`），以适应不同客户端 UI 的需求。
+- **可选字段：** 通过将两个字段都设为可选，既有实现保持完全兼容。
+
+## 规范
+
+按如下方式扩展 `Implementation` 对象：
+
+```typescript
+/**
+ * A url pointing to an icon URL or a base64-encoded data URI
+ *
+ * Clients that support rendering icons MUST support at least the following MIME types:
+ * - image/png - PNG images (safe, universal compatibility)
+ * - image/jpeg (and image/jpg) - JPEG images (safe, universal compatibility)
+ *
+ * Clients that support rendering icons SHOULD also support:
+ * - image/svg+xml - SVG images (scalable but requires security precautions)
+ * - image/webp - WebP images (modern, efficient format)
+ */
+export interface Icon {
+  /**
+   * A standard URI pointing to an icon resource.
+   *
+   * Consumers MUST takes steps to ensure URLs serving icons are from the
+   * same domain as the client/server or a trusted domain.
+   *
+   * Consumers MUST take appropriate precautions when consuming SVGs as they can contain
+   * executable JavaScript
+   *
+   * @format uri
+   */
+  src: string;
+  /** Optional override if the server’s MIME type is missing or generic. */
+  mimeType?: string;
+  /** e.g. "48x48", "any" (for SVG), or "48x48 96x96" */
+  sizes?: string;
+}
+
+/**
+ * Describes the MCP implementation
+ */
+export interface Implementation extends BaseMetadata {
+  version: string;
+  /**
+   * An optional list of icons for this implementation.
+   * This can be used by clients to display the implementation in a user interface.
+   * Each icon should have a `kind` property that specifies whether it is a data representation or a URL source, a `src` property that points to the icon file or data representation, and may also include a `mimeType` and `sizes` property.
+   * The `mimeType` property should be a valid MIME type for the icon file, such as "image/png" or "image/svg+xml".
+   * The `sizes` property should be a string that specifies one or more sizes at which the icon file can be used, such as "48x48" or "any" for scalable formats like SVG.
+   * The `sizes` property is optional, and if not provided, the client should assume that the icon can be used at any size.
+   */
+  icons?: Icon[];
+  /**
+   * An optional URL of the website for this implementation.
+   *
+   * Consumers MUST takes steps to ensure URLs serving icons are from the
+   * same domain as the client/server or a trusted domain.
+   *
+   * Consumers MUST take appropriate precautions when consuming SVGs as they can contain
+   * executable JavaScript
+   *
+   * @format: uri
+   */
+  websiteUrl?: string;
+}
+```
+
+用以下类型扩展 `Tool`、`Resource` 和 `Prompt` 接口：
+
+```typescript
+  /**
+   * An optional list of icons for a resource.
+   * This can be used by clients to display the resource's icon in a user interface.
+   * Each icon should have a `kind` property that specifies whether it is a data representation or a URL source, a `src` property that points to the icon file or data representation, and may also include a `mimeType` and `sizes` property.
+   * The `mimeType` property should be a valid MIME type for the icon file, such as "image/png" or "image/svg+xml".
+   * The `sizes` property should be a string that specifies one or more sizes at which the icon file can be used, such as "48x48" or "any" for scalable formats like SVG.
+   * The `sizes` property is optional, and if not provided, the client should assume that the icon can be used at any size.
+   */
+  icons?: Icon[];
+```
+
+## 向后兼容性
+
+icons 和 websiteUrl 都是可选字段；忽略它们的客户端会回退到既有行为。
+
+## 安全影响
+
+这不应引入任何新的安全影响。

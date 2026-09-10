@@ -1,0 +1,90 @@
+---
+title: stdio
+---
+
+<div id="enable-section-numbers" />
+
+在 **stdio** 传输中，客户端将 MCP 服务器作为子进程启动。两端通过子进程的标准流通信：
+
+- 服务器从 `stdin` 读取 JSON-RPC 消息，并将 JSON-RPC 消息写入 `stdout`。
+- 每条消息是单个 JSON-RPC 请求、通知或响应。
+- 消息由换行符分隔，并**不得（MUST NOT）**包含内嵌的换行符。
+- 服务器**可以（MAY）**将 UTF-8 字符串写入 `stderr` 用于任何日志目的，包括信息性、调试和错误消息。
+- 客户端**可以（MAY）**捕获、转发或忽略服务器的 `stderr` 输出，并**不应（SHOULD NOT）**假定 `stderr` 输出表示错误情况。
+- 服务器**不得（MUST NOT）**向其 `stdout` 写入任何不是有效 MCP 消息的内容。
+- 客户端**不得（MUST NOT）**向服务器的 `stdin` 写入任何不是有效 MCP 消息的内容。
+
+标准流是规范信道，但除进程生命周期外，本绑定中的任何东西都不依赖它们。线路格式（在可靠的双向字节流上每行一条以换行符分隔的 JSON-RPC 消息）在 Unix 域套接字、TCP 连接或任何类似信道上都不加改动地工作。在此类流上构建的[自定义传输](/specification/2026-07-28/basic/transports#custom-transports)**应当（SHOULD）**重用此分帧和本页上的消息规则；只有特定于子进程的方面（启动、`stderr`、通过关闭流关闭、进程重启）需要特定于信道的等价物。
+
+## 发送消息
+
+客户端通过将 JSON-RPC _请求_和_通知_写入服务器的 `stdin`（每行一条消息）来发送消息。客户端**不得（MUST NOT）**写入 JSON-RPC _响应_。
+
+## 接收消息
+
+客户端从 `stdout` 读取服务器消息，每行一条消息。所有消息共享这一单一信道；没有每请求的流。
+
+服务器写入三种消息：
+
+1. 对客户端请求的_响应_，由 JSON-RPC `id` 关联。
+2. 与执行中请求相关的_通知_，例如 `notifications/progress` 和 `notifications/message`。
+3. 为一个活动的 [`subscriptions/listen`][subscriptions-listen] 请求投递的_通知_。客户端**必须（MUST）**使用 `_meta` 中的 `io.modelcontextprotocol/subscriptionId` 字段关联这些通知；参见 [`SubscriptionsListenRequest`][subscriptions-listen-request]。
+
+服务器**不得（MUST NOT）**向 `stdout` 写入 JSON-RPC _请求_。服务器到客户端的交互在 [`InputRequiredResult`][mrtr-input-required] 回复中承载；参见[多轮往返请求][mrtr]。
+
+[mrtr]: /specification/2026-07-28/basic/patterns/mrtr
+[mrtr-input-required]: /specification/2026-07-28/basic/patterns/mrtr#inputrequiredresult
+[subscriptions-listen]: /specification/2026-07-28/basic/patterns/subscriptions
+[subscriptions-listen-request]: /specification/2026-07-28/schema#subscriptionslistenrequest
+
+## 请求元数据
+
+stdio 传输的所有请求元数据都内联携带在 JSON-RPC 消息体中。协议版本、每请求能力和可选的客户端身份位于 [`_meta.io.modelcontextprotocol/*`][meta-fields]；方法名和参数位于 JSON-RPC 放置它们的地方。没有 header 层。
+
+[meta-fields]: /specification/2026-07-28/basic/index#meta
+
+## 取消
+
+要取消一个执行中的请求，客户端**必须（MUST）**发送一个引用该请求 ID 的 `notifications/cancelled` 通知。因为 stdio 是单个共享的双向信道，没有可关闭的每请求流。服务器**应当（SHOULD）**尽快停止对被取消请求的工作，并**不得（MUST NOT）**为它发送任何进一步的消息。完整规则参见[取消][cancellation]。
+
+[cancellation]: /specification/2026-07-28/basic/patterns/cancellation
+
+## 关闭
+
+客户端**应当（SHOULD）**通过以下方式发起关闭：
+
+1. 关闭到子进程（服务器）的输入流。
+2. 等待服务器退出。
+3. 如果服务器在合理时间内未退出，使用适合操作系统的机制强制终止该进程。
+
+在 POSIX 系统上，强制终止通常从 [`SIGTERM`][sigterm] 升级到 `SIGKILL`。在 Windows 上，POSIX 信号不可用，客户端可以使用 [`TerminateProcess`][terminateprocess] 或 [Job Objects][job-objects]。
+
+服务器**应当（SHOULD）**在其标准输入被关闭或读取返回文件结束（end-of-file）时及时退出。这是主要的优雅关闭信号，也是唯一可移植的信号，因此遵循它可以减少对强制终止的需要。
+
+服务器**可以（MAY）**通过关闭其到客户端的输出流并退出来发起关闭。
+
+## 意外终止
+
+如果服务器进程意外退出，客户端**应当（SHOULD）**重启它。因为协议是无状态的，任何执行中的请求都只是丢失，客户端可以针对新的进程重试它们。活动的 [`subscriptions/listen`][subscriptions-listen] 流在重启后也必须重新建立。
+
+[sigterm]: https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/signal.h.html
+[terminateprocess]: https://learn.microsoft.com/windows/win32/api/processthreadsapi/nf-processthreadsapi-terminateprocess
+[job-objects]: https://learn.microsoft.com/windows/win32/procthread/job-objects
+
+## 向后兼容
+
+一个同时支持现代（每请求元数据）MCP 版本和一个需要 `initialize` 握手的旧式版本的客户端**应当（SHOULD）**在发送任何其他请求之前用 [`server/discover`][server-discover] 探测，并在 `_meta` 中设置其首选的现代版本。探测有三种可能的结果：
+
+- 服务器返回一个 `DiscoverResult`：服务器是现代的。从 `supportedVersions` 中选择一个双方都支持的版本并继续。
+- 服务器返回一个已识别的现代 JSON-RPC 错误，例如 [`UnsupportedProtocolVersionError`][unsupported-version]：服务器是现代的，但不支持所请求的版本。使用其公布的 `supported` 列表中的某个版本。**不要**回退到 `initialize`。
+- 服务器返回任何其他错误，或在合理超时内不响应：服务器是旧式的。回退到 `initialize` 握手。
+
+回退**不得（MUST NOT）**关联到某个特定的错误代码：旧式服务器以实现定义的错误（通常是 `-32601` 或 `-32602`）响应未知的 `initialize` 之前的请求，或者根本不响应。
+
+一个仅支持现代版本的客户端不需要探测，但探测仍被**推荐（RECOMMENDED）**：一些旧式服务器不校验请求是否在 `initialize` 之后到达，并会在旧式语义下处理一个时代模糊的方法（例如 `tools/call`）。探测则产生一个确定性的失败。
+
+时代模型和供实现者使用的兼容性矩阵参见[版本管理：向后兼容][lifecycle-compat]。
+
+[server-discover]: /specification/2026-07-28/schema#discoverrequest
+[unsupported-version]: /specification/2026-07-28/schema#unsupportedprotocolversionerror
+[lifecycle-compat]: /specification/2026-07-28/basic/versioning#backward-compatibility-with-initialization-based-versions

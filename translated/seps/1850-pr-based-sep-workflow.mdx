@@ -1,0 +1,187 @@
+---
+title: "SEP-1850：基于 PR 的 SEP 工作流"
+sidebarTitle: "SEP-1850"
+---
+
+- **状态（Status）**: Final
+- **类型（Type）**: Process
+- **创建（Created）**: 2025-11-20
+- **接受（Accepted）**: 2025-11-28，Discord 投票 8 赞成、0 反对、0 缺席。
+- **作者（Author(s)）**: Nick Cooper (@nickcoai), David Soria Parra (@davidsp)
+- **担保人（Sponsor）**: David Soria Parra (@davidsp)
+- **PR**: https://github.com/modelcontextprotocol/specification/pull/1850
+
+## 摘要
+
+本 SEP 正式确立了基于 pull request 的 SEP 工作流，将提案作为 markdown 文件存储在模型上下文协议规范仓库的 `seps/` 目录中。该工作流从 pull request 编号分配 SEP 编号、在 Git 中维护版本历史，并取代此前基于 GitHub Issues 的流程。这将基于文件的方式确立为撰写、评审和接受 SEP 的规范途径。
+
+## 动机
+
+基于 issue 的 SEP 流程带来了若干挑战：
+
+- **内容分散**：提案内容散布在 GitHub issue、链接文档和 pull request 中，使评审和归档变得困难。
+- **协作困难**：在 issue 正文中维护长篇规范使迭代编辑和多贡献者协作更加困难。
+- **版本控制受限**：GitHub issue 无法提供与 Git 管理文件相同的版本控制能力。
+- **状态管理不清**：该流程缺乏跟踪状态转换、确保不同真实来源之间一致性的清晰机制。
+
+基于文件的工作流通过以下方式解决这些问题：
+
+- 将每个 SEP 与规范本身一起纳入版本控制
+- 提供 Git 内置的评审工具、历史和可搜索性
+- 将 SEP 编号与 pull request 关联，消除手动记账
+- 在 pull request 话题中浮现所有讨论
+- 将 PR 标签与文件状态结合使用，以获得更好的可发现性
+
+## 规范
+
+### 1. 规范位置
+
+- 每个 SEP 位于规范仓库的 `seps/{NUMBER}-{slug}.md`
+- SEP 编号始终是引入该 SEP 文件的 pull request 编号
+- `seps/` 目录充当所有 SEP 的单一真实来源
+
+### 2. 作者工作流
+
+1. **起草提案** `seps/0000-{slug}.md`，用 `0000` 作占位编号
+2. **开一个 pull request**，包含草案 SEP 及任何支撑材料
+3. **从维护者列表请求担保人**；从 [MAINTAINERS.md](https://github.com/modelcontextprotocol/modelcontextprotocol/blob/main/MAINTAINERS.md) 标记潜在担保人
+4. **在得知 PR 编号后**，修订提交，将文件重命名为 `{PR-number}-{slug}.md` 并更新头部（`SEP-{PR-number}` 和 `PR: #{PR-number}`）
+5. **等待担保人指派**：一旦担保人同意，他们将自我指派并将状态更新为 `Draft`
+
+### 3. 担保人职责
+
+担保人是拥护某 SEP 走完评审流程的核心维护者或维护者。担保人的职责包括：
+
+- **评审提案**并提供建设性反馈
+- 基于社区意见**请求修改**
+- **管理状态转换**，方式是：
+  - 确保 SEP markdown 文件中的 `Status` 字段准确
+  - 应用匹配的 PR 标签，使其与文件状态保持同步
+  - 通过 PR 评论沟通状态变化
+- 在 SEP 就绪时**发起正式评审**（从 `Draft` 转为 `In-Review`）
+- **提交给核心维护者**，确保该 SEP 在核心维护者会议上呈现，且作者和担保人到场。
+- 在推进提案之前**确保满足质量标准**
+- **跟踪实现**进度，并确保参考实现在 `Final` 状态之前完成
+
+### 4. 评审流程
+
+状态推进遵循：`Draft → In-Review → Accepted → Final`
+
+其他终止状态：`Rejected`、`Withdrawn`、`Superseded`、`Dormant`
+
+**Dormant 状态**：如果某 SEP 在六个月内未找到担保人，核心维护者可以关闭该 PR 并将该 SEP 标记为 `dormant`。
+
+参考实现必须通过链接的 pull request 或 issue 跟踪，且必须在将某 SEP 标记为 `Final` 之前完成。
+
+### 5. 文档
+
+- `docs/community/sep-guidelines.mdx` 充当面向贡献者的说明
+- `seps/README.md` 提供关于格式、命名、担保人职责和接受标准的简明参考
+- 两份文档都必须反映此工作流并保持同步
+
+### 6. SEP 文件结构
+
+每个 SEP 必须包含：
+
+```markdown
+# SEP-{NUMBER}: {Title}
+
+- **Status**: Draft | In-Review | Accepted | Rejected | Withdrawn | Final | Superseded | Dormant
+- **Type**: Standards Track | Informational | Process
+- **Created**: YYYY-MM-DD
+- **Author(s)**: Name <email> (@github-username)
+- **Sponsor**: @github-username (or "None" if seeking sponsor)
+- **PR**: https://github.com/modelcontextprotocol/specification/pull/{NUMBER}
+
+## Abstract
+
+## Motivation
+
+## Specification
+
+## Rationale
+
+## Backward Compatibility
+
+## Security Implications
+
+## Reference Implementation
+```
+
+### 7. 通过 PR 标签进行状态管理
+
+为改善可发现性和过滤：
+
+- 担保人必须应用与 SEP 状态匹配的 PR 标签（`draft`、`in-review`、`accepted`、`final` 等）
+- markdown 的 `Status` 字段和 PR 标签都应保持同步
+- markdown 文件充当规范记录（随提案一起版本化）
+- PR 标签支持按状态轻松过滤和搜索 SEP
+- 只有担保人应修改状态字段和标签；作者应通过其担保人请求更改
+
+### 8. 遗留事项考量
+
+- 贡献者可以选择性地开一个 GitHub Issue 进行早期讨论，但权威的 SEP 文本位于 `seps/`
+- 一旦存在 pull request，issue 应链接到相关文件
+- SEP 编号派生自 PR 编号，而非 issue 编号
+
+## 理由
+
+### 为何基于文件？
+
+将 SEP 作为文件存储，使权威规范与代码一起版本化，效仿了 PEP（Python 增强提案）及其他标准机构所采用的成功流程。这种方式：
+
+- 通过 Git 提供内置版本控制
+- 支持标准的代码评审工作流
+- 维护所有更改的清晰历史
+- 支持多贡献者协作
+- 与规范仓库自然集成
+
+### 为何使用 PR 编号？
+
+使用 pull request 编号：
+
+- 消除手动编号的竞态条件
+- 在提案与讨论之间创造天然的可追溯性
+- 防止编号冲突
+- 简化贡献流程
+- 为评审维护单一的讨论话题
+
+### 为何使用 PR 标签？
+
+在文件状态之外添加 PR 标签：
+
+- 无需打开文件即可按状态快速过滤 SEP
+- 在 PR 列表中即时呈现 SEP 状态
+- 支持 GitHub 的搜索和过滤能力
+- 补充规范的 markdown 状态字段
+- 减少维护者管理多个 SEP 的摩擦
+
+### 将其确立为主要流程
+
+维护两套重叠的规范流程有分歧的风险，并给贡献者造成混淆。将基于文件的方式确立为主要方法：
+
+- 减少新贡献者的认知负担
+- 确保 SEP 文集的一致性
+- 简化担保人的维护
+- 与行业最佳实践一致
+
+## 向后兼容性
+
+- 既有的基于 issue 的 SEP 仍然有效，无需迁移
+- 历史的 GitHub Issue 链接继续有效
+- 未来的 SEP 应引用 `seps/` 中的新文件位置
+- 维护者可以选择性地将历史 SEP 回填到 `seps/` 以供归档
+
+## 安全影响
+
+除针对 pull request 的标准代码评审流程外，无新的安全考量。
+
+## 参考实现
+
+- 本 pull request（#1850）在 `seps/README.md` 和 `docs/community/sep-guidelines.mdx` 中都实现了规范说明
+- 流程已更新，以反映带有通过标签进行状态管理的基于 PR 的工作流
+- 本 SEP 文档本身即作为新格式的一个示例
+
+# 投票
+
+本 SEP 于 2025 年 12 月 28 日星期五在 Discord 投票中获 MCP 核心维护者一致接受，投票结果为 8 赞成、0 反对、0 缺席。

@@ -1,0 +1,2064 @@
+{
+  "principle": "保持官方 Path 不变，中文镜像使用相同相对路径；外链保持原址",
+  "pageCount": 343,
+  "mappings": [
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/community/antitrust",
+      "sourcePath": "/community/antitrust",
+      "targetPath": "/community/antitrust",
+      "sourceMd": "https://modelcontextprotocol.io/community/antitrust.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/community/charter-template",
+      "sourcePath": "/community/charter-template",
+      "targetPath": "/community/charter-template",
+      "sourceMd": "https://modelcontextprotocol.io/community/charter-template.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/community/communication",
+      "sourcePath": "/community/communication",
+      "targetPath": "/community/communication",
+      "sourceMd": "https://modelcontextprotocol.io/community/communication.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/community/contributing",
+      "sourcePath": "/community/contributing",
+      "targetPath": "/community/contributing",
+      "sourceMd": "https://modelcontextprotocol.io/community/contributing.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/community/contributor-ladder",
+      "sourcePath": "/community/contributor-ladder",
+      "targetPath": "/community/contributor-ladder",
+      "sourceMd": "https://modelcontextprotocol.io/community/contributor-ladder.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/community/design-principles",
+      "sourcePath": "/community/design-principles",
+      "targetPath": "/community/design-principles",
+      "sourceMd": "https://modelcontextprotocol.io/community/design-principles.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/community/feature-lifecycle",
+      "sourcePath": "/community/feature-lifecycle",
+      "targetPath": "/community/feature-lifecycle",
+      "sourceMd": "https://modelcontextprotocol.io/community/feature-lifecycle.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/community/governance",
+      "sourcePath": "/community/governance",
+      "targetPath": "/community/governance",
+      "sourceMd": "https://modelcontextprotocol.io/community/governance.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/community/interest-groups/auth",
+      "sourcePath": "/community/interest-groups/auth",
+      "targetPath": "/community/interest-groups/auth",
+      "sourceMd": "https://modelcontextprotocol.io/community/interest-groups/auth.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/community/interest-groups/enterprise-managed-authorization",
+      "sourcePath": "/community/interest-groups/enterprise-managed-authorization",
+      "targetPath": "/community/interest-groups/enterprise-managed-authorization",
+      "sourceMd": "https://modelcontextprotocol.io/community/interest-groups/enterprise-managed-authorization.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/community/interest-groups/financial-services",
+      "sourcePath": "/community/interest-groups/financial-services",
+      "targetPath": "/community/interest-groups/financial-services",
+      "sourceMd": "https://modelcontextprotocol.io/community/interest-groups/financial-services.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/community/interest-groups/primitive-grouping",
+      "sourcePath": "/community/interest-groups/primitive-grouping",
+      "targetPath": "/community/interest-groups/primitive-grouping",
+      "sourceMd": "https://modelcontextprotocol.io/community/interest-groups/primitive-grouping.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/community/interest-groups/security",
+      "sourcePath": "/community/interest-groups/security",
+      "targetPath": "/community/interest-groups/security",
+      "sourceMd": "https://modelcontextprotocol.io/community/interest-groups/security.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/community/interest-groups/tool-annotations",
+      "sourcePath": "/community/interest-groups/tool-annotations",
+      "targetPath": "/community/interest-groups/tool-annotations",
+      "sourceMd": "https://modelcontextprotocol.io/community/interest-groups/tool-annotations.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/community/sdk-tiers",
+      "sourcePath": "/community/sdk-tiers",
+      "targetPath": "/community/sdk-tiers",
+      "sourceMd": "https://modelcontextprotocol.io/community/sdk-tiers.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/community/security",
+      "sourcePath": "/community/security",
+      "targetPath": "/community/security",
+      "sourceMd": "https://modelcontextprotocol.io/community/security.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/community/sep-guidelines",
+      "sourcePath": "/community/sep-guidelines",
+      "targetPath": "/community/sep-guidelines",
+      "sourceMd": "https://modelcontextprotocol.io/community/sep-guidelines.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/community/working-groups/agents",
+      "sourcePath": "/community/working-groups/agents",
+      "targetPath": "/community/working-groups/agents",
+      "sourceMd": "https://modelcontextprotocol.io/community/working-groups/agents.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/community/working-groups/file-uploads",
+      "sourcePath": "/community/working-groups/file-uploads",
+      "targetPath": "/community/working-groups/file-uploads",
+      "sourceMd": "https://modelcontextprotocol.io/community/working-groups/file-uploads.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/community/working-groups/inspector-v2",
+      "sourcePath": "/community/working-groups/inspector-v2",
+      "targetPath": "/community/working-groups/inspector-v2",
+      "sourceMd": "https://modelcontextprotocol.io/community/working-groups/inspector-v2.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/community/working-groups/interceptors",
+      "sourcePath": "/community/working-groups/interceptors",
+      "targetPath": "/community/working-groups/interceptors",
+      "sourceMd": "https://modelcontextprotocol.io/community/working-groups/interceptors.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/community/working-groups/registry",
+      "sourcePath": "/community/working-groups/registry",
+      "targetPath": "/community/working-groups/registry",
+      "sourceMd": "https://modelcontextprotocol.io/community/working-groups/registry.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/community/working-groups/sdk",
+      "sourcePath": "/community/working-groups/sdk",
+      "targetPath": "/community/working-groups/sdk",
+      "sourceMd": "https://modelcontextprotocol.io/community/working-groups/sdk.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/community/working-groups/server-card",
+      "sourcePath": "/community/working-groups/server-card",
+      "targetPath": "/community/working-groups/server-card",
+      "sourceMd": "https://modelcontextprotocol.io/community/working-groups/server-card.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/community/working-groups/skills-over-mcp",
+      "sourcePath": "/community/working-groups/skills-over-mcp",
+      "targetPath": "/community/working-groups/skills-over-mcp",
+      "sourceMd": "https://modelcontextprotocol.io/community/working-groups/skills-over-mcp.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/community/working-groups/transports",
+      "sourcePath": "/community/working-groups/transports",
+      "targetPath": "/community/working-groups/transports",
+      "sourceMd": "https://modelcontextprotocol.io/community/working-groups/transports.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/community/working-groups/triggers-events",
+      "sourcePath": "/community/working-groups/triggers-events",
+      "targetPath": "/community/working-groups/triggers-events",
+      "sourceMd": "https://modelcontextprotocol.io/community/working-groups/triggers-events.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/community/working-interest-groups",
+      "sourcePath": "/community/working-interest-groups",
+      "targetPath": "/community/working-interest-groups",
+      "sourceMd": "https://modelcontextprotocol.io/community/working-interest-groups.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/development/roadmap",
+      "sourcePath": "/development/roadmap",
+      "targetPath": "/development/roadmap",
+      "sourceMd": "https://modelcontextprotocol.io/development/roadmap.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/2024-11-05/develop/build-client",
+      "sourcePath": "/docs/2024-11-05/develop/build-client",
+      "targetPath": "/docs/2024-11-05/develop/build-client",
+      "sourceMd": "https://modelcontextprotocol.io/docs/2024-11-05/develop/build-client.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/2024-11-05/develop/build-server",
+      "sourcePath": "/docs/2024-11-05/develop/build-server",
+      "targetPath": "/docs/2024-11-05/develop/build-server",
+      "sourceMd": "https://modelcontextprotocol.io/docs/2024-11-05/develop/build-server.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/2024-11-05/develop/build-with-agent-skills",
+      "sourcePath": "/docs/2024-11-05/develop/build-with-agent-skills",
+      "targetPath": "/docs/2024-11-05/develop/build-with-agent-skills",
+      "sourceMd": "https://modelcontextprotocol.io/docs/2024-11-05/develop/build-with-agent-skills.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/2024-11-05/develop/clients/client-best-practices",
+      "sourcePath": "/docs/2024-11-05/develop/clients/client-best-practices",
+      "targetPath": "/docs/2024-11-05/develop/clients/client-best-practices",
+      "sourceMd": "https://modelcontextprotocol.io/docs/2024-11-05/develop/clients/client-best-practices.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/2024-11-05/develop/connect-local-servers",
+      "sourcePath": "/docs/2024-11-05/develop/connect-local-servers",
+      "targetPath": "/docs/2024-11-05/develop/connect-local-servers",
+      "sourceMd": "https://modelcontextprotocol.io/docs/2024-11-05/develop/connect-local-servers.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/2024-11-05/develop/connect-remote-servers",
+      "sourcePath": "/docs/2024-11-05/develop/connect-remote-servers",
+      "targetPath": "/docs/2024-11-05/develop/connect-remote-servers",
+      "sourceMd": "https://modelcontextprotocol.io/docs/2024-11-05/develop/connect-remote-servers.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/2024-11-05/getting-started/intro",
+      "sourcePath": "/docs/2024-11-05/getting-started/intro",
+      "targetPath": "/docs/2024-11-05/getting-started/intro",
+      "sourceMd": "https://modelcontextprotocol.io/docs/2024-11-05/getting-started/intro.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/2024-11-05/learn/architecture",
+      "sourcePath": "/docs/2024-11-05/learn/architecture",
+      "targetPath": "/docs/2024-11-05/learn/architecture",
+      "sourceMd": "https://modelcontextprotocol.io/docs/2024-11-05/learn/architecture.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/2024-11-05/learn/client-concepts",
+      "sourcePath": "/docs/2024-11-05/learn/client-concepts",
+      "targetPath": "/docs/2024-11-05/learn/client-concepts",
+      "sourceMd": "https://modelcontextprotocol.io/docs/2024-11-05/learn/client-concepts.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/2024-11-05/learn/server-concepts",
+      "sourcePath": "/docs/2024-11-05/learn/server-concepts",
+      "targetPath": "/docs/2024-11-05/learn/server-concepts",
+      "sourceMd": "https://modelcontextprotocol.io/docs/2024-11-05/learn/server-concepts.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/2024-11-05/learn/versioning",
+      "sourcePath": "/docs/2024-11-05/learn/versioning",
+      "targetPath": "/docs/2024-11-05/learn/versioning",
+      "sourceMd": "https://modelcontextprotocol.io/docs/2024-11-05/learn/versioning.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/2024-11-05/sdk",
+      "sourcePath": "/docs/2024-11-05/sdk",
+      "targetPath": "/docs/2024-11-05/sdk",
+      "sourceMd": "https://modelcontextprotocol.io/docs/2024-11-05/sdk.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/2024-11-05/tools/debugging",
+      "sourcePath": "/docs/2024-11-05/tools/debugging",
+      "targetPath": "/docs/2024-11-05/tools/debugging",
+      "sourceMd": "https://modelcontextprotocol.io/docs/2024-11-05/tools/debugging.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/2024-11-05/tools/inspector",
+      "sourcePath": "/docs/2024-11-05/tools/inspector",
+      "targetPath": "/docs/2024-11-05/tools/inspector",
+      "sourceMd": "https://modelcontextprotocol.io/docs/2024-11-05/tools/inspector.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/2024-11-05/tutorials/security/authorization",
+      "sourcePath": "/docs/2024-11-05/tutorials/security/authorization",
+      "targetPath": "/docs/2024-11-05/tutorials/security/authorization",
+      "sourceMd": "https://modelcontextprotocol.io/docs/2024-11-05/tutorials/security/authorization.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/2024-11-05/tutorials/security/security_best_practices",
+      "sourcePath": "/docs/2024-11-05/tutorials/security/security_best_practices",
+      "targetPath": "/docs/2024-11-05/tutorials/security/security_best_practices",
+      "sourceMd": "https://modelcontextprotocol.io/docs/2024-11-05/tutorials/security/security_best_practices.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/2025-03-26/develop/build-client",
+      "sourcePath": "/docs/2025-03-26/develop/build-client",
+      "targetPath": "/docs/2025-03-26/develop/build-client",
+      "sourceMd": "https://modelcontextprotocol.io/docs/2025-03-26/develop/build-client.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/2025-03-26/develop/build-server",
+      "sourcePath": "/docs/2025-03-26/develop/build-server",
+      "targetPath": "/docs/2025-03-26/develop/build-server",
+      "sourceMd": "https://modelcontextprotocol.io/docs/2025-03-26/develop/build-server.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/2025-03-26/develop/build-with-agent-skills",
+      "sourcePath": "/docs/2025-03-26/develop/build-with-agent-skills",
+      "targetPath": "/docs/2025-03-26/develop/build-with-agent-skills",
+      "sourceMd": "https://modelcontextprotocol.io/docs/2025-03-26/develop/build-with-agent-skills.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/2025-03-26/develop/clients/client-best-practices",
+      "sourcePath": "/docs/2025-03-26/develop/clients/client-best-practices",
+      "targetPath": "/docs/2025-03-26/develop/clients/client-best-practices",
+      "sourceMd": "https://modelcontextprotocol.io/docs/2025-03-26/develop/clients/client-best-practices.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/2025-03-26/develop/connect-local-servers",
+      "sourcePath": "/docs/2025-03-26/develop/connect-local-servers",
+      "targetPath": "/docs/2025-03-26/develop/connect-local-servers",
+      "sourceMd": "https://modelcontextprotocol.io/docs/2025-03-26/develop/connect-local-servers.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/2025-03-26/develop/connect-remote-servers",
+      "sourcePath": "/docs/2025-03-26/develop/connect-remote-servers",
+      "targetPath": "/docs/2025-03-26/develop/connect-remote-servers",
+      "sourceMd": "https://modelcontextprotocol.io/docs/2025-03-26/develop/connect-remote-servers.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/2025-03-26/getting-started/intro",
+      "sourcePath": "/docs/2025-03-26/getting-started/intro",
+      "targetPath": "/docs/2025-03-26/getting-started/intro",
+      "sourceMd": "https://modelcontextprotocol.io/docs/2025-03-26/getting-started/intro.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/2025-03-26/learn/architecture",
+      "sourcePath": "/docs/2025-03-26/learn/architecture",
+      "targetPath": "/docs/2025-03-26/learn/architecture",
+      "sourceMd": "https://modelcontextprotocol.io/docs/2025-03-26/learn/architecture.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/2025-03-26/learn/client-concepts",
+      "sourcePath": "/docs/2025-03-26/learn/client-concepts",
+      "targetPath": "/docs/2025-03-26/learn/client-concepts",
+      "sourceMd": "https://modelcontextprotocol.io/docs/2025-03-26/learn/client-concepts.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/2025-03-26/learn/server-concepts",
+      "sourcePath": "/docs/2025-03-26/learn/server-concepts",
+      "targetPath": "/docs/2025-03-26/learn/server-concepts",
+      "sourceMd": "https://modelcontextprotocol.io/docs/2025-03-26/learn/server-concepts.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/2025-03-26/learn/versioning",
+      "sourcePath": "/docs/2025-03-26/learn/versioning",
+      "targetPath": "/docs/2025-03-26/learn/versioning",
+      "sourceMd": "https://modelcontextprotocol.io/docs/2025-03-26/learn/versioning.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/2025-03-26/sdk",
+      "sourcePath": "/docs/2025-03-26/sdk",
+      "targetPath": "/docs/2025-03-26/sdk",
+      "sourceMd": "https://modelcontextprotocol.io/docs/2025-03-26/sdk.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/2025-03-26/tools/debugging",
+      "sourcePath": "/docs/2025-03-26/tools/debugging",
+      "targetPath": "/docs/2025-03-26/tools/debugging",
+      "sourceMd": "https://modelcontextprotocol.io/docs/2025-03-26/tools/debugging.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/2025-03-26/tools/inspector",
+      "sourcePath": "/docs/2025-03-26/tools/inspector",
+      "targetPath": "/docs/2025-03-26/tools/inspector",
+      "sourceMd": "https://modelcontextprotocol.io/docs/2025-03-26/tools/inspector.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/2025-03-26/tutorials/security/authorization",
+      "sourcePath": "/docs/2025-03-26/tutorials/security/authorization",
+      "targetPath": "/docs/2025-03-26/tutorials/security/authorization",
+      "sourceMd": "https://modelcontextprotocol.io/docs/2025-03-26/tutorials/security/authorization.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/2025-03-26/tutorials/security/security_best_practices",
+      "sourcePath": "/docs/2025-03-26/tutorials/security/security_best_practices",
+      "targetPath": "/docs/2025-03-26/tutorials/security/security_best_practices",
+      "sourceMd": "https://modelcontextprotocol.io/docs/2025-03-26/tutorials/security/security_best_practices.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/2025-06-18/develop/build-client",
+      "sourcePath": "/docs/2025-06-18/develop/build-client",
+      "targetPath": "/docs/2025-06-18/develop/build-client",
+      "sourceMd": "https://modelcontextprotocol.io/docs/2025-06-18/develop/build-client.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/2025-06-18/develop/build-server",
+      "sourcePath": "/docs/2025-06-18/develop/build-server",
+      "targetPath": "/docs/2025-06-18/develop/build-server",
+      "sourceMd": "https://modelcontextprotocol.io/docs/2025-06-18/develop/build-server.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/2025-06-18/develop/build-with-agent-skills",
+      "sourcePath": "/docs/2025-06-18/develop/build-with-agent-skills",
+      "targetPath": "/docs/2025-06-18/develop/build-with-agent-skills",
+      "sourceMd": "https://modelcontextprotocol.io/docs/2025-06-18/develop/build-with-agent-skills.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/2025-06-18/develop/clients/client-best-practices",
+      "sourcePath": "/docs/2025-06-18/develop/clients/client-best-practices",
+      "targetPath": "/docs/2025-06-18/develop/clients/client-best-practices",
+      "sourceMd": "https://modelcontextprotocol.io/docs/2025-06-18/develop/clients/client-best-practices.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/2025-06-18/develop/connect-local-servers",
+      "sourcePath": "/docs/2025-06-18/develop/connect-local-servers",
+      "targetPath": "/docs/2025-06-18/develop/connect-local-servers",
+      "sourceMd": "https://modelcontextprotocol.io/docs/2025-06-18/develop/connect-local-servers.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/2025-06-18/develop/connect-remote-servers",
+      "sourcePath": "/docs/2025-06-18/develop/connect-remote-servers",
+      "targetPath": "/docs/2025-06-18/develop/connect-remote-servers",
+      "sourceMd": "https://modelcontextprotocol.io/docs/2025-06-18/develop/connect-remote-servers.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/2025-06-18/getting-started/intro",
+      "sourcePath": "/docs/2025-06-18/getting-started/intro",
+      "targetPath": "/docs/2025-06-18/getting-started/intro",
+      "sourceMd": "https://modelcontextprotocol.io/docs/2025-06-18/getting-started/intro.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/2025-06-18/learn/architecture",
+      "sourcePath": "/docs/2025-06-18/learn/architecture",
+      "targetPath": "/docs/2025-06-18/learn/architecture",
+      "sourceMd": "https://modelcontextprotocol.io/docs/2025-06-18/learn/architecture.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/2025-06-18/learn/client-concepts",
+      "sourcePath": "/docs/2025-06-18/learn/client-concepts",
+      "targetPath": "/docs/2025-06-18/learn/client-concepts",
+      "sourceMd": "https://modelcontextprotocol.io/docs/2025-06-18/learn/client-concepts.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/2025-06-18/learn/server-concepts",
+      "sourcePath": "/docs/2025-06-18/learn/server-concepts",
+      "targetPath": "/docs/2025-06-18/learn/server-concepts",
+      "sourceMd": "https://modelcontextprotocol.io/docs/2025-06-18/learn/server-concepts.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/2025-06-18/learn/versioning",
+      "sourcePath": "/docs/2025-06-18/learn/versioning",
+      "targetPath": "/docs/2025-06-18/learn/versioning",
+      "sourceMd": "https://modelcontextprotocol.io/docs/2025-06-18/learn/versioning.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/2025-06-18/sdk",
+      "sourcePath": "/docs/2025-06-18/sdk",
+      "targetPath": "/docs/2025-06-18/sdk",
+      "sourceMd": "https://modelcontextprotocol.io/docs/2025-06-18/sdk.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/2025-06-18/tools/debugging",
+      "sourcePath": "/docs/2025-06-18/tools/debugging",
+      "targetPath": "/docs/2025-06-18/tools/debugging",
+      "sourceMd": "https://modelcontextprotocol.io/docs/2025-06-18/tools/debugging.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/2025-06-18/tools/inspector",
+      "sourcePath": "/docs/2025-06-18/tools/inspector",
+      "targetPath": "/docs/2025-06-18/tools/inspector",
+      "sourceMd": "https://modelcontextprotocol.io/docs/2025-06-18/tools/inspector.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/2025-06-18/tutorials/security/authorization",
+      "sourcePath": "/docs/2025-06-18/tutorials/security/authorization",
+      "targetPath": "/docs/2025-06-18/tutorials/security/authorization",
+      "sourceMd": "https://modelcontextprotocol.io/docs/2025-06-18/tutorials/security/authorization.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/2025-06-18/tutorials/security/security_best_practices",
+      "sourcePath": "/docs/2025-06-18/tutorials/security/security_best_practices",
+      "targetPath": "/docs/2025-06-18/tutorials/security/security_best_practices",
+      "sourceMd": "https://modelcontextprotocol.io/docs/2025-06-18/tutorials/security/security_best_practices.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/2025-11-25/develop/build-client",
+      "sourcePath": "/docs/2025-11-25/develop/build-client",
+      "targetPath": "/docs/2025-11-25/develop/build-client",
+      "sourceMd": "https://modelcontextprotocol.io/docs/2025-11-25/develop/build-client.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/2025-11-25/develop/build-server",
+      "sourcePath": "/docs/2025-11-25/develop/build-server",
+      "targetPath": "/docs/2025-11-25/develop/build-server",
+      "sourceMd": "https://modelcontextprotocol.io/docs/2025-11-25/develop/build-server.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/2025-11-25/develop/build-with-agent-skills",
+      "sourcePath": "/docs/2025-11-25/develop/build-with-agent-skills",
+      "targetPath": "/docs/2025-11-25/develop/build-with-agent-skills",
+      "sourceMd": "https://modelcontextprotocol.io/docs/2025-11-25/develop/build-with-agent-skills.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/2025-11-25/develop/clients/client-best-practices",
+      "sourcePath": "/docs/2025-11-25/develop/clients/client-best-practices",
+      "targetPath": "/docs/2025-11-25/develop/clients/client-best-practices",
+      "sourceMd": "https://modelcontextprotocol.io/docs/2025-11-25/develop/clients/client-best-practices.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/2025-11-25/develop/connect-local-servers",
+      "sourcePath": "/docs/2025-11-25/develop/connect-local-servers",
+      "targetPath": "/docs/2025-11-25/develop/connect-local-servers",
+      "sourceMd": "https://modelcontextprotocol.io/docs/2025-11-25/develop/connect-local-servers.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/2025-11-25/develop/connect-remote-servers",
+      "sourcePath": "/docs/2025-11-25/develop/connect-remote-servers",
+      "targetPath": "/docs/2025-11-25/develop/connect-remote-servers",
+      "sourceMd": "https://modelcontextprotocol.io/docs/2025-11-25/develop/connect-remote-servers.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/2025-11-25/getting-started/intro",
+      "sourcePath": "/docs/2025-11-25/getting-started/intro",
+      "targetPath": "/docs/2025-11-25/getting-started/intro",
+      "sourceMd": "https://modelcontextprotocol.io/docs/2025-11-25/getting-started/intro.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/2025-11-25/learn/architecture",
+      "sourcePath": "/docs/2025-11-25/learn/architecture",
+      "targetPath": "/docs/2025-11-25/learn/architecture",
+      "sourceMd": "https://modelcontextprotocol.io/docs/2025-11-25/learn/architecture.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/2025-11-25/learn/client-concepts",
+      "sourcePath": "/docs/2025-11-25/learn/client-concepts",
+      "targetPath": "/docs/2025-11-25/learn/client-concepts",
+      "sourceMd": "https://modelcontextprotocol.io/docs/2025-11-25/learn/client-concepts.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/2025-11-25/learn/server-concepts",
+      "sourcePath": "/docs/2025-11-25/learn/server-concepts",
+      "targetPath": "/docs/2025-11-25/learn/server-concepts",
+      "sourceMd": "https://modelcontextprotocol.io/docs/2025-11-25/learn/server-concepts.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/2025-11-25/learn/versioning",
+      "sourcePath": "/docs/2025-11-25/learn/versioning",
+      "targetPath": "/docs/2025-11-25/learn/versioning",
+      "sourceMd": "https://modelcontextprotocol.io/docs/2025-11-25/learn/versioning.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/2025-11-25/sdk",
+      "sourcePath": "/docs/2025-11-25/sdk",
+      "targetPath": "/docs/2025-11-25/sdk",
+      "sourceMd": "https://modelcontextprotocol.io/docs/2025-11-25/sdk.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/2025-11-25/tools/debugging",
+      "sourcePath": "/docs/2025-11-25/tools/debugging",
+      "targetPath": "/docs/2025-11-25/tools/debugging",
+      "sourceMd": "https://modelcontextprotocol.io/docs/2025-11-25/tools/debugging.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/2025-11-25/tools/inspector",
+      "sourcePath": "/docs/2025-11-25/tools/inspector",
+      "targetPath": "/docs/2025-11-25/tools/inspector",
+      "sourceMd": "https://modelcontextprotocol.io/docs/2025-11-25/tools/inspector.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/2025-11-25/tutorials/security/authorization",
+      "sourcePath": "/docs/2025-11-25/tutorials/security/authorization",
+      "targetPath": "/docs/2025-11-25/tutorials/security/authorization",
+      "sourceMd": "https://modelcontextprotocol.io/docs/2025-11-25/tutorials/security/authorization.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/2025-11-25/tutorials/security/security_best_practices",
+      "sourcePath": "/docs/2025-11-25/tutorials/security/security_best_practices",
+      "targetPath": "/docs/2025-11-25/tutorials/security/security_best_practices",
+      "sourceMd": "https://modelcontextprotocol.io/docs/2025-11-25/tutorials/security/security_best_practices.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/2026-07-28/develop/build-client",
+      "sourcePath": "/docs/2026-07-28/develop/build-client",
+      "targetPath": "/docs/2026-07-28/develop/build-client",
+      "sourceMd": "https://modelcontextprotocol.io/docs/2026-07-28/develop/build-client.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/2026-07-28/develop/build-server",
+      "sourcePath": "/docs/2026-07-28/develop/build-server",
+      "targetPath": "/docs/2026-07-28/develop/build-server",
+      "sourceMd": "https://modelcontextprotocol.io/docs/2026-07-28/develop/build-server.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/2026-07-28/develop/build-with-agent-skills",
+      "sourcePath": "/docs/2026-07-28/develop/build-with-agent-skills",
+      "targetPath": "/docs/2026-07-28/develop/build-with-agent-skills",
+      "sourceMd": "https://modelcontextprotocol.io/docs/2026-07-28/develop/build-with-agent-skills.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/2026-07-28/develop/clients/client-best-practices",
+      "sourcePath": "/docs/2026-07-28/develop/clients/client-best-practices",
+      "targetPath": "/docs/2026-07-28/develop/clients/client-best-practices",
+      "sourceMd": "https://modelcontextprotocol.io/docs/2026-07-28/develop/clients/client-best-practices.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/2026-07-28/develop/connect-local-servers",
+      "sourcePath": "/docs/2026-07-28/develop/connect-local-servers",
+      "targetPath": "/docs/2026-07-28/develop/connect-local-servers",
+      "sourceMd": "https://modelcontextprotocol.io/docs/2026-07-28/develop/connect-local-servers.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/2026-07-28/develop/connect-remote-servers",
+      "sourcePath": "/docs/2026-07-28/develop/connect-remote-servers",
+      "targetPath": "/docs/2026-07-28/develop/connect-remote-servers",
+      "sourceMd": "https://modelcontextprotocol.io/docs/2026-07-28/develop/connect-remote-servers.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/2026-07-28/getting-started/intro",
+      "sourcePath": "/docs/2026-07-28/getting-started/intro",
+      "targetPath": "/docs/2026-07-28/getting-started/intro",
+      "sourceMd": "https://modelcontextprotocol.io/docs/2026-07-28/getting-started/intro.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/2026-07-28/learn/architecture",
+      "sourcePath": "/docs/2026-07-28/learn/architecture",
+      "targetPath": "/docs/2026-07-28/learn/architecture",
+      "sourceMd": "https://modelcontextprotocol.io/docs/2026-07-28/learn/architecture.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/2026-07-28/learn/client-concepts",
+      "sourcePath": "/docs/2026-07-28/learn/client-concepts",
+      "targetPath": "/docs/2026-07-28/learn/client-concepts",
+      "sourceMd": "https://modelcontextprotocol.io/docs/2026-07-28/learn/client-concepts.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/2026-07-28/learn/server-concepts",
+      "sourcePath": "/docs/2026-07-28/learn/server-concepts",
+      "targetPath": "/docs/2026-07-28/learn/server-concepts",
+      "sourceMd": "https://modelcontextprotocol.io/docs/2026-07-28/learn/server-concepts.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/2026-07-28/learn/versioning",
+      "sourcePath": "/docs/2026-07-28/learn/versioning",
+      "targetPath": "/docs/2026-07-28/learn/versioning",
+      "sourceMd": "https://modelcontextprotocol.io/docs/2026-07-28/learn/versioning.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/2026-07-28/sdk",
+      "sourcePath": "/docs/2026-07-28/sdk",
+      "targetPath": "/docs/2026-07-28/sdk",
+      "sourceMd": "https://modelcontextprotocol.io/docs/2026-07-28/sdk.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/2026-07-28/tools/debugging",
+      "sourcePath": "/docs/2026-07-28/tools/debugging",
+      "targetPath": "/docs/2026-07-28/tools/debugging",
+      "sourceMd": "https://modelcontextprotocol.io/docs/2026-07-28/tools/debugging.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector",
+      "sourcePath": "/docs/2026-07-28/tools/inspector",
+      "targetPath": "/docs/2026-07-28/tools/inspector",
+      "sourceMd": "https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/authorization",
+      "sourcePath": "/docs/2026-07-28/tools/inspector/authorization",
+      "targetPath": "/docs/2026-07-28/tools/inspector/authorization",
+      "sourceMd": "https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/authorization.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/cli",
+      "sourcePath": "/docs/2026-07-28/tools/inspector/cli",
+      "targetPath": "/docs/2026-07-28/tools/inspector/cli",
+      "sourceMd": "https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/cli.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/configuration",
+      "sourcePath": "/docs/2026-07-28/tools/inspector/configuration",
+      "targetPath": "/docs/2026-07-28/tools/inspector/configuration",
+      "sourceMd": "https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/configuration.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/protocol-eras",
+      "sourcePath": "/docs/2026-07-28/tools/inspector/protocol-eras",
+      "targetPath": "/docs/2026-07-28/tools/inspector/protocol-eras",
+      "sourceMd": "https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/protocol-eras.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/recipes",
+      "sourcePath": "/docs/2026-07-28/tools/inspector/recipes",
+      "targetPath": "/docs/2026-07-28/tools/inspector/recipes",
+      "sourceMd": "https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/recipes.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/tui",
+      "sourcePath": "/docs/2026-07-28/tools/inspector/tui",
+      "targetPath": "/docs/2026-07-28/tools/inspector/tui",
+      "sourceMd": "https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/tui.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/web",
+      "sourcePath": "/docs/2026-07-28/tools/inspector/web",
+      "targetPath": "/docs/2026-07-28/tools/inspector/web",
+      "sourceMd": "https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/web.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/2026-07-28/tutorials/security/authorization",
+      "sourcePath": "/docs/2026-07-28/tutorials/security/authorization",
+      "targetPath": "/docs/2026-07-28/tutorials/security/authorization",
+      "sourceMd": "https://modelcontextprotocol.io/docs/2026-07-28/tutorials/security/authorization.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/2026-07-28/tutorials/security/security_best_practices",
+      "sourcePath": "/docs/2026-07-28/tutorials/security/security_best_practices",
+      "targetPath": "/docs/2026-07-28/tutorials/security/security_best_practices",
+      "sourceMd": "https://modelcontextprotocol.io/docs/2026-07-28/tutorials/security/security_best_practices.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/draft/develop/build-client",
+      "sourcePath": "/docs/draft/develop/build-client",
+      "targetPath": "/docs/draft/develop/build-client",
+      "sourceMd": "https://modelcontextprotocol.io/docs/draft/develop/build-client.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/draft/develop/build-server",
+      "sourcePath": "/docs/draft/develop/build-server",
+      "targetPath": "/docs/draft/develop/build-server",
+      "sourceMd": "https://modelcontextprotocol.io/docs/draft/develop/build-server.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/draft/develop/build-with-agent-skills",
+      "sourcePath": "/docs/draft/develop/build-with-agent-skills",
+      "targetPath": "/docs/draft/develop/build-with-agent-skills",
+      "sourceMd": "https://modelcontextprotocol.io/docs/draft/develop/build-with-agent-skills.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/draft/develop/clients/client-best-practices",
+      "sourcePath": "/docs/draft/develop/clients/client-best-practices",
+      "targetPath": "/docs/draft/develop/clients/client-best-practices",
+      "sourceMd": "https://modelcontextprotocol.io/docs/draft/develop/clients/client-best-practices.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/draft/develop/connect-local-servers",
+      "sourcePath": "/docs/draft/develop/connect-local-servers",
+      "targetPath": "/docs/draft/develop/connect-local-servers",
+      "sourceMd": "https://modelcontextprotocol.io/docs/draft/develop/connect-local-servers.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/draft/develop/connect-remote-servers",
+      "sourcePath": "/docs/draft/develop/connect-remote-servers",
+      "targetPath": "/docs/draft/develop/connect-remote-servers",
+      "sourceMd": "https://modelcontextprotocol.io/docs/draft/develop/connect-remote-servers.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/draft/getting-started/intro",
+      "sourcePath": "/docs/draft/getting-started/intro",
+      "targetPath": "/docs/draft/getting-started/intro",
+      "sourceMd": "https://modelcontextprotocol.io/docs/draft/getting-started/intro.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/draft/learn/architecture",
+      "sourcePath": "/docs/draft/learn/architecture",
+      "targetPath": "/docs/draft/learn/architecture",
+      "sourceMd": "https://modelcontextprotocol.io/docs/draft/learn/architecture.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/draft/learn/client-concepts",
+      "sourcePath": "/docs/draft/learn/client-concepts",
+      "targetPath": "/docs/draft/learn/client-concepts",
+      "sourceMd": "https://modelcontextprotocol.io/docs/draft/learn/client-concepts.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/draft/learn/server-concepts",
+      "sourcePath": "/docs/draft/learn/server-concepts",
+      "targetPath": "/docs/draft/learn/server-concepts",
+      "sourceMd": "https://modelcontextprotocol.io/docs/draft/learn/server-concepts.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/draft/learn/versioning",
+      "sourcePath": "/docs/draft/learn/versioning",
+      "targetPath": "/docs/draft/learn/versioning",
+      "sourceMd": "https://modelcontextprotocol.io/docs/draft/learn/versioning.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/draft/sdk",
+      "sourcePath": "/docs/draft/sdk",
+      "targetPath": "/docs/draft/sdk",
+      "sourceMd": "https://modelcontextprotocol.io/docs/draft/sdk.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/draft/tools/debugging",
+      "sourcePath": "/docs/draft/tools/debugging",
+      "targetPath": "/docs/draft/tools/debugging",
+      "sourceMd": "https://modelcontextprotocol.io/docs/draft/tools/debugging.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/draft/tools/inspector",
+      "sourcePath": "/docs/draft/tools/inspector",
+      "targetPath": "/docs/draft/tools/inspector",
+      "sourceMd": "https://modelcontextprotocol.io/docs/draft/tools/inspector.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/draft/tools/inspector/authorization",
+      "sourcePath": "/docs/draft/tools/inspector/authorization",
+      "targetPath": "/docs/draft/tools/inspector/authorization",
+      "sourceMd": "https://modelcontextprotocol.io/docs/draft/tools/inspector/authorization.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/draft/tools/inspector/cli",
+      "sourcePath": "/docs/draft/tools/inspector/cli",
+      "targetPath": "/docs/draft/tools/inspector/cli",
+      "sourceMd": "https://modelcontextprotocol.io/docs/draft/tools/inspector/cli.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/draft/tools/inspector/configuration",
+      "sourcePath": "/docs/draft/tools/inspector/configuration",
+      "targetPath": "/docs/draft/tools/inspector/configuration",
+      "sourceMd": "https://modelcontextprotocol.io/docs/draft/tools/inspector/configuration.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/draft/tools/inspector/protocol-eras",
+      "sourcePath": "/docs/draft/tools/inspector/protocol-eras",
+      "targetPath": "/docs/draft/tools/inspector/protocol-eras",
+      "sourceMd": "https://modelcontextprotocol.io/docs/draft/tools/inspector/protocol-eras.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/draft/tools/inspector/recipes",
+      "sourcePath": "/docs/draft/tools/inspector/recipes",
+      "targetPath": "/docs/draft/tools/inspector/recipes",
+      "sourceMd": "https://modelcontextprotocol.io/docs/draft/tools/inspector/recipes.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/draft/tools/inspector/tui",
+      "sourcePath": "/docs/draft/tools/inspector/tui",
+      "targetPath": "/docs/draft/tools/inspector/tui",
+      "sourceMd": "https://modelcontextprotocol.io/docs/draft/tools/inspector/tui.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/draft/tools/inspector/web",
+      "sourcePath": "/docs/draft/tools/inspector/web",
+      "targetPath": "/docs/draft/tools/inspector/web",
+      "sourceMd": "https://modelcontextprotocol.io/docs/draft/tools/inspector/web.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/draft/tutorials/security/authorization",
+      "sourcePath": "/docs/draft/tutorials/security/authorization",
+      "targetPath": "/docs/draft/tutorials/security/authorization",
+      "sourceMd": "https://modelcontextprotocol.io/docs/draft/tutorials/security/authorization.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/docs/draft/tutorials/security/security_best_practices",
+      "sourcePath": "/docs/draft/tutorials/security/security_best_practices",
+      "targetPath": "/docs/draft/tutorials/security/security_best_practices",
+      "sourceMd": "https://modelcontextprotocol.io/docs/draft/tutorials/security/security_best_practices.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/examples",
+      "sourcePath": "/examples",
+      "targetPath": "/examples",
+      "sourceMd": "https://modelcontextprotocol.io/examples.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/extensions/apps/build",
+      "sourcePath": "/extensions/apps/build",
+      "targetPath": "/extensions/apps/build",
+      "sourceMd": "https://modelcontextprotocol.io/extensions/apps/build.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/extensions/apps/overview",
+      "sourcePath": "/extensions/apps/overview",
+      "targetPath": "/extensions/apps/overview",
+      "sourceMd": "https://modelcontextprotocol.io/extensions/apps/overview.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/extensions/auth/enterprise-managed-authorization",
+      "sourcePath": "/extensions/auth/enterprise-managed-authorization",
+      "targetPath": "/extensions/auth/enterprise-managed-authorization",
+      "sourceMd": "https://modelcontextprotocol.io/extensions/auth/enterprise-managed-authorization.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/extensions/auth/oauth-client-credentials",
+      "sourcePath": "/extensions/auth/oauth-client-credentials",
+      "targetPath": "/extensions/auth/oauth-client-credentials",
+      "sourceMd": "https://modelcontextprotocol.io/extensions/auth/oauth-client-credentials.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/extensions/auth/overview",
+      "sourcePath": "/extensions/auth/overview",
+      "targetPath": "/extensions/auth/overview",
+      "sourceMd": "https://modelcontextprotocol.io/extensions/auth/overview.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/extensions/client-matrix",
+      "sourcePath": "/extensions/client-matrix",
+      "targetPath": "/extensions/client-matrix",
+      "sourceMd": "https://modelcontextprotocol.io/extensions/client-matrix.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/extensions/overview",
+      "sourcePath": "/extensions/overview",
+      "targetPath": "/extensions/overview",
+      "sourceMd": "https://modelcontextprotocol.io/extensions/overview.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/extensions/tasks/overview",
+      "sourcePath": "/extensions/tasks/overview",
+      "targetPath": "/extensions/tasks/overview",
+      "sourceMd": "https://modelcontextprotocol.io/extensions/tasks/overview.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/registry/about",
+      "sourcePath": "/registry/about",
+      "targetPath": "/registry/about",
+      "sourceMd": "https://modelcontextprotocol.io/registry/about.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/registry/authentication",
+      "sourcePath": "/registry/authentication",
+      "targetPath": "/registry/authentication",
+      "sourceMd": "https://modelcontextprotocol.io/registry/authentication.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/registry/faq",
+      "sourcePath": "/registry/faq",
+      "targetPath": "/registry/faq",
+      "sourceMd": "https://modelcontextprotocol.io/registry/faq.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/registry/github-actions",
+      "sourcePath": "/registry/github-actions",
+      "targetPath": "/registry/github-actions",
+      "sourceMd": "https://modelcontextprotocol.io/registry/github-actions.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/registry/moderation-policy",
+      "sourcePath": "/registry/moderation-policy",
+      "targetPath": "/registry/moderation-policy",
+      "sourceMd": "https://modelcontextprotocol.io/registry/moderation-policy.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/registry/package-types",
+      "sourcePath": "/registry/package-types",
+      "targetPath": "/registry/package-types",
+      "sourceMd": "https://modelcontextprotocol.io/registry/package-types.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/registry/quickstart",
+      "sourcePath": "/registry/quickstart",
+      "targetPath": "/registry/quickstart",
+      "sourceMd": "https://modelcontextprotocol.io/registry/quickstart.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/registry/registry-aggregators",
+      "sourcePath": "/registry/registry-aggregators",
+      "targetPath": "/registry/registry-aggregators",
+      "sourceMd": "https://modelcontextprotocol.io/registry/registry-aggregators.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/registry/remote-servers",
+      "sourcePath": "/registry/remote-servers",
+      "targetPath": "/registry/remote-servers",
+      "sourceMd": "https://modelcontextprotocol.io/registry/remote-servers.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/registry/terms-of-service",
+      "sourcePath": "/registry/terms-of-service",
+      "targetPath": "/registry/terms-of-service",
+      "sourceMd": "https://modelcontextprotocol.io/registry/terms-of-service.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/registry/versioning",
+      "sourcePath": "/registry/versioning",
+      "targetPath": "/registry/versioning",
+      "sourceMd": "https://modelcontextprotocol.io/registry/versioning.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/seps",
+      "sourcePath": "/seps",
+      "targetPath": "/seps",
+      "sourceMd": "https://modelcontextprotocol.io/seps.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/seps/1024-mcp-client-security-requirements-for-local-server-",
+      "sourcePath": "/seps/1024-mcp-client-security-requirements-for-local-server-",
+      "targetPath": "/seps/1024-mcp-client-security-requirements-for-local-server-",
+      "sourceMd": "https://modelcontextprotocol.io/seps/1024-mcp-client-security-requirements-for-local-server-.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/seps/1034--support-default-values-for-all-primitive-types-in",
+      "sourcePath": "/seps/1034--support-default-values-for-all-primitive-types-in",
+      "targetPath": "/seps/1034--support-default-values-for-all-primitive-types-in",
+      "sourceMd": "https://modelcontextprotocol.io/seps/1034--support-default-values-for-all-primitive-types-in.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/seps/1036-url-mode-elicitation-for-secure-out-of-band-intera",
+      "sourcePath": "/seps/1036-url-mode-elicitation-for-secure-out-of-band-intera",
+      "targetPath": "/seps/1036-url-mode-elicitation-for-secure-out-of-band-intera",
+      "sourceMd": "https://modelcontextprotocol.io/seps/1036-url-mode-elicitation-for-secure-out-of-band-intera.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/seps/1046-support-oauth-client-credentials-flow-in-authoriza",
+      "sourcePath": "/seps/1046-support-oauth-client-credentials-flow-in-authoriza",
+      "targetPath": "/seps/1046-support-oauth-client-credentials-flow-in-authoriza",
+      "sourceMd": "https://modelcontextprotocol.io/seps/1046-support-oauth-client-credentials-flow-in-authoriza.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/seps/1302-formalize-working-groups-and-interest-groups-in-mc",
+      "sourcePath": "/seps/1302-formalize-working-groups-and-interest-groups-in-mc",
+      "targetPath": "/seps/1302-formalize-working-groups-and-interest-groups-in-mc",
+      "sourceMd": "https://modelcontextprotocol.io/seps/1302-formalize-working-groups-and-interest-groups-in-mc.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/seps/1303-input-validation-errors-as-tool-execution-errors",
+      "sourcePath": "/seps/1303-input-validation-errors-as-tool-execution-errors",
+      "targetPath": "/seps/1303-input-validation-errors-as-tool-execution-errors",
+      "sourceMd": "https://modelcontextprotocol.io/seps/1303-input-validation-errors-as-tool-execution-errors.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/seps/1319-decouple-request-payload-from-rpc-methods-definiti",
+      "sourcePath": "/seps/1319-decouple-request-payload-from-rpc-methods-definiti",
+      "targetPath": "/seps/1319-decouple-request-payload-from-rpc-methods-definiti",
+      "sourceMd": "https://modelcontextprotocol.io/seps/1319-decouple-request-payload-from-rpc-methods-definiti.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/seps/1330-elicitation-enum-schema-improvements-and-standards",
+      "sourcePath": "/seps/1330-elicitation-enum-schema-improvements-and-standards",
+      "targetPath": "/seps/1330-elicitation-enum-schema-improvements-and-standards",
+      "sourceMd": "https://modelcontextprotocol.io/seps/1330-elicitation-enum-schema-improvements-and-standards.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/seps/1577--sampling-with-tools",
+      "sourcePath": "/seps/1577--sampling-with-tools",
+      "targetPath": "/seps/1577--sampling-with-tools",
+      "sourceMd": "https://modelcontextprotocol.io/seps/1577--sampling-with-tools.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/seps/1613-establish-json-schema-2020-12-as-default-dialect-f",
+      "sourcePath": "/seps/1613-establish-json-schema-2020-12-as-default-dialect-f",
+      "targetPath": "/seps/1613-establish-json-schema-2020-12-as-default-dialect-f",
+      "sourceMd": "https://modelcontextprotocol.io/seps/1613-establish-json-schema-2020-12-as-default-dialect-f.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/seps/1686-tasks",
+      "sourcePath": "/seps/1686-tasks",
+      "targetPath": "/seps/1686-tasks",
+      "sourceMd": "https://modelcontextprotocol.io/seps/1686-tasks.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/seps/1699-support-sse-polling-via-server-side-disconnect",
+      "sourcePath": "/seps/1699-support-sse-polling-via-server-side-disconnect",
+      "targetPath": "/seps/1699-support-sse-polling-via-server-side-disconnect",
+      "sourceMd": "https://modelcontextprotocol.io/seps/1699-support-sse-polling-via-server-side-disconnect.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/seps/1730-sdks-tiering-system",
+      "sourcePath": "/seps/1730-sdks-tiering-system",
+      "targetPath": "/seps/1730-sdks-tiering-system",
+      "sourceMd": "https://modelcontextprotocol.io/seps/1730-sdks-tiering-system.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/seps/1850-pr-based-sep-workflow",
+      "sourcePath": "/seps/1850-pr-based-sep-workflow",
+      "targetPath": "/seps/1850-pr-based-sep-workflow",
+      "sourceMd": "https://modelcontextprotocol.io/seps/1850-pr-based-sep-workflow.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/seps/1865-mcp-apps-interactive-user-interfaces-for-mcp",
+      "sourcePath": "/seps/1865-mcp-apps-interactive-user-interfaces-for-mcp",
+      "targetPath": "/seps/1865-mcp-apps-interactive-user-interfaces-for-mcp",
+      "sourceMd": "https://modelcontextprotocol.io/seps/1865-mcp-apps-interactive-user-interfaces-for-mcp.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/seps/2085-governance-succession-and-amendment",
+      "sourcePath": "/seps/2085-governance-succession-and-amendment",
+      "targetPath": "/seps/2085-governance-succession-and-amendment",
+      "sourceMd": "https://modelcontextprotocol.io/seps/2085-governance-succession-and-amendment.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/seps/2106-json-schema-2020-12",
+      "sourcePath": "/seps/2106-json-schema-2020-12",
+      "targetPath": "/seps/2106-json-schema-2020-12",
+      "sourceMd": "https://modelcontextprotocol.io/seps/2106-json-schema-2020-12.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/seps/2133-extensions",
+      "sourcePath": "/seps/2133-extensions",
+      "targetPath": "/seps/2133-extensions",
+      "sourceMd": "https://modelcontextprotocol.io/seps/2133-extensions.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/seps/2148-contributor-ladder",
+      "sourcePath": "/seps/2148-contributor-ladder",
+      "targetPath": "/seps/2148-contributor-ladder",
+      "sourceMd": "https://modelcontextprotocol.io/seps/2148-contributor-ladder.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/seps/2149-working-group-charter-template",
+      "sourcePath": "/seps/2149-working-group-charter-template",
+      "targetPath": "/seps/2149-working-group-charter-template",
+      "sourceMd": "https://modelcontextprotocol.io/seps/2149-working-group-charter-template.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/seps/2164-resource-not-found-error",
+      "sourcePath": "/seps/2164-resource-not-found-error",
+      "targetPath": "/seps/2164-resource-not-found-error",
+      "sourceMd": "https://modelcontextprotocol.io/seps/2164-resource-not-found-error.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/seps/2207-oidc-refresh-token-guidance",
+      "sourcePath": "/seps/2207-oidc-refresh-token-guidance",
+      "targetPath": "/seps/2207-oidc-refresh-token-guidance",
+      "sourceMd": "https://modelcontextprotocol.io/seps/2207-oidc-refresh-token-guidance.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/seps/2243-http-standardization",
+      "sourcePath": "/seps/2243-http-standardization",
+      "targetPath": "/seps/2243-http-standardization",
+      "sourceMd": "https://modelcontextprotocol.io/seps/2243-http-standardization.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/seps/2260-Require-Server-requests-to-be-associated-with-Client-requests",
+      "sourcePath": "/seps/2260-Require-Server-requests-to-be-associated-with-Client-requests",
+      "targetPath": "/seps/2260-Require-Server-requests-to-be-associated-with-Client-requests",
+      "sourceMd": "https://modelcontextprotocol.io/seps/2260-Require-Server-requests-to-be-associated-with-Client-requests.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/seps/2322-MRTR",
+      "sourcePath": "/seps/2322-MRTR",
+      "targetPath": "/seps/2322-MRTR",
+      "sourceMd": "https://modelcontextprotocol.io/seps/2322-MRTR.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/seps/2468-recommend-issuer-claim-for-auth",
+      "sourcePath": "/seps/2468-recommend-issuer-claim-for-auth",
+      "targetPath": "/seps/2468-recommend-issuer-claim-for-auth",
+      "sourceMd": "https://modelcontextprotocol.io/seps/2468-recommend-issuer-claim-for-auth.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/seps/2484-conformance-tests-required-for-final-seps",
+      "sourcePath": "/seps/2484-conformance-tests-required-for-final-seps",
+      "targetPath": "/seps/2484-conformance-tests-required-for-final-seps",
+      "sourceMd": "https://modelcontextprotocol.io/seps/2484-conformance-tests-required-for-final-seps.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/seps/2549-TTL-for-list-results",
+      "sourcePath": "/seps/2549-TTL-for-list-results",
+      "targetPath": "/seps/2549-TTL-for-list-results",
+      "sourceMd": "https://modelcontextprotocol.io/seps/2549-TTL-for-list-results.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/seps/2567-sessionless-mcp",
+      "sourcePath": "/seps/2567-sessionless-mcp",
+      "targetPath": "/seps/2567-sessionless-mcp",
+      "sourceMd": "https://modelcontextprotocol.io/seps/2567-sessionless-mcp.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/seps/2575-stateless-mcp",
+      "sourcePath": "/seps/2575-stateless-mcp",
+      "targetPath": "/seps/2575-stateless-mcp",
+      "sourceMd": "https://modelcontextprotocol.io/seps/2575-stateless-mcp.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/seps/2577-deprecate-roots-sampling-and-logging",
+      "sourcePath": "/seps/2577-deprecate-roots-sampling-and-logging",
+      "targetPath": "/seps/2577-deprecate-roots-sampling-and-logging",
+      "sourceMd": "https://modelcontextprotocol.io/seps/2577-deprecate-roots-sampling-and-logging.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/seps/2596-spec-feature-lifecycle-and-deprecation",
+      "sourcePath": "/seps/2596-spec-feature-lifecycle-and-deprecation",
+      "targetPath": "/seps/2596-spec-feature-lifecycle-and-deprecation",
+      "sourceMd": "https://modelcontextprotocol.io/seps/2596-spec-feature-lifecycle-and-deprecation.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/seps/2663-tasks-extension",
+      "sourcePath": "/seps/2663-tasks-extension",
+      "targetPath": "/seps/2663-tasks-extension",
+      "sourceMd": "https://modelcontextprotocol.io/seps/2663-tasks-extension.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/seps/414-request-meta",
+      "sourcePath": "/seps/414-request-meta",
+      "targetPath": "/seps/414-request-meta",
+      "sourceMd": "https://modelcontextprotocol.io/seps/414-request-meta.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/seps/932-model-context-protocol-governance",
+      "sourcePath": "/seps/932-model-context-protocol-governance",
+      "targetPath": "/seps/932-model-context-protocol-governance",
+      "sourceMd": "https://modelcontextprotocol.io/seps/932-model-context-protocol-governance.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/seps/973-expose-additional-metadata-for-implementations-res",
+      "sourcePath": "/seps/973-expose-additional-metadata-for-implementations-res",
+      "targetPath": "/seps/973-expose-additional-metadata-for-implementations-res",
+      "sourceMd": "https://modelcontextprotocol.io/seps/973-expose-additional-metadata-for-implementations-res.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/seps/985-align-oauth-20-protected-resource-metadata-with-rf",
+      "sourcePath": "/seps/985-align-oauth-20-protected-resource-metadata-with-rf",
+      "targetPath": "/seps/985-align-oauth-20-protected-resource-metadata-with-rf",
+      "sourceMd": "https://modelcontextprotocol.io/seps/985-align-oauth-20-protected-resource-metadata-with-rf.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/seps/986-specify-format-for-tool-names",
+      "sourcePath": "/seps/986-specify-format-for-tool-names",
+      "targetPath": "/seps/986-specify-format-for-tool-names",
+      "sourceMd": "https://modelcontextprotocol.io/seps/986-specify-format-for-tool-names.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/seps/990-enable-enterprise-idp-policy-controls-during-mcp-o",
+      "sourcePath": "/seps/990-enable-enterprise-idp-policy-controls-during-mcp-o",
+      "targetPath": "/seps/990-enable-enterprise-idp-policy-controls-during-mcp-o",
+      "sourceMd": "https://modelcontextprotocol.io/seps/990-enable-enterprise-idp-policy-controls-during-mcp-o.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/seps/991-enable-url-based-client-registration-using-oauth-c",
+      "sourcePath": "/seps/991-enable-url-based-client-registration-using-oauth-c",
+      "targetPath": "/seps/991-enable-url-based-client-registration-using-oauth-c",
+      "sourceMd": "https://modelcontextprotocol.io/seps/991-enable-url-based-client-registration-using-oauth-c.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/seps/994-shared-communication-practicesguidelines",
+      "sourcePath": "/seps/994-shared-communication-practicesguidelines",
+      "targetPath": "/seps/994-shared-communication-practicesguidelines",
+      "sourceMd": "https://modelcontextprotocol.io/seps/994-shared-communication-practicesguidelines.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2024-11-05",
+      "sourcePath": "/specification/2024-11-05",
+      "targetPath": "/specification/2024-11-05",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2024-11-05.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2024-11-05/architecture",
+      "sourcePath": "/specification/2024-11-05/architecture",
+      "targetPath": "/specification/2024-11-05/architecture",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2024-11-05/architecture.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2024-11-05/basic",
+      "sourcePath": "/specification/2024-11-05/basic",
+      "targetPath": "/specification/2024-11-05/basic",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2024-11-05/basic.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2024-11-05/basic/lifecycle",
+      "sourcePath": "/specification/2024-11-05/basic/lifecycle",
+      "targetPath": "/specification/2024-11-05/basic/lifecycle",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2024-11-05/basic/lifecycle.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2024-11-05/basic/messages",
+      "sourcePath": "/specification/2024-11-05/basic/messages",
+      "targetPath": "/specification/2024-11-05/basic/messages",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2024-11-05/basic/messages.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2024-11-05/basic/transports",
+      "sourcePath": "/specification/2024-11-05/basic/transports",
+      "targetPath": "/specification/2024-11-05/basic/transports",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2024-11-05/basic/transports.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2024-11-05/basic/utilities/cancellation",
+      "sourcePath": "/specification/2024-11-05/basic/utilities/cancellation",
+      "targetPath": "/specification/2024-11-05/basic/utilities/cancellation",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2024-11-05/basic/utilities/cancellation.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2024-11-05/basic/utilities/ping",
+      "sourcePath": "/specification/2024-11-05/basic/utilities/ping",
+      "targetPath": "/specification/2024-11-05/basic/utilities/ping",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2024-11-05/basic/utilities/ping.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2024-11-05/basic/utilities/progress",
+      "sourcePath": "/specification/2024-11-05/basic/utilities/progress",
+      "targetPath": "/specification/2024-11-05/basic/utilities/progress",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2024-11-05/basic/utilities/progress.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2024-11-05/client/roots",
+      "sourcePath": "/specification/2024-11-05/client/roots",
+      "targetPath": "/specification/2024-11-05/client/roots",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2024-11-05/client/roots.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2024-11-05/client/sampling",
+      "sourcePath": "/specification/2024-11-05/client/sampling",
+      "targetPath": "/specification/2024-11-05/client/sampling",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2024-11-05/client/sampling.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2024-11-05/server",
+      "sourcePath": "/specification/2024-11-05/server",
+      "targetPath": "/specification/2024-11-05/server",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2024-11-05/server.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2024-11-05/server/prompts",
+      "sourcePath": "/specification/2024-11-05/server/prompts",
+      "targetPath": "/specification/2024-11-05/server/prompts",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2024-11-05/server/prompts.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2024-11-05/server/resources",
+      "sourcePath": "/specification/2024-11-05/server/resources",
+      "targetPath": "/specification/2024-11-05/server/resources",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2024-11-05/server/resources.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2024-11-05/server/tools",
+      "sourcePath": "/specification/2024-11-05/server/tools",
+      "targetPath": "/specification/2024-11-05/server/tools",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2024-11-05/server/tools.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2024-11-05/server/utilities/completion",
+      "sourcePath": "/specification/2024-11-05/server/utilities/completion",
+      "targetPath": "/specification/2024-11-05/server/utilities/completion",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2024-11-05/server/utilities/completion.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2024-11-05/server/utilities/logging",
+      "sourcePath": "/specification/2024-11-05/server/utilities/logging",
+      "targetPath": "/specification/2024-11-05/server/utilities/logging",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2024-11-05/server/utilities/logging.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2024-11-05/server/utilities/pagination",
+      "sourcePath": "/specification/2024-11-05/server/utilities/pagination",
+      "targetPath": "/specification/2024-11-05/server/utilities/pagination",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2024-11-05/server/utilities/pagination.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2025-03-26",
+      "sourcePath": "/specification/2025-03-26",
+      "targetPath": "/specification/2025-03-26",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2025-03-26.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2025-03-26/architecture",
+      "sourcePath": "/specification/2025-03-26/architecture",
+      "targetPath": "/specification/2025-03-26/architecture",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2025-03-26/architecture.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2025-03-26/basic",
+      "sourcePath": "/specification/2025-03-26/basic",
+      "targetPath": "/specification/2025-03-26/basic",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2025-03-26/basic.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2025-03-26/basic/authorization",
+      "sourcePath": "/specification/2025-03-26/basic/authorization",
+      "targetPath": "/specification/2025-03-26/basic/authorization",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2025-03-26/basic/authorization.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2025-03-26/basic/lifecycle",
+      "sourcePath": "/specification/2025-03-26/basic/lifecycle",
+      "targetPath": "/specification/2025-03-26/basic/lifecycle",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2025-03-26/basic/lifecycle.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2025-03-26/basic/transports",
+      "sourcePath": "/specification/2025-03-26/basic/transports",
+      "targetPath": "/specification/2025-03-26/basic/transports",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2025-03-26/basic/transports.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2025-03-26/basic/utilities/cancellation",
+      "sourcePath": "/specification/2025-03-26/basic/utilities/cancellation",
+      "targetPath": "/specification/2025-03-26/basic/utilities/cancellation",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2025-03-26/basic/utilities/cancellation.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2025-03-26/basic/utilities/ping",
+      "sourcePath": "/specification/2025-03-26/basic/utilities/ping",
+      "targetPath": "/specification/2025-03-26/basic/utilities/ping",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2025-03-26/basic/utilities/ping.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2025-03-26/basic/utilities/progress",
+      "sourcePath": "/specification/2025-03-26/basic/utilities/progress",
+      "targetPath": "/specification/2025-03-26/basic/utilities/progress",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2025-03-26/basic/utilities/progress.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2025-03-26/changelog",
+      "sourcePath": "/specification/2025-03-26/changelog",
+      "targetPath": "/specification/2025-03-26/changelog",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2025-03-26/changelog.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2025-03-26/client/roots",
+      "sourcePath": "/specification/2025-03-26/client/roots",
+      "targetPath": "/specification/2025-03-26/client/roots",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2025-03-26/client/roots.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2025-03-26/client/sampling",
+      "sourcePath": "/specification/2025-03-26/client/sampling",
+      "targetPath": "/specification/2025-03-26/client/sampling",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2025-03-26/client/sampling.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2025-03-26/server",
+      "sourcePath": "/specification/2025-03-26/server",
+      "targetPath": "/specification/2025-03-26/server",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2025-03-26/server.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2025-03-26/server/prompts",
+      "sourcePath": "/specification/2025-03-26/server/prompts",
+      "targetPath": "/specification/2025-03-26/server/prompts",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2025-03-26/server/prompts.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2025-03-26/server/resources",
+      "sourcePath": "/specification/2025-03-26/server/resources",
+      "targetPath": "/specification/2025-03-26/server/resources",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2025-03-26/server/resources.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2025-03-26/server/tools",
+      "sourcePath": "/specification/2025-03-26/server/tools",
+      "targetPath": "/specification/2025-03-26/server/tools",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2025-03-26/server/tools.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2025-03-26/server/utilities/completion",
+      "sourcePath": "/specification/2025-03-26/server/utilities/completion",
+      "targetPath": "/specification/2025-03-26/server/utilities/completion",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2025-03-26/server/utilities/completion.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2025-03-26/server/utilities/logging",
+      "sourcePath": "/specification/2025-03-26/server/utilities/logging",
+      "targetPath": "/specification/2025-03-26/server/utilities/logging",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2025-03-26/server/utilities/logging.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2025-03-26/server/utilities/pagination",
+      "sourcePath": "/specification/2025-03-26/server/utilities/pagination",
+      "targetPath": "/specification/2025-03-26/server/utilities/pagination",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2025-03-26/server/utilities/pagination.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2025-06-18",
+      "sourcePath": "/specification/2025-06-18",
+      "targetPath": "/specification/2025-06-18",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2025-06-18.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2025-06-18/architecture",
+      "sourcePath": "/specification/2025-06-18/architecture",
+      "targetPath": "/specification/2025-06-18/architecture",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2025-06-18/architecture.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2025-06-18/basic",
+      "sourcePath": "/specification/2025-06-18/basic",
+      "targetPath": "/specification/2025-06-18/basic",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2025-06-18/basic.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2025-06-18/basic/authorization",
+      "sourcePath": "/specification/2025-06-18/basic/authorization",
+      "targetPath": "/specification/2025-06-18/basic/authorization",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2025-06-18/basic/authorization.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2025-06-18/basic/lifecycle",
+      "sourcePath": "/specification/2025-06-18/basic/lifecycle",
+      "targetPath": "/specification/2025-06-18/basic/lifecycle",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2025-06-18/basic/lifecycle.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2025-06-18/basic/transports",
+      "sourcePath": "/specification/2025-06-18/basic/transports",
+      "targetPath": "/specification/2025-06-18/basic/transports",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2025-06-18/basic/transports.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2025-06-18/basic/utilities/cancellation",
+      "sourcePath": "/specification/2025-06-18/basic/utilities/cancellation",
+      "targetPath": "/specification/2025-06-18/basic/utilities/cancellation",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2025-06-18/basic/utilities/cancellation.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2025-06-18/basic/utilities/ping",
+      "sourcePath": "/specification/2025-06-18/basic/utilities/ping",
+      "targetPath": "/specification/2025-06-18/basic/utilities/ping",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2025-06-18/basic/utilities/ping.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2025-06-18/basic/utilities/progress",
+      "sourcePath": "/specification/2025-06-18/basic/utilities/progress",
+      "targetPath": "/specification/2025-06-18/basic/utilities/progress",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2025-06-18/basic/utilities/progress.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2025-06-18/changelog",
+      "sourcePath": "/specification/2025-06-18/changelog",
+      "targetPath": "/specification/2025-06-18/changelog",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2025-06-18/changelog.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2025-06-18/client/elicitation",
+      "sourcePath": "/specification/2025-06-18/client/elicitation",
+      "targetPath": "/specification/2025-06-18/client/elicitation",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2025-06-18/client/elicitation.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2025-06-18/client/roots",
+      "sourcePath": "/specification/2025-06-18/client/roots",
+      "targetPath": "/specification/2025-06-18/client/roots",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2025-06-18/client/roots.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2025-06-18/client/sampling",
+      "sourcePath": "/specification/2025-06-18/client/sampling",
+      "targetPath": "/specification/2025-06-18/client/sampling",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2025-06-18/client/sampling.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2025-06-18/schema",
+      "sourcePath": "/specification/2025-06-18/schema",
+      "targetPath": "/specification/2025-06-18/schema",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2025-06-18/schema.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2025-06-18/server",
+      "sourcePath": "/specification/2025-06-18/server",
+      "targetPath": "/specification/2025-06-18/server",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2025-06-18/server.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2025-06-18/server/prompts",
+      "sourcePath": "/specification/2025-06-18/server/prompts",
+      "targetPath": "/specification/2025-06-18/server/prompts",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2025-06-18/server/prompts.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2025-06-18/server/resources",
+      "sourcePath": "/specification/2025-06-18/server/resources",
+      "targetPath": "/specification/2025-06-18/server/resources",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2025-06-18/server/resources.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2025-06-18/server/tools",
+      "sourcePath": "/specification/2025-06-18/server/tools",
+      "targetPath": "/specification/2025-06-18/server/tools",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2025-06-18/server/tools.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2025-06-18/server/utilities/completion",
+      "sourcePath": "/specification/2025-06-18/server/utilities/completion",
+      "targetPath": "/specification/2025-06-18/server/utilities/completion",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2025-06-18/server/utilities/completion.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2025-06-18/server/utilities/logging",
+      "sourcePath": "/specification/2025-06-18/server/utilities/logging",
+      "targetPath": "/specification/2025-06-18/server/utilities/logging",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2025-06-18/server/utilities/logging.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2025-06-18/server/utilities/pagination",
+      "sourcePath": "/specification/2025-06-18/server/utilities/pagination",
+      "targetPath": "/specification/2025-06-18/server/utilities/pagination",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2025-06-18/server/utilities/pagination.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2025-11-25",
+      "sourcePath": "/specification/2025-11-25",
+      "targetPath": "/specification/2025-11-25",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2025-11-25.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2025-11-25/architecture",
+      "sourcePath": "/specification/2025-11-25/architecture",
+      "targetPath": "/specification/2025-11-25/architecture",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2025-11-25/architecture.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2025-11-25/basic",
+      "sourcePath": "/specification/2025-11-25/basic",
+      "targetPath": "/specification/2025-11-25/basic",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2025-11-25/basic.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2025-11-25/basic/authorization",
+      "sourcePath": "/specification/2025-11-25/basic/authorization",
+      "targetPath": "/specification/2025-11-25/basic/authorization",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2025-11-25/basic/authorization.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2025-11-25/basic/lifecycle",
+      "sourcePath": "/specification/2025-11-25/basic/lifecycle",
+      "targetPath": "/specification/2025-11-25/basic/lifecycle",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2025-11-25/basic/lifecycle.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2025-11-25/basic/transports",
+      "sourcePath": "/specification/2025-11-25/basic/transports",
+      "targetPath": "/specification/2025-11-25/basic/transports",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2025-11-25/basic/transports.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2025-11-25/basic/utilities/cancellation",
+      "sourcePath": "/specification/2025-11-25/basic/utilities/cancellation",
+      "targetPath": "/specification/2025-11-25/basic/utilities/cancellation",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2025-11-25/basic/utilities/cancellation.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2025-11-25/basic/utilities/ping",
+      "sourcePath": "/specification/2025-11-25/basic/utilities/ping",
+      "targetPath": "/specification/2025-11-25/basic/utilities/ping",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2025-11-25/basic/utilities/ping.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2025-11-25/basic/utilities/progress",
+      "sourcePath": "/specification/2025-11-25/basic/utilities/progress",
+      "targetPath": "/specification/2025-11-25/basic/utilities/progress",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2025-11-25/basic/utilities/progress.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2025-11-25/basic/utilities/tasks",
+      "sourcePath": "/specification/2025-11-25/basic/utilities/tasks",
+      "targetPath": "/specification/2025-11-25/basic/utilities/tasks",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2025-11-25/basic/utilities/tasks.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2025-11-25/changelog",
+      "sourcePath": "/specification/2025-11-25/changelog",
+      "targetPath": "/specification/2025-11-25/changelog",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2025-11-25/changelog.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2025-11-25/client/elicitation",
+      "sourcePath": "/specification/2025-11-25/client/elicitation",
+      "targetPath": "/specification/2025-11-25/client/elicitation",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2025-11-25/client/elicitation.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2025-11-25/client/roots",
+      "sourcePath": "/specification/2025-11-25/client/roots",
+      "targetPath": "/specification/2025-11-25/client/roots",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2025-11-25/client/roots.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2025-11-25/client/sampling",
+      "sourcePath": "/specification/2025-11-25/client/sampling",
+      "targetPath": "/specification/2025-11-25/client/sampling",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2025-11-25/client/sampling.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2025-11-25/schema",
+      "sourcePath": "/specification/2025-11-25/schema",
+      "targetPath": "/specification/2025-11-25/schema",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2025-11-25/schema.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2025-11-25/server",
+      "sourcePath": "/specification/2025-11-25/server",
+      "targetPath": "/specification/2025-11-25/server",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2025-11-25/server.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2025-11-25/server/prompts",
+      "sourcePath": "/specification/2025-11-25/server/prompts",
+      "targetPath": "/specification/2025-11-25/server/prompts",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2025-11-25/server/prompts.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2025-11-25/server/resources",
+      "sourcePath": "/specification/2025-11-25/server/resources",
+      "targetPath": "/specification/2025-11-25/server/resources",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2025-11-25/server/resources.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2025-11-25/server/tools",
+      "sourcePath": "/specification/2025-11-25/server/tools",
+      "targetPath": "/specification/2025-11-25/server/tools",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2025-11-25/server/tools.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2025-11-25/server/utilities/completion",
+      "sourcePath": "/specification/2025-11-25/server/utilities/completion",
+      "targetPath": "/specification/2025-11-25/server/utilities/completion",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2025-11-25/server/utilities/completion.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2025-11-25/server/utilities/logging",
+      "sourcePath": "/specification/2025-11-25/server/utilities/logging",
+      "targetPath": "/specification/2025-11-25/server/utilities/logging",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2025-11-25/server/utilities/logging.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2025-11-25/server/utilities/pagination",
+      "sourcePath": "/specification/2025-11-25/server/utilities/pagination",
+      "targetPath": "/specification/2025-11-25/server/utilities/pagination",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2025-11-25/server/utilities/pagination.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2026-07-28",
+      "sourcePath": "/specification/2026-07-28",
+      "targetPath": "/specification/2026-07-28",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2026-07-28.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2026-07-28/architecture",
+      "sourcePath": "/specification/2026-07-28/architecture",
+      "targetPath": "/specification/2026-07-28/architecture",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2026-07-28/architecture.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2026-07-28/basic",
+      "sourcePath": "/specification/2026-07-28/basic",
+      "targetPath": "/specification/2026-07-28/basic",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2026-07-28/basic.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization",
+      "sourcePath": "/specification/2026-07-28/basic/authorization",
+      "targetPath": "/specification/2026-07-28/basic/authorization",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization/authorization-server-discovery",
+      "sourcePath": "/specification/2026-07-28/basic/authorization/authorization-server-discovery",
+      "targetPath": "/specification/2026-07-28/basic/authorization/authorization-server-discovery",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization/authorization-server-discovery.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization/client-registration",
+      "sourcePath": "/specification/2026-07-28/basic/authorization/client-registration",
+      "targetPath": "/specification/2026-07-28/basic/authorization/client-registration",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization/client-registration.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization/security-considerations",
+      "sourcePath": "/specification/2026-07-28/basic/authorization/security-considerations",
+      "targetPath": "/specification/2026-07-28/basic/authorization/security-considerations",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization/security-considerations.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2026-07-28/basic/patterns",
+      "sourcePath": "/specification/2026-07-28/basic/patterns",
+      "targetPath": "/specification/2026-07-28/basic/patterns",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2026-07-28/basic/patterns.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2026-07-28/basic/patterns/cancellation",
+      "sourcePath": "/specification/2026-07-28/basic/patterns/cancellation",
+      "targetPath": "/specification/2026-07-28/basic/patterns/cancellation",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2026-07-28/basic/patterns/cancellation.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2026-07-28/basic/patterns/mrtr",
+      "sourcePath": "/specification/2026-07-28/basic/patterns/mrtr",
+      "targetPath": "/specification/2026-07-28/basic/patterns/mrtr",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2026-07-28/basic/patterns/mrtr.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2026-07-28/basic/patterns/progress",
+      "sourcePath": "/specification/2026-07-28/basic/patterns/progress",
+      "targetPath": "/specification/2026-07-28/basic/patterns/progress",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2026-07-28/basic/patterns/progress.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2026-07-28/basic/patterns/subscriptions",
+      "sourcePath": "/specification/2026-07-28/basic/patterns/subscriptions",
+      "targetPath": "/specification/2026-07-28/basic/patterns/subscriptions",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2026-07-28/basic/patterns/subscriptions.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2026-07-28/basic/transports",
+      "sourcePath": "/specification/2026-07-28/basic/transports",
+      "targetPath": "/specification/2026-07-28/basic/transports",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2026-07-28/basic/transports.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/stdio",
+      "sourcePath": "/specification/2026-07-28/basic/transports/stdio",
+      "targetPath": "/specification/2026-07-28/basic/transports/stdio",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/stdio.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/streamable-http",
+      "sourcePath": "/specification/2026-07-28/basic/transports/streamable-http",
+      "targetPath": "/specification/2026-07-28/basic/transports/streamable-http",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/streamable-http.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2026-07-28/basic/versioning",
+      "sourcePath": "/specification/2026-07-28/basic/versioning",
+      "targetPath": "/specification/2026-07-28/basic/versioning",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2026-07-28/basic/versioning.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2026-07-28/changelog",
+      "sourcePath": "/specification/2026-07-28/changelog",
+      "targetPath": "/specification/2026-07-28/changelog",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2026-07-28/changelog.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2026-07-28/client/elicitation",
+      "sourcePath": "/specification/2026-07-28/client/elicitation",
+      "targetPath": "/specification/2026-07-28/client/elicitation",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2026-07-28/client/elicitation.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2026-07-28/client/roots",
+      "sourcePath": "/specification/2026-07-28/client/roots",
+      "targetPath": "/specification/2026-07-28/client/roots",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2026-07-28/client/roots.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2026-07-28/client/sampling",
+      "sourcePath": "/specification/2026-07-28/client/sampling",
+      "targetPath": "/specification/2026-07-28/client/sampling",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2026-07-28/client/sampling.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2026-07-28/deprecated",
+      "sourcePath": "/specification/2026-07-28/deprecated",
+      "targetPath": "/specification/2026-07-28/deprecated",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2026-07-28/deprecated.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2026-07-28/schema",
+      "sourcePath": "/specification/2026-07-28/schema",
+      "targetPath": "/specification/2026-07-28/schema",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2026-07-28/schema.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2026-07-28/server",
+      "sourcePath": "/specification/2026-07-28/server",
+      "targetPath": "/specification/2026-07-28/server",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2026-07-28/server.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2026-07-28/server/discover",
+      "sourcePath": "/specification/2026-07-28/server/discover",
+      "targetPath": "/specification/2026-07-28/server/discover",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2026-07-28/server/discover.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2026-07-28/server/prompts",
+      "sourcePath": "/specification/2026-07-28/server/prompts",
+      "targetPath": "/specification/2026-07-28/server/prompts",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2026-07-28/server/prompts.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2026-07-28/server/resources",
+      "sourcePath": "/specification/2026-07-28/server/resources",
+      "targetPath": "/specification/2026-07-28/server/resources",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2026-07-28/server/resources.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2026-07-28/server/tools",
+      "sourcePath": "/specification/2026-07-28/server/tools",
+      "targetPath": "/specification/2026-07-28/server/tools",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2026-07-28/server/tools.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2026-07-28/server/utilities/caching",
+      "sourcePath": "/specification/2026-07-28/server/utilities/caching",
+      "targetPath": "/specification/2026-07-28/server/utilities/caching",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2026-07-28/server/utilities/caching.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2026-07-28/server/utilities/completion",
+      "sourcePath": "/specification/2026-07-28/server/utilities/completion",
+      "targetPath": "/specification/2026-07-28/server/utilities/completion",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2026-07-28/server/utilities/completion.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2026-07-28/server/utilities/logging",
+      "sourcePath": "/specification/2026-07-28/server/utilities/logging",
+      "targetPath": "/specification/2026-07-28/server/utilities/logging",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2026-07-28/server/utilities/logging.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/2026-07-28/server/utilities/pagination",
+      "sourcePath": "/specification/2026-07-28/server/utilities/pagination",
+      "targetPath": "/specification/2026-07-28/server/utilities/pagination",
+      "sourceMd": "https://modelcontextprotocol.io/specification/2026-07-28/server/utilities/pagination.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/draft",
+      "sourcePath": "/specification/draft",
+      "targetPath": "/specification/draft",
+      "sourceMd": "https://modelcontextprotocol.io/specification/draft.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/draft/architecture",
+      "sourcePath": "/specification/draft/architecture",
+      "targetPath": "/specification/draft/architecture",
+      "sourceMd": "https://modelcontextprotocol.io/specification/draft/architecture.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/draft/basic",
+      "sourcePath": "/specification/draft/basic",
+      "targetPath": "/specification/draft/basic",
+      "sourceMd": "https://modelcontextprotocol.io/specification/draft/basic.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/draft/basic/authorization",
+      "sourcePath": "/specification/draft/basic/authorization",
+      "targetPath": "/specification/draft/basic/authorization",
+      "sourceMd": "https://modelcontextprotocol.io/specification/draft/basic/authorization.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/draft/basic/authorization/authorization-server-discovery",
+      "sourcePath": "/specification/draft/basic/authorization/authorization-server-discovery",
+      "targetPath": "/specification/draft/basic/authorization/authorization-server-discovery",
+      "sourceMd": "https://modelcontextprotocol.io/specification/draft/basic/authorization/authorization-server-discovery.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/draft/basic/authorization/client-registration",
+      "sourcePath": "/specification/draft/basic/authorization/client-registration",
+      "targetPath": "/specification/draft/basic/authorization/client-registration",
+      "sourceMd": "https://modelcontextprotocol.io/specification/draft/basic/authorization/client-registration.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/draft/basic/authorization/security-considerations",
+      "sourcePath": "/specification/draft/basic/authorization/security-considerations",
+      "targetPath": "/specification/draft/basic/authorization/security-considerations",
+      "sourceMd": "https://modelcontextprotocol.io/specification/draft/basic/authorization/security-considerations.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/draft/basic/patterns",
+      "sourcePath": "/specification/draft/basic/patterns",
+      "targetPath": "/specification/draft/basic/patterns",
+      "sourceMd": "https://modelcontextprotocol.io/specification/draft/basic/patterns.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/draft/basic/patterns/cancellation",
+      "sourcePath": "/specification/draft/basic/patterns/cancellation",
+      "targetPath": "/specification/draft/basic/patterns/cancellation",
+      "sourceMd": "https://modelcontextprotocol.io/specification/draft/basic/patterns/cancellation.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/draft/basic/patterns/mrtr",
+      "sourcePath": "/specification/draft/basic/patterns/mrtr",
+      "targetPath": "/specification/draft/basic/patterns/mrtr",
+      "sourceMd": "https://modelcontextprotocol.io/specification/draft/basic/patterns/mrtr.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/draft/basic/patterns/progress",
+      "sourcePath": "/specification/draft/basic/patterns/progress",
+      "targetPath": "/specification/draft/basic/patterns/progress",
+      "sourceMd": "https://modelcontextprotocol.io/specification/draft/basic/patterns/progress.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/draft/basic/patterns/subscriptions",
+      "sourcePath": "/specification/draft/basic/patterns/subscriptions",
+      "targetPath": "/specification/draft/basic/patterns/subscriptions",
+      "sourceMd": "https://modelcontextprotocol.io/specification/draft/basic/patterns/subscriptions.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/draft/basic/transports",
+      "sourcePath": "/specification/draft/basic/transports",
+      "targetPath": "/specification/draft/basic/transports",
+      "sourceMd": "https://modelcontextprotocol.io/specification/draft/basic/transports.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/draft/basic/transports/stdio",
+      "sourcePath": "/specification/draft/basic/transports/stdio",
+      "targetPath": "/specification/draft/basic/transports/stdio",
+      "sourceMd": "https://modelcontextprotocol.io/specification/draft/basic/transports/stdio.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/draft/basic/transports/streamable-http",
+      "sourcePath": "/specification/draft/basic/transports/streamable-http",
+      "targetPath": "/specification/draft/basic/transports/streamable-http",
+      "sourceMd": "https://modelcontextprotocol.io/specification/draft/basic/transports/streamable-http.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/draft/basic/versioning",
+      "sourcePath": "/specification/draft/basic/versioning",
+      "targetPath": "/specification/draft/basic/versioning",
+      "sourceMd": "https://modelcontextprotocol.io/specification/draft/basic/versioning.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/draft/changelog",
+      "sourcePath": "/specification/draft/changelog",
+      "targetPath": "/specification/draft/changelog",
+      "sourceMd": "https://modelcontextprotocol.io/specification/draft/changelog.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/draft/client/elicitation",
+      "sourcePath": "/specification/draft/client/elicitation",
+      "targetPath": "/specification/draft/client/elicitation",
+      "sourceMd": "https://modelcontextprotocol.io/specification/draft/client/elicitation.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/draft/client/roots",
+      "sourcePath": "/specification/draft/client/roots",
+      "targetPath": "/specification/draft/client/roots",
+      "sourceMd": "https://modelcontextprotocol.io/specification/draft/client/roots.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/draft/client/sampling",
+      "sourcePath": "/specification/draft/client/sampling",
+      "targetPath": "/specification/draft/client/sampling",
+      "sourceMd": "https://modelcontextprotocol.io/specification/draft/client/sampling.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/draft/deprecated",
+      "sourcePath": "/specification/draft/deprecated",
+      "targetPath": "/specification/draft/deprecated",
+      "sourceMd": "https://modelcontextprotocol.io/specification/draft/deprecated.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/draft/schema",
+      "sourcePath": "/specification/draft/schema",
+      "targetPath": "/specification/draft/schema",
+      "sourceMd": "https://modelcontextprotocol.io/specification/draft/schema.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/draft/server",
+      "sourcePath": "/specification/draft/server",
+      "targetPath": "/specification/draft/server",
+      "sourceMd": "https://modelcontextprotocol.io/specification/draft/server.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/draft/server/discover",
+      "sourcePath": "/specification/draft/server/discover",
+      "targetPath": "/specification/draft/server/discover",
+      "sourceMd": "https://modelcontextprotocol.io/specification/draft/server/discover.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/draft/server/prompts",
+      "sourcePath": "/specification/draft/server/prompts",
+      "targetPath": "/specification/draft/server/prompts",
+      "sourceMd": "https://modelcontextprotocol.io/specification/draft/server/prompts.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/draft/server/resources",
+      "sourcePath": "/specification/draft/server/resources",
+      "targetPath": "/specification/draft/server/resources",
+      "sourceMd": "https://modelcontextprotocol.io/specification/draft/server/resources.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/draft/server/tools",
+      "sourcePath": "/specification/draft/server/tools",
+      "targetPath": "/specification/draft/server/tools",
+      "sourceMd": "https://modelcontextprotocol.io/specification/draft/server/tools.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/draft/server/utilities/caching",
+      "sourcePath": "/specification/draft/server/utilities/caching",
+      "targetPath": "/specification/draft/server/utilities/caching",
+      "sourceMd": "https://modelcontextprotocol.io/specification/draft/server/utilities/caching.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/draft/server/utilities/completion",
+      "sourcePath": "/specification/draft/server/utilities/completion",
+      "targetPath": "/specification/draft/server/utilities/completion",
+      "sourceMd": "https://modelcontextprotocol.io/specification/draft/server/utilities/completion.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/draft/server/utilities/logging",
+      "sourcePath": "/specification/draft/server/utilities/logging",
+      "targetPath": "/specification/draft/server/utilities/logging",
+      "sourceMd": "https://modelcontextprotocol.io/specification/draft/server/utilities/logging.md"
+    },
+    {
+      "sourceUrl": "https://modelcontextprotocol.io/specification/draft/server/utilities/pagination",
+      "sourcePath": "/specification/draft/server/utilities/pagination",
+      "targetPath": "/specification/draft/server/utilities/pagination",
+      "sourceMd": "https://modelcontextprotocol.io/specification/draft/server/utilities/pagination.md"
+    }
+  ]
+}

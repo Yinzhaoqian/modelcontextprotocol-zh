@@ -1,0 +1,184 @@
+---
+title: 扩展概览
+description: 模型上下文协议的可选扩展
+---
+
+# MCP 扩展
+
+MCP 扩展是对规范的可选补充，用于定义超出核心协议范围的能力。扩展所支持的功能可以是模块化的（例如认证等相对独立的特性）、专门化的（例如特定行业的逻辑），或实验性的（例如正在孵化、有可能被纳入核心的特性）。
+
+扩展通过一个唯一的**扩展标识符（extension identifier）**来标识，格式为：`{vendor-prefix}/{extension-name}`，例如 `io.modelcontextprotocol/oauth-client-credentials`。标识符遵循与 [`_meta` 键](/specification/draft/basic/index#meta)相同的规则，但前缀是强制的。官方扩展使用 `io.modelcontextprotocol` 供应商前缀。
+
+<Tip>
+
+如果你正在构建第三方扩展，请使用你所拥有的反转域名作为供应商前缀，以避免冲突（类似于 Java 的包命名方式）。例如，拥有 `example.com` 的公司会使用 `com.example/` 作为其前缀（例如 `com.example/my-extension`）。
+
+</Tip>
+
+## 官方扩展仓库
+
+官方扩展位于 [Model Context Protocol GitHub 组织](https://github.com/modelcontextprotocol/)中带有 `ext-` 前缀的仓库内。
+
+### MCP 授权扩展
+
+<Card
+  title="modelcontextprotocol/ext-auth"
+  icon="github"
+  href="https://github.com/modelcontextprotocol/ext-auth"
+>
+  为核心规范之外的补充性授权机制提供的扩展。
+</Card>
+
+| 扩展                                                                                    | 描述                                                       |
+| ------------------------------------------------------------------------------------- | --------------------------------------------------------- |
+| [OAuth 客户端凭据](/extensions/auth/oauth-client-credentials)                          | 用于机器对机器认证的 OAuth 2.0 客户端凭据流。                |
+| [企业托管授权](/extensions/auth/enterprise-managed-authorization)                      | 面向需要集中式访问控制的企业环境的框架。                     |
+
+### MCP Apps
+
+<Card
+  title="modelcontextprotocol/ext-apps"
+  icon="github"
+  href="https://github.com/modelcontextprotocol/ext-apps"
+>
+  为对话式 MCP 客户端中的交互式 UI 元素提供的扩展。
+</Card>
+
+| 扩展                                  | 描述                                                                                                             |
+| ------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| [MCP Apps](/extensions/apps/overview) | 允许 MCP 服务器在对话中内联展示交互式 UI 元素（图表、表单、视频播放器）。                                          |
+
+要开始构建 MCP Apps，请参见[快速上手指南](/extensions/apps/build#getting-started)，或阅读完整的 [MCP Apps 文档](https://apps.extensions.modelcontextprotocol.io/api/documents/Quickstart.html)。
+
+### MCP Tasks
+
+| 扩展                                    | 描述                                                                                                           |
+| --------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| [MCP Tasks](/extensions/tasks/overview) | 面向长时间运行操作的异步任务执行，支持轮询、执行中途输入以及持久化句柄。                                        |
+
+## 实验性扩展
+
+实验性扩展为[工作组和兴趣组](/community/working-interest-groups)提供了一条孵化路径，让它们在正式提交 SEP 之前，能够对想法进行原型验证并就扩展概念展开协作。
+
+实验性扩展仓库位于 MCP GitHub 组织内，带有 `experimental-ext-` 前缀（例如 `experimental-ext-interceptors`）。
+
+### 基本规则
+
+- 每个实验性扩展都需要与某个工作组或兴趣组关联
+- 仓库和已发布的软件包需要清晰地标明其实验性状态（例如在 README 和软件包名称中）
+- [核心维护者](/community/contributor-ladder#core-maintainer)保留对实验性扩展仓库的监管权，包括归档或移除它们的权力
+
+### 晋升为官方状态
+
+要将实验性扩展提升为官方状态，需经过标准的 SEP 流程（Extensions Track，扩展轨道）。你可以引用该实验性仓库以及你在孵化期间构建的任何参考实现，以证明该扩展的实用性。
+
+## 创建扩展
+
+官方扩展的生命周期遵循基于 SEP 的流程。完整细节参见 [SEP-2133：扩展](/seps/2133-extensions)。
+
+1. **提案（Propose）**：按照[标准 SEP 指南](/community/sep-guidelines)在 MCP 主仓库中创建一个 SEP，类型为 **Extensions Track**。
+2. **实现（Implement）**：在某个官方 SDK 中构建至少一个参考实现——这是 SEP 能够被评审之前的必要条件。
+3. **评审（Review）**：[核心维护者](/community/contributor-ladder#core-maintainer)评审该 SEP，并对是否纳入拥有最终决定权。
+4. **发布（Publish）**：一旦获批，提交一个 PR 将该扩展添加到扩展仓库中。
+5. **采纳（Adopt）**：此后，其他客户端、服务器和 SDK 也可以实现该扩展。
+
+### 要求
+
+- 扩展规范需要使用 RFC 2119 语言（MUST、SHOULD、MAY）
+- 扩展必须有一个关联的工作组或兴趣组
+
+### SDK 实现
+
+SDK 可以选择实现扩展，但这对协议合规性而言不是必需的。SDK 维护者对其支持哪些扩展拥有完全的自主权。当某个 SDK 确实支持扩展时，其 SDK 文档应当列出所支持的扩展。
+
+<Note>
+
+扩展始终默认为禁用状态，需要开发者显式选择启用。
+
+</Note>
+
+### 演进
+
+扩展独立于核心协议进行演进。更新由扩展仓库的维护者管理，无需核心维护者评审。
+
+尽管如此，向后兼容性依然重要。当你需要修改某个扩展时，优先在扩展设置对象内部使用能力标志（capability flags）或版本控制，而不是创建新的扩展标识符。如果破坏性变更不可避免，则使用新的标识符（例如 `io.modelcontextprotocol/my-extension-v2`）。
+
+**破坏性变更**是指任何会导致现有实现失败或行为异常的修改，包括：
+
+- 移除或重命名字段
+- 更改字段类型
+- 改变现有行为的语义
+- 添加新的必填字段
+
+## 协商
+
+客户端和服务器在各自的能力声明中通过 `extensions` 字段来公告其对扩展的支持。
+
+### 客户端能力
+
+客户端在每个请求内的 `_meta["io.modelcontextprotocol/clientCapabilities"]` 中公告扩展支持：
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": {
+    "name": "get_weather",
+    "arguments": {
+      "location": "New York"
+    },
+    "_meta": {
+      "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+      "io.modelcontextprotocol/clientCapabilities": {
+        "extensions": {
+          "io.modelcontextprotocol/ui": {
+            "mimeTypes": ["text/html;profile=mcp-app"]
+          }
+        }
+      },
+      "io.modelcontextprotocol/clientInfo": {
+        "name": "ExampleClient",
+        "version": "1.0.0"
+      }
+    }
+  }
+}
+```
+
+### 服务器能力
+
+服务器在 `server/discover` 响应中公告扩展支持：
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": {
+    "resultType": "complete",
+    "supportedVersions": ["2026-07-28"],
+    "capabilities": {
+      "tools": {},
+      "extensions": {
+        "io.modelcontextprotocol/ui": {}
+      }
+    },
+    "_meta": {
+      "io.modelcontextprotocol/serverInfo": {
+        "name": "ExampleServer",
+        "version": "1.0.0"
+      }
+    },
+    "ttlMs": 3600000,
+    "cacheScope": "public"
+  }
+}
+```
+
+每个扩展都会指定其设置对象的模式（schema）；空对象表示没有设置项。
+
+### 优雅降级
+
+如果一方支持某个扩展而另一方不支持，则支持的一方需要回退到核心协议行为，或者在该扩展为强制性时以适当的错误拒绝该请求。
+
+在你的扩展中记录预期的回退行为是一种良好实践。例如，提供 UI 增强工具的服务器，对于不支持 UI 扩展的客户端仍应返回有意义的文本内容。另一方面，要求特定认证扩展的服务器可以拒绝来自不支持该扩展的客户端的连接。

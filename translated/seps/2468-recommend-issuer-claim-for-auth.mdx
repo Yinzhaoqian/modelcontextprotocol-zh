@@ -1,0 +1,87 @@
+---
+title: "SEP-2468：在 MCP 认证响应中推荐 Issuer（iss）参数"
+sidebarTitle: "SEP-2468"
+---
+
+- **状态（Status）**: Final
+- **类型（Type）**: Standards Track
+- **创建（Created）**: 2026-03-25
+- **作者（Author(s)）**: Emily Lauber (@EmLauber)
+- **担保人（Sponsor）**: @pcarleton
+- **PR**: https://github.com/modelcontextprotocol/modelcontextprotocol/pull/2468
+
+## 摘要
+
+本 SEP 提议在模型上下文协议（MCP）授权响应中推荐包含、并要求验证一个显式的签发者（issuer，iss）参数，以缓解授权混淆（mix-up）攻击。通过将授权响应绑定到特定的授权服务器身份，MCP 客户端可以可靠地检测并拒绝来自非预期签发者的响应，从而在多身份提供方（IdP）环境中提升协议的健壮性。本 SEP 遵循 [RFC9207](https://datatracker.ietf.org/doc/rfc9207/) 中定义的规范。
+
+## 动机
+
+模型上下文协议越来越多地运行在多个授权服务器、身份提供方和中介共存的环境中。在此类环境中，OAuth 混淆攻击成为一种现实威胁。混淆攻击是指攻击者致使客户端将授权响应与错误的授权服务器关联起来，可能导致令牌泄露或权限提升。
+
+OAuth 规范描述了针对混淆攻击的两种缓解措施：要求签发者（*iss*）参数，或为客户端交互的每个签发者使用唯一的 redirect_uri。为每个签发者使用唯一 redirect_uri 在使用客户端 ID 元数据文档（推荐的注册方式）时不可行，且在动态客户端注册下运营成本高昂。因此，建议 MCP 环境采用签发者这一缓解措施。
+
+在 MCP 授权响应中要求显式的 iss 参数，提供了一种简单、可互操作且被充分理解的机制，将响应绑定到正确的授权服务器，并从构造上防止混淆攻击。但由于并非每个授权服务器都发送签发者参数，本 SEP 提议：对客户端而言，如果提供了签发者则**必须（MUST）**验证；对支持 MCP 场景的授权服务器而言为**应当（SHOULD）**。未来的 SEP 和版本可能会将 SHOULD 改为 MUST。
+
+## 规范
+
+### 签发者参数要求
+
+MCP 授权服务器**应当（SHOULD）**在授权响应（包括错误响应）中包含一个签发者（*iss*）参数，如 [RFC9207](https://datatracker.ietf.org/doc/html/rfc9207#section-2) 中定义。这样做的授权服务器**必须（MUST）**通过在其授权服务器元数据中设置 `authorization_response_iss_parameter_supported: true` 来公告这一点。
+
+`iss` 参数**必须（MUST）**：
+
+- 与通过元数据发现所公告的签发者标识符完全匹配
+- 是一个使用 `https` scheme、不含查询或片段部分的 URL（[RFC 8414 第 2 节](https://datatracker.ietf.org/doc/html/rfc8414#section-2)）
+
+### 客户端验证要求
+
+MCP 客户端**必须（MUST）**验证授权响应中的 *iss* 参数，方法是：
+
+- 确定该授权请求的预期签发者
+- 将收到的 *iss* 值与预期签发者进行比较
+- 如果两值不完全匹配，则拒绝该授权响应
+
+如果签发者验证失败，客户端**必须（MUST）**将响应视为无效并中止授权流程。
+
+## 理由
+
+iss 值已在 OpenID Connect 和基于 JWT 的令牌验证中使用。将其用途扩展到 MCP 授权响应：
+
+- 利用既有的生态知识和工具
+- 避免引入 MCP 特有的安全机制
+- 为部署提供清晰、可审计的安全性
+
+### 所考虑的替代方案
+
+引入 MCP 特有的签发者绑定字段
+
+- 被否决，转而复用已确立的 OAuth/OIDC 机制。
+
+要求为每个签发者使用唯一的 redirect_uri
+
+- CIMD 元数据文档是静态的，无法枚举每一个签发者；使用 DCR 在技术上可行，但 DCR 在 MCP 部署中有运营缺陷，使其不宜作为某项安全属性的依赖。RFC 9207 在各种注册方式下均一致有效。
+
+当服务器未公告支持时丢弃 `iss`（严格遵循 RFC 9207 §2.4 的 SHOULD）
+
+- RFC 9207 §2.4 建议客户端**应当（SHOULD）**丢弃来自未设置 `authorization_response_iss_parameter_supported` 的服务器却携带 `iss` 的响应，但明确将该决定留给本地策略（"具体指导超出范围"）。本 SEP 转而规定进行比较。所记录的签发者始终来自客户端已依据 RFC 8414 §3.3 验证过的元数据文档，因此存在的 `iss` 可以对照一个可信的基线进行检查；不匹配即拒绝仍是无条件的，因此唯一的行为差异是接受一个 `iss` 与该基线匹配的响应——这并非放宽。实际上，授权服务器往往在其元数据更新之前就开始发出 `iss`，而在该窗口期丢弃会拒绝合法流程，却没有安全收益。
+
+## 向后兼容性
+
+`iss` 参数在线路上是增量的。对于其授权服务器公告了 `authorization_response_iss_parameter_supported: true`、但其回调处理尚未将 `iss` 传递给 SDK 的宿主，客户端验证引入了行为变化；在宿主从重定向 URI 中连同 `code` 一起提取出 `iss` 之前，那些流程将被拒绝。预期 SDK 会以增量方式拓宽回调签名（例如添加一个可选的 `iss` 参数），使既有调用点继续能够编译。未公告支持的授权服务器不受影响。随附的 RFC 8414 第 3.3 节元数据验证要求重申了一条既有的 RFC MUST；此前未强制执行它的客户端在升级时可能会暴露出潜在的签发者配置错误。
+
+## 安全影响
+
+本提案是针对混淆攻击的一项缓解措施；该机制本身的安全考量记录在 [RFC9207 第 4 节](https://datatracker.ietf.org/doc/html/rfc9207#section-4)。特别地，该缓解依赖于客户端在重定向之前确立预期签发者，以及比较采用精确的简单字符串比较。另见 MCP [安全最佳实践](/docs/tutorials/security/security_best_practices)。
+
+## 参考实现
+
+- Go SDK：[modelcontextprotocol/go-sdk#859](https://github.com/modelcontextprotocol/go-sdk/pull/859)
+- TypeScript SDK：[modelcontextprotocol/typescript-sdk#1957](https://github.com/modelcontextprotocol/typescript-sdk/pull/1957)
+
+两者都在重定向前记录预期签发者，并比较任何收到的 `iss`，仅在服务器公告支持时才因缺失而拒绝。
+
+---
+
+### 致谢
+
+感谢 Sam Morrow、Max Gerber、Aaron Parecki、Stephen Halter、Nate Barbettini、Karl McGuinness 和 Den Delimarsky 在 Auth Mix-Up Attack Prevention 工作组中的评审和讨论。

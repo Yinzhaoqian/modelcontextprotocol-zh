@@ -1,0 +1,128 @@
+---
+title: 治理与管理
+description: 了解模型上下文协议的治理结构以及如何参与社区
+---
+
+模型上下文协议（MCP）遵循一套正式的治理模型，以确保决策透明和社区参与。本文档概述了本项目的组织方式以及决策的作出方式。
+
+## 通用项目政策
+
+模型上下文协议已被确立为 **Model Context Protocol a Series of LF Projects, LLC**。适用于模型上下文协议及其参与者的政策（包括关于商标使用的指南）位于 [https://www.lfprojects.org/policies/](https://www.lfprojects.org/policies/)。依据本治理文件条款批准的治理变更，还必须获得 LF Projects, LLC 的批准。
+
+模型上下文协议的参与者承认，所有新贡献的版权将由版权持有者作为独立的著作作品保留，且不会要求任何贡献者或版权持有者向本项目转让版权。
+
+除下文所述情形外，对本项目的所有代码和规范贡献都必须采用 Apache License 2.0 版本（可在此处获取：[https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)）（"项目许可证"）进行。
+
+所有对外的代码和规范都将依据项目许可证提供。核心维护者可以在个例基础上批准对入站或出站贡献使用替代性的开放许可证。
+
+所有文档（规范除外）都将依据 Creative Commons Attribution 4.0 International 许可证提供，见：https://creativecommons.org/licenses/by/4.0。
+
+## 技术治理
+
+MCP 项目采用一种分层结构，类似于 Python、PyTorch 及其他开源项目：
+
+| 角色                        | 范围                             |
+| --------------------------- | -------------------------------- |
+| **首席维护者（BDFL）**      | 最终决定权                       |
+| **核心维护者**              | 项目整体方向                     |
+| **维护者**                  | 工作组、SDK、组件                |
+| **贡献者**                  | Issue、PR、讨论                  |
+
+- **贡献者**提交 issue、发起 pull request，并为本项目做贡献。
+- **维护者**推动 MCP 项目内的各组件，例如 SDK、文档和工作组。
+- **核心维护者**推动项目的整体方向，并监督贡献者和维护者。
+- **首席维护者**是最终决策者（也称为 BDFL——仁慈的终身独裁者，Benevolent Dictator for Life）。
+
+维护者、核心维护者和首席维护者共同构成 **MCP 指导小组（Steering Group）**。
+
+所有维护者都应对 MCP 的设计理念抱有强烈的倾向。技术治理流程中的成员身份属于个人，而非公司。也就是说，没有为特定公司保留席位，成员身份与个人相关联，而非与雇用该人的公司相关联。
+
+### 沟通渠道
+
+技术治理通过一个面向所有维护者的共享 [Discord 服务器](https://discord.gg/6CSzBmMkjX)来促成。每个维护者群体都可以选择额外的沟通渠道，但所有决策及其支撑性讨论都必须记录下来，并透明地在 Discord 服务器上提供。
+
+### 角色
+
+[贡献者阶梯](/community/contributor-ladder)是每个角色的权威定义——其要求、职责、权限、晋升流程和不活跃政策。本节从概念层面概述这些角色与治理的关系。
+
+**维护者**管理特定领域，如 SDK、文档或[工作组](/community/working-interest-groups)。他们独立地为其领域作出决策，并在需要时上报给核心维护者。维护者对其各自的仓库拥有写入权限。
+
+**核心维护者**掌舵 MCP 规范和项目整体方向。他们可以通过多数投票否决维护者的决策、解决争议，以及任命或移除维护者。核心维护者对所有 MCP 仓库拥有管理员权限，但使用与外部贡献者相同的 pull-request 工作流。
+
+**首席维护者**拥有最终权威，可以否决核心维护者或维护者的任何决策——这一角色通常被称为仁慈的终身独裁者（BDFL）。首席维护者任命和移除核心维护者，并且是所有项目基础设施的管理员。他们是核心维护者群体的一部分，且应公开阐明其理由。
+
+[贡献者阶梯](/community/contributor-ladder)还定义了 **成员（Member）** 和 **社区版主（Community Moderator）** 角色，它们位于指导小组之外。
+
+### 决策流程
+
+核心维护者群体每两周开会一次，讨论并对提案进行投票，同时讨论任何需要讨论的议题。如有需要，共享的 Discord 服务器可用于讨论和对较小的提案进行投票。
+
+首席维护者、核心维护者和维护者群体应力争每三到六个月当面会晤一次。
+
+## 流程
+
+核心维护者和首席维护者对模型上下文协议的所有方面负责，包括文档、issue、内容建议，以及 [MCP 项目](https://github.com/modelcontextprotocol)下的所有其他部分。维护者对其在 MCP 项目中所负责领域的文档、issue 和内容建议负责，但也鼓励其参与 MCP 项目的一般性维护。
+
+维护者、核心维护者和首席维护者应使用与外部贡献者相同的贡献流程，而非直接对仓库进行更改。这提供了对意图的洞察和讨论的机会。
+
+### 工作组和兴趣组
+
+MCP 的协作与贡献围绕两种结构组织：[工作组和兴趣组](/community/working-interest-groups)。
+
+- **兴趣组**通过开放讨论来识别并阐明 MCP 应当解决的问题
+- **工作组**通过产出诸如 SEP 或实现之类的交付物来开发具体的解决方案
+
+关于如何创建、参与和主持这些群体的细节，参见[工作组和兴趣组](/community/working-interest-groups)文档。
+
+### 规范增强提案（SEP）
+
+对规范的拟议变更必须作为[规范增强提案（SEP）](/community/sep-guidelines)提交。SEP 是提出重大新特性、收集社区意见和记录设计决策的主要机制。
+
+关于完整的 SEP 流程、格式要求和状态工作流，参见 [SEP 指南](/community/sep-guidelines)。
+
+### 维护职责
+
+没有专门维护者的组件（例如文档）归核心维护者负责。这些组件遵循通过 pull request 的标准贡献指南，由维护者处理评审，并将任何重大变更上报给核心维护者评审。
+
+鼓励核心维护者和维护者改进 MCP 项目的任何部分，无论正式的维护分工如何。
+
+## 沟通
+
+### 核心维护者会议
+
+核心维护者群体每两周开会一次，讨论提案和项目。关于提案的记录应予公开。核心维护者群体将力争每 3–6 个月当面会晤一次。
+
+### 公开聊天
+
+MCP 项目维护着一个[公开 Discord 服务器](https://discord.gg/6CSzBmMkjX)，为兴趣组提供开放的聊天。MCP 项目可能会有用于某些沟通的私有频道。
+
+## 提名、确认与移除维护者
+
+维护者群体的成员身份基于功绩授予**个人**，前提是其已展现出专业能力并与 MCP 的方向一致。成员身份与个人相关联，而非其雇主，且没有任期限制。
+
+每个角色的提名流程、担保（sponsorship）要求、评审时间线和不活跃标准，均在[贡献者阶梯的晋升流程](/community/contributor-ladder#advancement-process)中定义。
+
+## 现任首席维护者
+
+- David Soria Parra
+- Den Delimarsky
+
+## 现任核心维护者
+
+- Peter Alexander
+- Caitie McCaffrey
+- Kurtis Van Gent
+- Clare Liguori
+- Paul Carleton
+- Nick Cooper
+
+## 荣誉退任者（Emeritus）
+
+- Justin Spahr-Summers（共同发明人，荣誉退任首席维护者）
+- Basil Hosmer（荣誉退任核心维护者）
+- Che Liu（荣誉退任核心维护者）
+- Nick Aldridge（荣誉退任核心维护者）
+
+## 现任维护者与工作组
+
+参见[维护者列表](https://github.com/modelcontextprotocol/modelcontextprotocol/blob/main/MAINTAINERS.md)。

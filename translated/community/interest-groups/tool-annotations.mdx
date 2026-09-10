@@ -1,0 +1,95 @@
+---
+title: 工具标注章程
+description: MCP 工具标注兴趣组的章程。
+---
+
+## 群组类型
+
+**兴趣组**
+
+## 使命陈述
+
+工具标注兴趣组探索工具标注在使 MCP 生态中安全、可用的代理式系统成为可能方面所扮演的角色。如今，六个独立的 SEP 提出了标注变更，每个都在解决真实问题，但缺乏一个专门群组所能带来的、连贯的跨领域视角。本 IG 从服务器和客户端作者处收集用例，评估现有和拟议的标注，并考量标注模型的长期未来，包括运行时标注、工具响应标注及其他扩展是否应归入协议。
+
+## 范围
+
+### 范围内
+
+- **评估现有标注**：评估当前的工具标注集合（`readOnlyHint`、`destructiveHint`、`idempotentHint`、`openWorldHint`）是否充分服务于服务器和客户端作者
+- **讨论拟议标注**：评审那些提出新的或修改后工具标注（信任/敏感度、代理性、模型偏好等）的 SEP 并提供反馈
+- **标注模型的未来**：探索运行时标注、工具响应标注，或对标注系统的结构性变更是否值得加入协议
+- **用例收集**：从服务器作者、客户端作者和宿主应用处收集现实世界的用例，使标注决策植根于实际需求
+- **问题陈述与建议**：为工作组或 SEP 作者产出关于标注设计、连贯性和优先级排序的建议
+
+### 范围外
+
+- **有约束力的规范变更**：本 IG 产出建议，而非有约束力的决策；规范变更通过 SEP 流程作出
+- **实现工作**：构建 SDK 特性或参考实现（可以在[实验性仓库](https://github.com/modelcontextprotocol/experimental-ext-tool-annotations)中探索，但不是本 IG 的主要目的）
+- **非标注的工具变更**：与标注无关的工具发现、调用或生命周期变更
+- **资源标注**：尽管相关，但资源级标注工作单独跟踪，除非它与工具标注设计直接交叉
+
+### 相关群组
+
+- **安全 IG** —— 信任和敏感度标注（[SEP-1913](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/1913)）跨越两个群组的关注点
+- **[Skills Over MCP 工作组](/community/working-groups/skills-over-mcp)** —— 技能级元数据可能与工具标注在发现和过滤方面相互作用
+
+## 领导层
+
+| 角色        | 姓名           | 组织         | GitHub                                               | 任期    |
+| ----------- | -------------- | ------------ | ---------------------------------------------------- | ------- |
+| 主持人      | Sam Morrow     | GitHub       | [@SamMorrowDrums](https://github.com/SamMorrowDrums) | 首任    |
+| 主持人      | Robert Reichel | OpenAI       | [@rreichel3](https://github.com/rreichel3)           | 首任    |
+
+## 成员
+
+| 姓名                    | 组织         | GitHub                                               | Discord  | 级别        |
+| ----------------------- | ------------ | ---------------------------------------------------- | -------- | ----------- |
+| Sam Morrow              | GitHub       | [@SamMorrowDrums](https://github.com/SamMorrowDrums) |          | 主持人      |
+| Robert Reichel          | OpenAI       | [@rreichel3](https://github.com/rreichel3)           |          | 主持人      |
+| Matt Carey              | Cloudflare   | [@mattzcarey](https://github.com/mattzcarey)         |          | 参与者      |
+| Kapil Sharma            | Microsoft    | [@kapil8811](https://github.com/kapil8811)           |          | 参与者      |
+| Connor Peet             | Microsoft    | [@connor4312](https://github.com/connor4312)         |          | 参与者      |
+| Ola Hungerford          | Nordstrom    | [@olaservo](https://github.com/olaservo)             |          | 参与者      |
+| Gökhan Arkan            | GitHub       | [@gokhanarkan](https://github.com/gokhanarkan)       |          | 参与者      |
+| Joanna Krzek-Lubowiecka | GitHub       | [@joannakl](https://github.com/joannakl)             |          | 参与者      |
+| Maxi Boch               | Independent  | [@maxiboch](https://github.com/maxiboch)             | maxiboch | 参与者      |
+
+## 运作
+
+| 会议       | 频率      | 时长     | 目的                                          |
+| ---------- | --------- | -------- | --------------------------------------------- |
+| 讨论       | 待定      | 待定     | 用例分享、标注评审、开放问答                   |
+
+Discord：[#tool-annotations-ig](https://discord.com/channels/1358869848138059966/1482836798517543073)
+
+## 讨论主题
+
+以下 SEP 和主题构成本 IG 的初始讨论议程。此列表并非详尽无遗，将随群组识别出新的兴趣领域而演进。
+
+### 讨论中的活跃 SEP
+
+| SEP                                                                                | 标题                               | 状态   | 作者                                                                                             |
+| ---------------------------------------------------------------------------------- | ---------------------------------- | ------ | ------------------------------------------------------------------------------------------------ |
+| [SEP-1862](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/1862) | 工具解析（预检检查）               | Draft  | [@SamMorrowDrums](https://github.com/SamMorrowDrums)                                             |
+| [SEP-1913](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/1913) | 信任和敏感度标注                   | Draft  | [@SamMorrowDrums](https://github.com/SamMorrowDrums)、[@rreichel3](https://github.com/rreichel3) |
+| [SEP-1984](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/1984) | 全面的工具标注                     | Draft  | [@sambhav](https://github.com/sambhav)                                                           |
+| [SEP-2417](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/2417) | 工具的模型偏好                     | Draft  | [@ProductOfAmerica](https://github.com/ProductOfAmerica)                                         |
+
+### 开放问题
+
+- 是否应将运行时标注（在多次调用之间会变化的标注）加入协议？
+- 额外的静态标注是否值得标准化，哪些同时服务于服务器和客户端作者？
+- 是否应将工具**响应**标注加入协议？
+- 标注应如何与信任、安全和人在环路要求相互作用？
+- 合适的粒度层级是什么——少数定义明确的提示，还是更丰富、可扩展的词汇表？
+
+## 资源
+
+- [作为风险词汇的工具标注](https://blog.modelcontextprotocol.io/posts/2026-03-16-tool-annotations/) —— 阐述这项工作动机的博客文章
+- [实验性仓库](https://github.com/modelcontextprotocol/experimental-ext-tool-annotations) —— 工具标注兴趣组的仓库
+
+## 变更日志
+
+| 日期       | 变更            |
+| ---------- | --------------- |
+| 2026-04-20 | 首版章程        |

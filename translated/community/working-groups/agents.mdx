@@ -1,0 +1,103 @@
+---
+title: Agents 章程
+description: MCP Agents 工作组的章程。
+---
+
+## 群组类型
+
+**工作组**
+
+## 使命陈述
+
+Agents 工作组的存在是为了使与由代理支撑的系统的交互在 MCP 上可互操作。如今，这些系统通常以普通工具或通过框架特定的集成暴露，使得持久执行、能力发现、委托和多轮交互都交由临时约定处理。本工作组管理 Tasks，将其作为 MCP 持久异步执行的基础，并评估哪些剩余缺口需要协议支持。基于生产用例和原型，本群组将或是演进 Tasks，或是引入一个补充它的 Agents 扩展，或是记录既有 MCP 原语应如何被一致地使用。
+
+## 范围
+
+### 范围内
+
+- **Tasks**：[`io.modelcontextprotocol/tasks`](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/2663) 扩展的稳定化及其晋升进入核心 MCP 协议，包括收集实现反馈、解决歧义，以及评估对其生命周期的拟议变更。
+- **Agents 扩展评估**：评估由代理支撑的 MCP 用例，包括代理即工具（agent-as-tool）、远程代理（remote-agent）和主管/子代理（supervisor/sub-agent）模式，以判定是否需要一个 Agents 扩展来补充 Tasks。
+- **原型与提案**：在有助于判定应引入 Agents 扩展、演进 Tasks 还是依赖既有 MCP 原语之处，开发范围狭窄的概念验证。
+- **实现协调**：就本群组所拥有规范的实现反馈、示例和覆盖，与 SDK 和合规维护者协调。
+- **跨领域关切**：当 Tasks 或所评估的代理用例引出传输、事件、技能、授权、元数据或外部互操作性问题时，与相关群组协调。
+- **文档**：维护 Tasks 规范，并记录由代理支撑的 MCP 用例、发现，以及本群组采纳的任何提案。
+
+### 范围外
+
+- 构建或标准化通用的代理框架和运行时，包括关于规划、记忆、模型选择和编排的内部选择。本群组在 MCP 互操作边界处标准化行为，而非宿主或服务器实现的内部。
+- 传输线路格式和会话机制，它们归 Transports 工作组。
+- 通用的事件投递和回调机制，它们归 Triggers and Events 工作组。
+
+本章程并不预先决定推理或代理循环在何处运行，也不预先决定某项特定能力应归于 Tasks、Agents 扩展还是既有 MCP 原语。本工作组通过其设计工作来评估这些问题。
+
+### 相关群组
+
+- **[Transports 工作组](/community/working-groups/transports)** —— 任务轮询、多次往返请求、无状态操作和请求关联取决于传输和消息流语义。
+- **[Triggers and Events 工作组](/community/working-groups/triggers-events)** —— 主动的任务状态和完成通知是归该群组的事件投递关切。
+
+## 领导层
+
+| 角色 | 姓名             | 组织                | GitHub                                             | 任期    |
+| ---- | ---------------- | ------------------- | -------------------------------------------------- | ------- |
+| Lead | Luca Chang       | Amazon Web Services | [@LucaButBoring](https://github.com/LucaButBoring) | 首任    |
+| Lead | Caitie McCaffrey | Microsoft           | [@CaitieM20](https://github.com/CaitieM20)         | 首任    |
+
+## 权限与决策权
+
+| 决策类型                            | 权限层级                                               |
+| ----------------------------------- | ------------------------------------------------------ |
+| 会议事务与排期                      | WG Leads（自主）                                       |
+| WG 内提案优先级排序                 | WG Leads（自主）                                       |
+| SEP 分诊与关闭（范围内）            | WG Leads（自主，附成文理由）                           |
+| 范围内的技术设计                    | WG 共识                                                |
+| 规范变更（增量式）                  | WG 共识 → 核心维护者批准                               |
+| 规范变更（破坏性/根本性）           | WG 共识 → 核心维护者批准 + 更广泛评审                 |
+| 范围扩展                            | 需要核心维护者批准                                     |
+| WG 成员批准                         | WG 成员担保                                            |
+
+## 成员
+
+| 姓名             | 组织                | GitHub                                             | Discord | 级别  |
+| ---------------- | ------------------- | -------------------------------------------------- | ------- | ----- |
+| Luca Chang       | Amazon Web Services | [@LucaButBoring](https://github.com/LucaButBoring) |         | Lead  |
+| Caitie McCaffrey | Microsoft           | [@CaitieM20](https://github.com/CaitieM20)         |         | Lead  |
+
+## 运作
+
+| 会议            | 频率      | 时长       | 目的                                                |
+| --------------- | --------- | ---------- | --------------------------------------------------- |
+| 工作会议        | 每周      | 30 分钟    | 技术讨论、研究和提案评审                             |
+
+会议发布于 [meet.modelcontextprotocol.io](https://meet.modelcontextprotocol.io)。
+
+Discord：`#agents-wg`
+
+## 资源
+
+- 工作组仓库：[modelcontextprotocol/agents-wg](https://github.com/modelcontextprotocol/agents-wg)
+- Tasks 扩展仓库：[modelcontextprotocol/ext-tasks](https://github.com/modelcontextprotocol/ext-tasks)
+- Tasks 规范：[SEP-2663：Tasks 扩展](/seps/2663-tasks-extension)
+
+## 交付物与成功指标
+
+### 活跃工作项
+
+| 条目                                            | 状态        | 目标日期    | 牵头人                                                                                         |
+| ----------------------------------------------- | ----------- | ----------- | ---------------------------------------------------------------------------------------------- |
+| Tasks 稳定化与核心协议晋升                      | 进行中      |             | [@LucaButBoring](https://github.com/LucaButBoring)                                             |
+| Agents 扩展评估与建议                          | 进行中      |             | 待定                                                                                           |
+| 两级代理定义的概念验证                          | 进行中      |             | [@LucaButBoring](https://github.com/LucaButBoring)、[@madhaviai](https://github.com/madhaviai) |
+
+### 成功标准
+
+- Tasks 基于实现反馈完全稳定化，并从一个扩展晋升进入核心 MCP 协议。
+- 阻碍 Tasks 稳定化的生命周期歧义和合规缺口得到解决或明确处置。
+- 本群组发布一份关于是否需要 Agents 扩展来补充 Tasks 的评估，并以成文的用例和相关原型证据作支撑。
+- 基于该评估，本群组或是演进 Tasks，或是提议一个 Agents 扩展，或是记录既有 MCP 原语已足够。
+- 拟议的代理协议表面在被推进之前，先通过原型和实现反馈进行评估。
+
+## 变更日志
+
+| 日期       | 变更            |
+| ---------- | --------------- |
+| 2026-08-04 | 首版章程        |

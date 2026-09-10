@@ -1,0 +1,181 @@
+---
+title: "SEP-2484：要求 Standards Track SEP 提供合规测试方可达到 Final 状态"
+sidebarTitle: "SEP-2484"
+---
+
+- **状态（Status）**: Final
+- **类型（Type）**: Process
+- **创建（Created）**: 2026-03-27
+- **作者（Author(s)）**: Paul Carleton (@pcarleton)
+- **担保人（Sponsor）**: None
+- **PR**: https://github.com/modelcontextprotocol/modelcontextprotocol/pull/2484
+- **取代（Supersedes）**: SEP-1627（合规测试）
+
+## 摘要
+
+本 SEP 为 Standards Track SEP 的 `Accepted → Final` 转换添加一项合规测试要求。在一个改变可观测协议行为的 Standards Track SEP 能够被标记为 `Final` 之前，必须将一个涵盖其规范性要求的合规场景合并到合规仓库中，并附带一份结构化的可追溯性文件，将每一条 MUST/MUST NOT 和 SHOULD/SHOULD NOT 映射到一个检查或一处成文的排除。这使合规套件随规范演进而保持同步，为 SDK 维护者提供一个可执行的实现目标，并使 SEP-1730 的等级百分比成为规范覆盖率的有意义度量。Process 和 Informational SEP 豁免，无可观测协议行为的 Standards Track SEP 亦然。
+
+## 动机
+
+### 规范与实现之间的鸿沟
+
+MCP 规范以英文书写。SDK 维护者将该英文翻译为代码，而每一次翻译都是产生偏移的机会。SEP-1730（SDK 分级）已经依赖合规测试（Tier 1 要求 100% 通过率，Tier 2 要求 80%），但没有机制使套件与规范保持同步。当某 SEP 达到 `Final` 时，SDK 维护者依据文字实现，并希望自己的解读与其他所有 SDK 相同。合规测试稍后（如果有的话）才到来，而当它们到来时，有时会揭示两个"合规"的 SDK 存在分歧。
+
+### 为何既有的参考实现要求不足
+
+**参考实现**证明该特性可以被构建：一种有效的解读。**合规测试**定义每个实现必须做什么：作为可执行断言的规范性要求。一个 TypeScript 参考实现对 Rust 维护者判断其代码是否正确几乎毫无帮助。合规测试则精确地告诉他们，而当它没有时，分歧就揭示出规范本身的一处歧义。
+
+### 让合规套件保持鲜活
+
+合规套件是 SEP-1730 等级百分比据以度量的标尺。如果它落后了，某个 SDK 可能"100% 合规"却缺失重大规范特性。将测试绑定到 SEP 生命周期创造了一个强制函数：套件的增长速度恰好与规范一样快。
+
+## 规范
+
+### 范围
+
+此要求**仅**适用于引入或修改**可观测协议行为**的 Standards Track SEP：合规对端可以通过检查线路上消息检测到的行为、传输可观测的副作用（HTTP 状态码、头部、连接生命周期、OAuth 重定向），或本地传输的进程可观测副作用（stdio 流内容、退出码）。
+
+以下**豁免**：
+
+- **Process SEP**（治理、工作流、社区结构）
+- **Informational SEP**（指南、不带规范性约束力的最佳实践）
+- **无可观测协议行为的 Standards Track SEP**，例如：
+  - 对既有行为仅作文档澄清
+  - 不改变校验或运行时行为的 schema 标注
+  - 描述实现加固而非线路层要求的安全建议
+
+合规套件本身不限于官方 SDK。任何实现（官方 SDK、社区 SDK 或自定义部署）都可以运行它并报告一个合规百分比。
+
+### 要求
+
+对于一个在范围内的 Standards Track SEP 从 `Accepted` 转换到 `Final`：
+
+1. **一个合规场景**（以 SEP 编号标记）被合并到合规仓库，面向合规仓库为即将到来版本设置的 draft 规范版本标签。
+2. **一份可追溯性文件**随该场景一起。见下文。
+3. **该场景**针对该 SEP 的参考实现**通过**。
+
+当该规范版本发布时，作为正常发布流程的一部分，该场景的规范版本标签从 draft 标签更新为带日期的版本。合规框架和被测 SDK 都必须将 draft 标签识别为一个可协商的协议版本，以便新要求真正被执行。
+
+### 可追溯性文件
+
+可追溯性文件是合规仓库中的一个结构化文件（`sep-NNNN.yaml`）。它将 SEP 规范章节中每一条规范性要求映射到执行它的检查，或记录它为何被排除：
+
+```yaml
+sep: 1234
+spec_url: https://modelcontextprotocol.io/specification/draft/section#anchor
+requirements:
+  - check: sep-1234-foo-present
+    text: "MUST include `foo` in the response"
+  - check: sep-1234-bar-absent
+    text: "MUST NOT send `bar` before initialization"
+  - check: sep-1234-qux-present
+    text: "SHOULD include `qux` when available"
+  - check: sep-1234-baz-rejected
+    text: "MUST reject requests with invalid `baz`"
+
+  - text: "MUST retry on 503"
+    excluded: "Requires fault injection; not currently supported by framework"
+    issue: https://github.com/modelcontextprotocol/conformance/issues/N
+  - text: "MUST be rendered in a monospace font"
+    excluded: "Client rendering; not observable at the protocol level"
+```
+
+结构化数据让工具能够将检查失败链接回规范章节，并让合规 CLI 报告每个 SEP 的覆盖率。
+
+排除有两种类型。**框架缺口**（行为可观测但框架尚无法表达）应链接一个跟踪 `issue`。**非协议可观测**（要求管辖的是客户端渲染、实现内部或类似情形）只需 `excluded` 理由。一个其要求全属第二种的 SEP 是豁免的，根本不需要场景。
+
+担保人核实可追溯性文件的完整性：SEP 规范章节中的每一条 MUST、MUST NOT、SHOULD 和 SHOULD NOT（以及 RFC 2119 等价词：SHALL、REQUIRED、RECOMMENDED）都有一行。SHOULD 级要求的检查报告为警告而非失败。MAY 要求不需要行。担保人不评审测试代码；那是合规仓库的正常 PR 评审。什么算作规范性要求由担保人裁定。
+
+### 谁编写测试
+
+**担保人**负责确保编写了合规场景。场景以 TypeScript 撰写；不熟悉合规仓库的贡献者应从其 [CONTRIBUTING 指南](https://github.com/modelcontextprotocol/conformance/blob/main/CONTRIBUTING.md)开始。实际上，SEP 作者往往处于最有利的位置，因为编写测试会揭示规范性语言中的歧义，而在 `Final` 之前修复这些歧义比之后更便宜。
+
+### 规范文本是权威
+
+合规测试派生自规范文本并**从属于**它。当测试与规范不一致时，以规范为权威，测试是缺陷。
+
+### 合规测试争议
+
+如果实现者认为某个已合并的合规测试与规范矛盾，他们在合规仓库中开一个 issue，援引具体的规范文本。一旦合规维护者应用 `disputed` 标签，该测试即被视为有争议；有争议的测试在解决之前不影响 SEP-1730 的等级评估。
+
+大多数争议通过正常的 issue 分诊解决：测试被修复、规范被澄清，或争议附理由被关闭。如果分歧是根本性的（争议方和合规维护者无法就规范含义达成一致），任一方都可以单方面上报给核心维护者裁决，尽管更倾向于联合上报，因为目标是解决歧义而非赢得辩论。如果场景 PR 因非技术理由被阻塞，担保人也可使用相同的上报路径。
+
+### 测试稳定性与分级
+
+SEP-1730 等级评估针对一个**固定的合规发布版本**运行，而非合规仓库的顶端。在 SEP 达到 `Final` 之后添加到该 SEP 场景的新检查（无论是额外的边界情况还是对此前被排除要求的覆盖），会落地到合规仓库的 main 分支，但只有当下一次分级评估采用较新的合规发布时才影响等级百分比。
+
+这意味着 SDK 维护者在两次分级浪潮之间有一个稳定的目标，而合规套件可以持续演进，不会在等级状态上出现意外的回退。
+
+### 担保人职责
+
+SEP-1850 使担保人负责在将 SEP 标记为 `Final` 之前跟踪参考实现的进度。本 SEP 扩展了这一职责：对于在范围内的 Standards Track SEP，担保人还确认一个以 SEP 编号标记的合规场景已连同完整的可追溯性文件合并，或者在 SEP 中记录了一处豁免。
+
+### 与 SEP-1730（SDK 分级）的关系
+
+本 SEP 强化了 SEP-1730 的基础，而不改变其等级定义或阈值。等级评估使用固定的合规发布，因此新检查不会追溯性地影响等级状态。有争议的测试在解决之前不计入等级百分比。
+
+覆盖既有规范行为（不绑定新 SEP）的场景贡献仍然受欢迎，且不要求携带可追溯性文件。
+
+### 与 SEP-1627（合规测试）的关系
+
+本 SEP 通过接受合规仓库作为合规测试的规范归处、并将其在 SEP 生命周期中的角色正式化，从而**取代** SEP-1627。SEP-1627 的黄金轨迹（golden-trace）方式未被沿用；场景与检查模型以语言无关的 fixture 换取运行时表达力。SEP-1627 的协议调试器想法仍是有价值的未来工作。
+
+## 理由
+
+### 为何在 `Final` 而非 `Accepted` 设卡？
+
+在 `Accepted` 设卡将要求在核心维护者同意该特性属于规范之前就提供测试，在被拒的 SEP 上浪费精力。
+
+尽管如此，在 SEP 起草*期间*编写合规测试往往很有价值：它迫使 MUST/MUST NOT 语言精确，并揭示文字含糊带过的边界情况。**鼓励**作者在核心维护者评审之前起草一个合规场景，尤其对于有复杂行为要求的 SEP。这不是必需的，因为小型 SEP 可能不值得前期投入，而被拒 SEP 的测试是白费的工作。
+
+在 `Final` 设卡将硬性要求放在参考实现要求已在的位置：SEP 已有共识，剩下的工作是实现。
+
+### 为何要可追溯性文件？
+
+没有既定的覆盖门槛，"是否有合规测试"就会在每个 SEP 上重新争论：一个检查够吗，还是每一条 MUST 都必须被覆盖？可追溯性文件使覆盖可审计：每一条规范性陈述都有一行，且每一行要么是一个检查，要么是一处成文的排除。"充分"变成了"文件完整"。
+
+该文件还使缺口可见。一个有十条 MUST 和八处排除的 SEP 是一个信号：要么该 SEP 确实难以测试（跟踪 issue 说明为何），要么测试作者过早停止（担保人应当推回）。
+
+### 为何将撰写义务放在担保人身上？
+
+担保人已经引导 SEP 走完评审、跟踪参考实现并管理状态转换。添加"确保编写合规测试"是对既有角色的一个小的边际增加，且有清晰的负责人。
+
+### 所考虑的替代方案
+
+**要求在 SEP PR 本身中提供合规测试。** 被否决：将两个由不同维护者和 CI 负责的独立评审流程耦合起来。
+
+**只对"重大"SEP 设卡。** 被否决："重大"是主观的。可观测行为的范围是客观的：合规对端要么能检测到该变更，要么不能。
+
+**让合规维护者充当充分性的裁判。** 被否决：将否决权集中于一个未被选举来批准规范变更的群体。可追溯性文件模型让担保人无需阅读测试代码即可核实完整性。
+
+## 向后兼容性
+
+本 SEP **不追溯**。在本 SEP 生效之前达到 `Final` 的 SEP 不被要求添加合规测试，尽管贡献受欢迎。
+
+## 安全影响
+
+无直接影响。执行安全相关行为（认证流、输入校验、传输安全）的合规测试通过捕获回归改善生态的安全态势，但本 SEP 不强制要求超出底层 SEP 的 MUST 所要求之外的安全特定覆盖。
+
+## 参考实现
+
+合规仓库已经演示了本 SEP 所正式化的场景标记模式：
+
+- [`JsonSchema2020_12Scenario`](https://github.com/modelcontextprotocol/conformance/blob/main/src/scenarios/server/json-schema-2020-12.ts) —— SEP-1613
+- [`ElicitationDefaultsScenario`](https://github.com/modelcontextprotocol/conformance/blob/main/src/scenarios/server/elicitation-defaults.ts) —— SEP-1034
+- [`ServerSSEPollingScenario`](https://github.com/modelcontextprotocol/conformance/blob/main/src/scenarios/server/sse-polling.ts) —— SEP-1699
+- [`ElicitationEnumsScenario`](https://github.com/modelcontextprotocol/conformance/blob/main/src/scenarios/server/elicitation-enums.ts) —— SEP-1330
+
+结构化可追溯性文件格式和场景脚手架工具（`npx @modelcontextprotocol/conformance new-scenario --sep <number>`）将在本 SEP 达到 `Final` 之前添加到合规仓库。
+
+流程变更通过更新 `docs/community/sep-guidelines.mdx`、向 `Accepted → Final` 转换添加合规检查来实现（见本 PR 中的随附变更）。
+
+## 达到 Final 状态的前置条件
+
+在本 SEP 本身能被标记为 `Final` 之前，以下合规仓库工作必须完成：
+
+- 结构化可追溯性文件格式（`sep-NNNN.yaml`）和 schema
+- 场景脚手架工具
+- 合规框架支持将 draft 规范版本标签作为可协商的协议版本
+- `MAINTAINERS.md` 已发布，且该仓库列于 MCP 治理文档中
+
+这些是本 SEP 自身的参考实现清单，而非持续的流程要求。

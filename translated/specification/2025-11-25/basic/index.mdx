@@ -1,0 +1,243 @@
+---
+title: 概览
+---
+
+<div id="enable-section-numbers" />
+
+模型上下文协议由若干协同工作的关键组件构成：
+
+- **基础协议（Base Protocol）**：核心 JSON-RPC 消息类型
+- **生命周期管理（Lifecycle Management）**：连接初始化、能力协商和会话控制
+- **授权（Authorization）**：用于基于 HTTP 的传输的身份认证与授权框架
+- **服务器特性（Server Features）**：服务器暴露的资源、提示和工具
+- **客户端特性（Client Features）**：客户端提供的采样和根目录列表
+- **实用工具（Utilities）**：诸如日志和参数补全之类的横切关注点
+
+所有实现**必须（MUST）**支持基础协议和生命周期管理组件。其他组件**可以（MAY）**根据应用的具体需要来实现。
+
+这些协议层建立了清晰的关注点分离，同时实现客户端与服务器之间丰富的交互。模块化设计允许实现恰好支持它们所需的特性。
+
+## 消息
+
+MCP 客户端与服务器之间的所有消息**必须（MUST）**遵循 [JSON-RPC 2.0](https://www.jsonrpc.org/specification) 规范。协议定义了以下类型的消息：
+
+### 请求（Requests）
+
+[请求](/specification/2025-11-25/schema#jsonrpcrequest)从客户端发送到服务器，或反之，用于发起一个操作。
+
+```typescript
+{
+  jsonrpc: "2.0";
+  id: string | number;
+  method: string;
+  params?: {
+    [key: string]: unknown;
+  };
+}
+```
+
+- 请求**必须（MUST）**包含一个字符串或整数 ID。
+- 与基础 JSON-RPC 不同，ID**不得（MUST NOT）**为 `null`。
+- 请求 ID**不得（MUST NOT）**在同一会话内被请求方先前使用过。
+
+### 响应（Responses）
+
+响应作为对请求的回复而发送，包含操作的结果或错误。
+
+#### 结果响应（Result Responses）
+
+[结果响应](/specification/2025-11-25/schema#jsonrpcresultresponse)在操作成功完成时发送。
+
+```typescript
+{
+  jsonrpc: "2.0";
+  id: string | number;
+  result: {
+    [key: string]: unknown;
+  }
+}
+```
+
+- 结果响应**必须（MUST）**包含与它们对应的请求相同的 ID。
+- 结果响应**必须（MUST）**包含一个 `result` 字段。
+- `result`**可以（MAY）**遵循任何 JSON 对象结构。
+
+#### 错误响应（Error Responses）
+
+[错误响应](/specification/2025-11-25/schema#jsonrpcerrorresponse)在操作失败或遇到错误时发送。
+
+```typescript
+{
+  jsonrpc: "2.0";
+  id?: string | number;
+  error: {
+    code: number;
+    message: string;
+    data?: unknown;
+  }
+}
+```
+
+- 错误响应**必须（MUST）**包含与它们对应的请求相同的 ID（除非在因请求格式错误而无法读取 ID 的错误情况下）。
+- 错误响应**必须（MUST）**包含一个带有 `code` 和 `message` 的 `error` 字段。
+- 错误码**必须（MUST）**是整数。
+
+### 通知（Notifications）
+
+[通知](/specification/2025-11-25/schema#jsonrpcnotification)作为单向消息从客户端发送到服务器，或反之。接收方**不得（MUST NOT）**发送响应。
+
+```typescript
+{
+  jsonrpc: "2.0";
+  method: string;
+  params?: {
+    [key: string]: unknown;
+  };
+}
+```
+
+- 通知**不得（MUST NOT）**包含 ID。
+
+## 认证（Auth）
+
+MCP 提供一个用于 HTTP 的[授权](/specification/2025-11-25/basic/authorization)框架。使用基于 HTTP 的传输的实现**应当（SHOULD）**遵循本规范，而使用 STDIO 传输的实现**不应（SHOULD NOT）**遵循本规范，而应从环境中检索凭据。
+
+此外，客户端和服务器**可以（MAY）**协商它们自己的自定义身份认证和授权策略。
+
+若要就 MCP 认证机制的演进进行进一步讨论并做出贡献，请加入我们的 [GitHub Discussions](https://github.com/modelcontextprotocol/specification/discussions)，帮助塑造协议的未来！
+
+## Schema
+
+协议的完整规范定义为一个 [TypeScript schema](https://github.com/modelcontextprotocol/specification/blob/main/schema/2025-11-25/schema.ts)。这是所有协议消息和结构的可信来源（source of truth）。
+
+还有一个 [JSON Schema](https://github.com/modelcontextprotocol/specification/blob/main/schema/2025-11-25/schema.json)，它从 TypeScript 可信来源自动生成，供各种自动化工具使用。
+
+## JSON Schema 用法
+
+模型上下文协议在整个协议中使用 JSON Schema 进行校验。本节阐明在 MCP 消息中应如何使用 JSON Schema。
+
+### Schema 方言
+
+MCP 支持 JSON Schema，规则如下：
+
+1. **默认方言**：当 schema 不包含 `$schema` 字段时，默认为 [JSON Schema 2020-12](https://json-schema.org/draft/2020-12/schema)
+1. **显式方言**：schema 可以（MAY）包含一个 `$schema` 字段以指定不同的方言
+1. **受支持的方言**：实现必须（MUST）至少支持 2020-12，并应当（SHOULD）记录它们额外支持哪些方言
+1. **建议**：建议（RECOMMENDED）实现者使用 JSON Schema 2020-12。
+
+### 示例用法
+
+#### 默认方言（2020-12）：
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "name": { "type": "string" },
+    "age": { "type": "integer", "minimum": 0 }
+  },
+  "required": ["name"]
+}
+```
+
+#### 显式方言（draft-07）：
+
+```json
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "name": { "type": "string" },
+    "age": { "type": "integer", "minimum": 0 }
+  },
+  "required": ["name"]
+}
+```
+
+### 实现要求
+
+- 对于没有显式 `$schema` 字段的 schema，客户端和服务器**必须（MUST）**支持 JSON Schema 2020-12
+- 客户端和服务器**必须（MUST）**根据其声明的或默认的方言校验 schema。它们**必须（MUST）**通过返回一个指示该方言不受支持的适当错误来优雅地处理不受支持的方言。
+- 客户端和服务器**应当（SHOULD）**记录它们支持哪些 schema 方言
+
+### Schema 校验
+
+- Schema**必须（MUST）**根据其声明的或默认的方言而有效
+
+## 通用字段
+
+### `_meta`
+
+`_meta` 属性/参数由 MCP 保留，允许客户端和服务器为其交互附加额外的元数据。
+
+某些键名由 MCP 保留用于协议级元数据，如下所述；实现不得（MUST NOT）对这些键处的值做出假设。
+
+此外，[schema](https://github.com/modelcontextprotocol/specification/blob/main/schema/2025-11-25/schema.ts) 中的定义可能会为特定用途的元数据保留特定名称，如那些定义中所声明的。
+
+**键名格式：** 有效的 `_meta` 键名有两个部分：一个可选的**前缀（prefix）**和一个**名称（name）**。
+
+**前缀：**
+
+- 若指定，必须是由点（`.`）分隔的一系列标签，后跟一个斜杠（`/`）。
+  - 标签必须以字母开头并以字母或数字结尾；内部字符可以是字母、数字或连字符（`-`）。
+  - 实现应当（SHOULD）使用反向 DNS 表示法（例如 `com.example/` 而非 `example.com/`）。
+- 任何第二个标签为 `modelcontextprotocol` 或 `mcp` 的前缀都**为 MCP 使用而保留**。
+  - 例如：`io.modelcontextprotocol/`、`dev.mcp/`、`org.modelcontextprotocol.api/` 和 `com.mcp.tools/` 都是保留的。
+  - 然而，`com.example.mcp/` 不是保留的，因为第二个标签是 `example`。
+
+**名称：**
+
+- 除非为空，否则必须以字母数字字符（`[a-z0-9A-Z]`）开头和结尾。
+- 中间可以包含连字符（`-`）、下划线（`_`）、点（`.`）和字母数字。
+
+### `icons`
+
+`icons` 属性为服务器暴露其资源、工具、提示和实现的视觉标识符提供了一种标准化的方式。图标通过提供视觉上下文并改善可用功能的可发现性来增强用户界面。
+
+图标表示为一个 `Icon` 对象数组，其中每个图标包括：
+
+- `src`：指向图标资源的 URI（必需）。这可以是：
+  - 指向图像文件的 HTTP/HTTPS URL
+  - 带 base64 编码图像数据的 data URI
+- `mimeType`：可选的 MIME 类型，用于服务器的类型缺失或过于通用时
+- `sizes`：可选的尺寸规格数组（例如 `["48x48"]`，对于 SVG 等可缩放格式为 `["any"]`，或对于多种尺寸为 `["48x48", "96x96"]`）
+- `theme`：图标背景的可选主题偏好（`light` 或 `dark`）
+
+**必需的 MIME 类型支持：**
+
+支持渲染图标的客户端**必须（MUST）**至少支持以下 MIME 类型：
+
+- `image/png` —— PNG 图像（安全、通用兼容）
+- `image/jpeg`（以及 `image/jpg`）—— JPEG 图像（安全、通用兼容）
+
+支持渲染图标的客户端还**应当（SHOULD）**支持：
+
+- `image/svg+xml` —— SVG 图像（可缩放，但需要如下所述的安全预防措施）
+- `image/webp` —— WebP 图像（现代、高效的格式）
+
+**安全考量：**
+
+图标元数据的消费方在处理图标时**必须（MUST）**采取适当的安全预防措施以防止被入侵：
+
+- 将图标元数据和图标字节视为不可信输入，并防范网络、隐私和解析风险。
+- 确保图标 URI 是 HTTPS 或 `data:` URI。客户端**必须（MUST）**拒绝使用不安全方案和重定向的图标 URI，例如 `javascript:`、`file:`、`ftp:`、`ws:` 或本地应用 URI 方案。
+  - 禁止方案变更和重定向到不同源上的主机。
+- 对源自超大图像、过大尺寸或过多帧（例如 GIF 中）的资源耗尽攻击具有韧性。
+  - 消费方**可以（MAY）**为图像和内容大小设置限制。
+- 在不带凭据的情况下获取图标。不发送 cookie、`Authorization` header 或客户端凭据。
+- 验证图标 URI 与服务器同源。这最小化了向第三方暴露数据或跟踪信息的风险。
+- 在获取和渲染图标时保持谨慎，因为载荷**可能（MAY）**包含可执行内容（例如带[嵌入 JavaScript](https://www.w3.org/TR/SVG11/script.html) 或[扩展能力](https://www.w3.org/TR/SVG11/extend.html)的 SVG）。
+  - 消费方**可以（MAY）**选择禁止特定文件类型，或在渲染前以其他方式净化图标文件。
+- 在渲染前校验 MIME 类型和文件内容。将 MIME 类型信息视为建议性的。通过魔数字节检测内容类型；在不匹配或类型未知时拒绝。
+  - 维护一个严格的图像类型允许列表。
+
+**用法：**
+
+图标可以附加到：
+
+- `Implementation`：MCP 服务器/客户端实现的视觉标识符
+- `Tool`：工具功能的视觉表示
+- `Prompt`：与提示模板一起显示的图标
+- `Resource`：不同资源类型的视觉指示符
+
+可以提供多个图标以支持不同的显示上下文和分辨率。客户端应根据其 UI 要求选择最合适的图标。

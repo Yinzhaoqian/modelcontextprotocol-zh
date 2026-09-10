@@ -1,0 +1,93 @@
+---
+title: MCP 注册表
+sidebarTitle: 关于
+---
+
+<Note>
+  MCP 注册表目前处于预览阶段。在正式发布之前可能发生破坏性变更或数据重置。如果你遇到任何问题，请在 [GitHub](https://github.com/modelcontextprotocol/registry/issues) 上报告。
+</Note>
+
+MCP 注册表（MCP Registry）是面向可公开访问的 MCP 服务器的官方集中式元数据仓库，由 MCP 生态中主要的可信贡献者（如 Anthropic、GitHub、PulseMCP 和 Microsoft）支持。
+
+MCP 注册表提供：
+
+- 供服务器创建者发布其服务器元数据的单一场所
+- 通过 DNS 验证进行的命名空间管理
+- 供 MCP 客户端和聚合器发现可用服务器的 REST API
+- 标准化的安装与配置信息
+
+服务器元数据以标准化的 [`server.json` 格式](https://github.com/modelcontextprotocol/registry/blob/main/docs/reference/server-json/draft/server.schema.json)存储，其中包含：
+
+- 服务器的唯一名称（例如 `io.github.user/server-name`）
+- 在何处定位该服务器（例如 npm 包名、远程服务器 URL）
+- 执行指令（例如命令行参数、环境变量）
+- 其他发现数据（例如描述、服务器能力）
+
+## MCP 注册表生态
+
+MCP 注册表是一个大致如下所示的生态的一部分：
+
+![MCP 注册表生态](./ecosystem-diagram.excalidraw.svg)
+
+### 与软件包注册表的关系
+
+软件包注册表——如 npm、PyPI 和 Docker Hub——托管带有代码和二进制文件的软件包。
+
+MCP 注册表托管的是指向那些软件包的元数据。
+
+例如，一个 `weather-mcp` 包可以托管在 npm 上，而 MCP 注册表中的元数据可以将"weather v1.2.0"服务器映射到 `npm:weather-mcp`。
+
+[软件包类型指南](./package-types)列出了受支持的软件包类型和注册表。未来可能会根据社区需求支持更多软件包注册表。如果你有兴趣为某个软件包注册表构建支持，请[开一个 issue](https://github.com/modelcontextprotocol/registry)。
+
+### 与服务器开发者的关系
+
+MCP 注册表同时支持开源和闭源服务器。只要服务器的安装方法是公开可用的（例如公共注册表上的 npm 包或 Docker 镜像），**或者**服务器本身是可公开访问的（例如未被限制在私有网络内的远程服务器），服务器开发者就可以将其服务器的元数据发布到注册表。
+
+MCP 注册表**不**支持私有服务器。私有服务器是指仅对一小部分用户可访问的服务器。例如，发布在私有网络上（如 `mcp.acme-corp.internal`）或私有软件包注册表上（如 `npx -y @acme/mcp --registry https://artifactory.acme-corp.internal/npm`）的服务器。如果你想发布私有服务器，我们建议你自行托管一个私有 MCP 注册表并将它们添加到那里。
+
+### 与下游聚合器的关系
+
+MCP 注册表主要面向下游聚合器（如 MCP 服务器市场）消费。
+
+MCP 注册表所托管的元数据刻意保持中立、不带主观取向。下游聚合器可以提供策展或附加元数据，例如社区评分。
+
+我们预期下游聚合器会使用 MCP 注册表 API 定期但不频繁地拉取新元数据（例如每小时一次）。更多信息参见 [MCP 注册表聚合器指南](./registry-aggregators)。
+
+### 与其他 MCP 注册表的关系
+
+除了公共 REST API，MCP 注册表还定义了一份 [OpenAPI 规范](https://github.com/modelcontextprotocol/registry/blob/main/docs/reference/api/openapi.yaml)，其他 MCP 注册表可以实现它，从而为 MCP 宿主应用提供标准化的接口。
+
+我们预期许多下游聚合器会实现此接口。私有 MCP 注册表也可以实现它，以受益于既有的宿主应用支持。
+
+请注意，官方 MCP 注册表代码库**并非**为自托管而设计，注册表维护者无法为此用例提供支持。如果你选择 fork 它，你需要独立地维护和运营它。
+
+### 与 MCP 宿主应用的关系
+
+MCP 注册表并不打算被宿主应用直接消费。相反，宿主应用应通过符合官方 MCP 注册表 OpenAPI 规范的 REST API 来消费其他 MCP 注册表（例如下游市场）。
+
+## 信任与安全
+
+### 验证服务器真实性
+
+MCP 注册表使用命名空间认证来确保服务器来自其所声称的来源。服务器名称遵循反向 DNS 格式（如 `io.github.username/server` 或 `com.example/server`），将它们与已验证的 GitHub 账户或域名绑定。
+
+这套命名空间系统确保只有 GitHub 账户或域名的合法所有者才能在该命名空间下发布服务器，从而为生态提供信任和问责。有关认证方法的细节，参见[认证指南](./authentication)。
+
+### 安全扫描
+
+MCP 注册表将安全扫描委托给：
+
+- **底层软件包注册表**——npm、PyPI、Docker Hub 及其他软件包注册表执行各自的安全扫描和漏洞检测。
+- **下游聚合器**——MCP 注册表聚合器和市场可以实现额外的安全检查、评分或策展。
+
+MCP 注册表专注于命名空间认证和元数据托管，而依靠更广泛的生态来对实际的服务器代码进行安全扫描。
+
+### 垃圾内容防范
+
+MCP 注册表使用多种机制来防范垃圾内容：
+
+- **命名空间认证要求**——发布者必须通过 GitHub、DNS 或 HTTP 挑战验证对其命名空间的所有权，从而防止任意的垃圾提交。
+- **字符限制与校验**——自由格式字段有严格的字符限制和正则校验，以防止滥用。
+- **人工下架**——注册表维护者可以人工移除垃圾或恶意服务器。有关哪些内容会被移除的细节，参见[内容审核政策](./moderation-policy)。
+
+正在考虑的未来垃圾内容防范措施包括更严格的速率限制、基于 AI 的垃圾内容检测，以及社区举报能力。

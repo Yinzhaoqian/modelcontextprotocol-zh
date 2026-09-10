@@ -1,0 +1,152 @@
+---
+title: 群组章程模板
+description: MCP 工作组和兴趣组章程的模板。
+---
+
+每个 MCP 工作组和兴趣组都必须维护一份遵循此结构的章程文档。章程存放在 [modelcontextprotocol 仓库](https://github.com/modelcontextprotocol/modelcontextprotocol)中的 `docs/community/working-groups/<group-name>.mdx` 或 `docs/community/interest-groups/<group-name>.mdx`，并添加到 `docs/docs.json`。
+
+章程记录你的群组所特有的信息。治理规则——领导层要求、决策流程、会议要求、上报路径——在[工作组和兴趣组](/community/working-interest-groups)文档中定义并自动适用。请勿在此处重复它们。
+
+标记为 **（仅 WG）** 的章节对工作组是必需的，对兴趣组是可选的。
+
+<Note>
+  将下方的 markdown 复制到 `docs/community/working-groups/<group-name>.mdx`（若为 IG 则复制到 `interest-groups/`），并替换其中的占位文本。
+</Note>
+
+---
+
+```markdown
+---
+title: <Group Name> Charter
+description: Charter for the MCP <Group Name> <Working Group | Interest Group>.
+---
+
+## Group Type
+
+<!-- 说明这是一个工作组还是一个兴趣组。 -->
+
+**Working Group** | **Interest Group**
+
+## Mission Statement
+
+<!--
+用 2-3 句话概括该群组的宗旨。
+- 所要解决的问题领域
+- 为何需要跨领域协作
+- 对于 WG：该群组将产出哪些具体交付物
+- 对于 IG：该群组将促成哪些讨论和知识分享
+-->
+
+## Scope
+
+### In Scope
+
+<!--
+对于 WG：
+- 规范工作：所拥有的具体规范章节或 SEP
+- 参考实现：SDK 组件或参考实现
+- 跨领域关切：需要与其他群组协调的领域
+- 文档：文档职责
+
+对于 IG：
+- 讨论的主题领域
+- 产出类型（问题陈述、用例、建议）
+-->
+
+### Out of Scope
+
+<!-- 明确说明哪些不在该群组的职权范围内，以防止使命蔓延。 -->
+
+### Related Groups
+
+<!-- 列出工作有交集的其他 WG 或 IG，以及重叠的性质。 -->
+
+## Leadership
+
+<!--
+领导层的要求和职责在治理规则中定义。
+列出现任 Leads（WG）或 Facilitators（IG）。
+-->
+
+| Role | Name | Organization | GitHub | Term |
+| ---- | ---- | ------------ | ------ | ---- |
+|      |      |              |        |      |
+
+## Authority & Decision Rights (WG only)
+
+<!--
+决策流程（惰性共识 → 投票 → 上报）在治理规则中定义。
+此表记录该 WG 可以在哪个权限层级作出哪些决策。
+
+IG 不作出有约束力的决策，不需要此章节。
+-->
+
+| Decision Type                       | Authority Level                                        |
+| ----------------------------------- | ------------------------------------------------------ |
+| Meeting logistics & scheduling      | WG Leads (autonomous)                                  |
+| Proposal prioritization within WG   | WG Leads (autonomous)                                  |
+| SEP triage & closure (in scope)     | WG Leads (autonomous, with documented rationale)       |
+| Technical design within scope       | WG consensus                                           |
+| Spec changes (additive)             | WG consensus → Core Maintainer approval                |
+| Spec changes (breaking/fundamental) | WG consensus → Core Maintainer approval + wider review |
+| Scope expansion                     | Core Maintainer approval required                      |
+| WG Member approval                  | WG Member sponsors                                     |
+
+## Membership
+
+<!--
+列出现任群组成员及其参与级别（如有）。
+若尚无成员则省略。参与层级和成员资格标准在治理规则中定义。
+-->
+
+| Name | Organization | GitHub | Discord | Level |
+| ---- | ------------ | ------ | ------- | ----- |
+|      |              |        |         |       |
+
+## Operations
+
+<!--
+记录该群组当前的会议方式。会议要求（开放、提前 7 天公布、
+议程/纪要发到 GitHub Discussions）和沟通渠道在治理规则中定义。
+-->
+
+| Meeting         | Frequency | Duration | Purpose                               |
+| --------------- | --------- | -------- | ------------------------------------- |
+| Working Session |           |          | Technical discussion, proposal review |
+| Office Hours    |           |          | Open Q&A for newcomers and observers  |
+
+## Deliverables & Success Metrics (WG only)
+
+<!--
+以状态和归属跟踪进行中的工作项。
+IG 可以在此处可选地列出当前讨论主题或计划产出。
+-->
+
+### Active Work Items
+
+| Item          | Status                    | Target Date | Champion |
+| ------------- | ------------------------- | ----------- | -------- |
+| SEP-XXX: Name | Draft / Review / Approved |             |          |
+
+### Success Criteria
+
+<!-- WG 成功的可衡量成果。 -->
+
+## Changelog
+
+| Date | Change |
+| ---- | ------ |
+|      |        |
+```
+
+---
+
+## 使命陈述示例
+
+**工作组：**
+
+> 传输工作组的存在是为了推动 MCP 的传输机制演进，以支持多样化的部署场景——从本地子进程通信到横向扩展的云部署——同时保持协议的一致性和向后兼容性。
+
+**兴趣组：**
+
+> 企业 IG 探索在企业环境中部署 MCP 的挑战，收集用例和需求，以为未来的规范工作提供依据。

@@ -1,0 +1,114 @@
+---
+title: "SEP-1865：MCP Apps —— 面向 MCP 的交互式用户界面"
+sidebarTitle: "SEP-1865"
+---
+
+- **状态（Status）**: Final
+- **类型（Type）**: Extensions Track
+- **创建（Created）**: 2025-11-21
+- **作者（Author(s)）**: Ido Salomon (@idosal), Liad Yosef (@liadyosef), Olivier Chafik (@olivierchafik),
+  Jerome Swannack (@jeromeswannack), Jonathan Hefner (@jonathanhefner),
+  Anton Pidkuiko (@antonpidkuiko), Nick Cooper (@nickcooper), Bryan Ashley (@bryanashley),
+  Alexi Christakis (@alexichristakis)
+- **担保人（Sponsor）**: None (seeking sponsor)
+- **PR**: https://github.com/modelcontextprotocol/modelcontextprotocol/pull/1865
+
+<Note>
+完整的扩展规范维护在 [ext-apps 仓库](https://github.com/modelcontextprotocol/ext-apps/tree/main/specification)中。
+</Note>
+
+## 摘要
+
+本 SEP 提议一个 MCP 扩展（依据 SEP-1724），使服务器能够向宿主交付交互式用户界面。MCP Apps 引入了一种标准化模式：通过 `ui://` URI scheme 声明 UI 资源、通过元数据将它们与工具关联，并使用 MCP 的 JSON-RPC 基础协议促成 UI 与宿主之间的双向通信。此扩展满足了社区对 MCP 赋能应用中丰富、交互式体验日益增长的需求，同时保持安全性、可审计性，并与 MCP 的核心架构保持一致。初始规范聚焦于 HTML 资源（`text/html;profile=mcp-app`），并为未来扩展留有清晰路径。
+
+## 动机
+
+MCP 缺乏一种标准化的方式，让服务器向宿主交付丰富、交互式的用户界面。这一缺口阻碍了许多需要超越纯文本或结构化数据的视觉呈现和交互性的用例。随着越来越多的宿主采用此能力，碎片化和互操作性挑战的风险也在增长。
+
+[MCP-UI](https://mcpui.dev/) 已经证明了基于 UI 资源构建的 MCP 应用的可行性和价值，并充当 UI 规范和 SDK 的社区试验场。在一个专注社区的推动下，它发展出了双向通信模型以及 HTML、外部 URL 和远程 DOM 内容类型。MCP-UI 的采用者（包括 Postman、HuggingFace、Shopify、Goose 和 ElevenLabs 等宿主和提供方）为社区提供了关键的洞见和贡献。
+
+OpenAI 于 2025 年 11 月发布的 [Apps SDK](https://developers.openai.com/apps-sdk/) 进一步验证了对话式 AI 界面中对丰富 UI 体验的需求。Apps SDK 使开发者能够以 MCP 为骨干，在 ChatGPT 内构建丰富、交互式的应用。
+
+Apps SDK 和 MCP-UI 的架构都对本规范的设计产生了重大影响。
+
+然而，若没有正式的标准化：
+
+- 服务器无法可靠地期望经由 MCP 获得 UI 支持
+- 每个宿主可能实现略有不同的行为
+- 安全和可审计性模式不一致
+- 开发者必须为不同宿主（例如 MCP-UI vs. Apps SDK）维护独立的实现或适配器
+
+本 SEP 通过一个可选的、向后兼容的扩展来解决当前的局限，将 MCP-UI 和 Apps SDK 开创的方式统一到单一的开放标准中。
+
+## 规范
+
+完整规范可在 [modelcontextprotocol/ext-apps](https://github.com/modelcontextprotocol/ext-apps/blob/main/specification/draft/apps.mdx) 找到。
+
+在高层，MCP Apps 扩展了模型上下文协议，使服务器能够向宿主交付交互式用户界面。此扩展引入：
+
+- **UI 资源：** 使用 `ui://` URI scheme 预先声明的资源
+- **资源发现：** 工具通过元数据引用 UI 资源
+- **双向通信：** UI iframe 使用标准 MCP JSON-RPC 协议与宿主通信
+- **安全模型：** 强制性的 iframe 沙箱化，配以可审计的通信
+
+本规范聚焦于 HTML 内容（`text/html;profile=mcp-app`）作为初始内容类型，并对未来格式具有可扩展性。
+
+作为一个扩展，MCP Apps 是可选的，必须通过扩展能力机制在客户端和服务器之间显式协商（参见[完整规范](https://github.com/modelcontextprotocol/ext-apps/blob/main/specification/draft/apps.mdx)中的能力协商一节）。
+
+## 理由
+
+### 预声明资源 vs. 内联嵌入
+
+UI 被建模为预声明资源（`ui://`），由工具通过元数据引用。这允许：
+
+- 宿主在工具执行前预取模板，改善性能
+- 将呈现（模板）与数据（工具结果）分离，便于缓存
+- 对 UI 资源进行安全评审
+
+**所考虑的替代方案：**
+
+- **内嵌资源：** 当前 MCP-UI 的方式，资源在工具结果中返回。虽然对服务器开发更方便，但因性能优化上的缺口和 UI 评审流程上的挑战而被推迟。
+- **资源链接：** 预声明资源但在工具结果中返回链接。因性能优化上的缺口而被推迟。
+
+### 复用 MCP JSON-RPC 而非自定义协议
+
+复用既有的 MCP 基础设施（类型定义、SDK 等）。JSON-RPC 提供高级能力（超时、错误等）。
+
+**所考虑的替代方案：**
+
+- **自定义消息协议：** 当前 MCP-UI 的方式，带有 tool、intent、prompt 等消息类型。这些消息类型可以转换为所提议 JSON-RPC 消息的一个子集。
+- **全局 API 对象：** 被否决，因为它需要宿主特定的注入，且不适用于外部 iframe 源。语法糖仍可在服务器/UI 侧添加。
+
+### 仅 HTML 的 MVP
+
+- HTML 被普遍支持且被充分理解
+- 最简单的安全模型（标准 iframe 沙箱）
+- 允许截图/预览生成（例如通过 html2canvas）
+- 对大多数观察到的用例足够
+- 为未来扩展提供清晰的基线
+
+**所考虑的替代方案：**
+
+- **在 MVP 中包含外部 URL：** 这是服务器最容易采用的内容类型之一，因为可以嵌入常规应用。然而，因围绕模型可见性、无法对内容截图和评审流程的担忧而被推迟。它实际上可能通过本 SEP 新的 `externalIframes` 能力得到支持。
+
+## 向后兼容性
+
+本提案是对核心协议的一个可选扩展。既有实现继续保持不变地工作。
+
+## 安全影响
+
+托管来自可能不可信的 MCP 服务器的交互式 UI 内容，需要谨慎的安全考量。
+
+基于威胁模型，MCP Apps 提议以下缓解措施：
+
+- **Iframe 沙箱化**：所有 UI 内容都在权限受限的沙箱化 iframe 中运行
+- **预声明模板**：宿主可以在渲染前评审 HTML 内容
+- **可审计的消息**：所有 UI 到宿主的通信都经过可记录的 JSON-RPC
+- **用户同意**：宿主可以对 UI 发起的工具调用要求明确批准
+
+完整的威胁模型分析和缓解措施见[完整规范](https://github.com/modelcontextprotocol/ext-apps/blob/main/specification/draft/apps.mdx)。
+
+## 参考实现
+
+- [MCP-UI](https://github.com/idosal/mcp-ui) 客户端和服务器 SDK 支持本规范所提议的模式。
+- [ext-apps](https://github.com/modelcontextprotocol/ext-apps) 仓库包含由 Olivier Chafik 提供的原型实现。

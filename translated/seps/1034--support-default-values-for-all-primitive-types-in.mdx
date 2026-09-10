@@ -1,0 +1,146 @@
+---
+title: "SEP-1034：为征询 schema 中所有基本类型支持默认值"
+sidebarTitle: "SEP-1034"
+---
+
+- **状态（Status）**: Final
+- **类型（Type）**: Standards Track
+- **创建（Created）**: 2025-07-22
+- **作者（Author(s)）**: Tapan Chugh (chugh.tapan@gmail.com)
+- **Issue**: #1034
+
+## 摘要
+
+本 SEP 建议为 MCP 征询 schema 中的所有基本类型（StringSchema、NumberSchema 和 EnumSchema）添加对默认值的支持，扩展目前仅覆盖 BooleanSchema 的既有支持。
+
+## 动机
+
+MCP 中的征询提供了一种缓解复杂 API 设计的方式：工具可以按需请求信息，而不必诉诸繁琐的参数处理。然而挑战在于，用户必须手动输入本可以预填、以获得更自然交互的显而易见的信息。目前，只有 `BooleanSchema` 在征询请求中支持默认值。这一限制使得服务器无法为文本输入、数字和枚举选择提供合理的默认值，导致更多的用户负担。
+
+### 现实世界示例
+
+设想实现一个邮件回复功能。没有征询时，工具会变得难以驾驭：
+
+```python
+def reply_to_email_thread(
+    thread_id: str,
+    content: str,
+    recipient_list: List[str] = [],
+    cc_list: List[str] = []
+) -> None:
+    # Ambiguity: Does empty list mean "no recipients" or "use defaults"?
+    # Complex logic needed to handle different combinations
+```
+
+有了征询，工具签名本身可以简单得多
+
+```python
+def reply_to_email_thread(
+    thread_id: str,
+    content: Optional[str] = ""
+) -> None:
+    # Code can lookup the participants from the original thread
+    # and prepare an elicitation request with the defaults setup
+```
+
+```typescript
+const response = await client.request("elicitation/create", {
+  message: "Configure email reply",
+  requestedSchema: {
+    type: "object",
+    properties: {
+      recipients: {
+        type: "string",
+        title: "Recipients",
+        default: "alice@company.com, bob@company.com"  // Pre-filled
+      },
+      cc: {
+        type: "string",
+        title: "CC",
+        default: "john@company.com"  // Pre-filled
+      },
+      content: {
+        type: "string",
+        title: "Message"
+        default: "" // If provided in the tool above
+      }
+    }
+  }
+});
+```
+
+### 实现
+
+一个可运行的实现，表明客户端只需极少改动即可显示默认值（约 10 行代码）：
+
+- 实现 PR：https://github.com/chughtapan/fast-agent/pull/2
+- 上述邮件回复工作流的演示：https://asciinema.org/a/X7aQZjT2B5jVwn9dJ9sqQVkOM
+
+## 规范
+
+### Schema 变更
+
+扩展征询原语 schema 以包含可选的默认值：
+
+```typescript
+export interface StringSchema {
+  type: "string";
+  title?: string;
+  description?: string;
+  minLength?: number;
+  maxLength?: number;
+  format?: "email" | "uri" | "date" | "date-time";
+  default?: string; // NEW
+}
+
+export interface NumberSchema {
+  type: "number" | "integer";
+  title?: string;
+  description?: string;
+  minimum?: number;
+  maximum?: number;
+  default?: number; // NEW
+}
+
+export interface EnumSchema {
+  type: "string";
+  title?: string;
+  description?: string;
+  enum: string[];
+  enumNames?: string[];
+  default?: string; // NEW - must be one of enum values
+}
+
+// BooleanSchema already has default?: boolean
+```
+
+### 行为
+
+1. `default` 字段是可选的，保持完全的向后兼容
+2. 默认值必须与 schema 类型匹配
+3. 对于 EnumSchema，默认值必须是有效枚举值之一
+4. 支持默认值的客户端**应当（SHOULD）**预填表单字段。不支持默认值的客户端**可以（MAY）**完全忽略该字段。
+
+## 理由
+
+1. 高层理由是遵循 BooleanSchema 所确立的先例，而非创造新机制。
+2. 将默认值设为可选确保了向后兼容。
+3. 这保持了让客户端实现保持简单这一高层直觉。
+
+### 所考虑的替代方案
+
+1. **服务器端模板**：服务器可以单独维护模板，但这增加了复杂性
+2. **新请求类型**：为带默认值的表单单独设一个请求类型会使 API 碎片化
+3. **必填默认值**：将默认值设为必填会破坏既有实现
+
+## 向后兼容性
+
+此变更完全向后兼容，无破坏性变更。不理解默认值的客户端会忽略它们，既有的征询请求继续保持不变地工作。客户端可以按自己的节奏采用默认值支持。
+
+## 安全影响
+
+无新的安全关切：
+
+1. **无敏感数据**：针对请求敏感信息的既有指南仍然适用
+2. **客户端控制**：客户端保留对发送给服务器的数据的完全控制
+3. **用户可见性**：默认值对用户可见，用户可以在提交前修改它们

@@ -1,0 +1,97 @@
+---
+title: Transports 章程
+description: MCP Transports 工作组的章程。
+---
+
+## 群组类型
+
+**工作组**
+
+## 使命陈述
+
+Transports 工作组推动 MCP 传输绑定和传输相邻的协议架构演进，使各实现在本地和远程部署之间保持可互操作、可扩展、可靠且易于运营。本工作组产出传输提案、SEP、实现证据和指导。[工作组仓库](https://github.com/modelcontextprotocol/transports-wg)及其[上游章程](https://github.com/modelcontextprotocol/transports-wg/blob/main/CHARTER.md)在这些边界之内维护本工作组当前的技术焦点、提案策略和支撑细节。
+
+## 范围
+
+### 范围内
+
+- **传输绑定**：分帧、投递、请求和信封元数据、取消和终止、连接生命周期、向后兼容，以及既有和未来 MCP 传输的行为。当前规范的[传输概览](/specification/draft/basic/transports)定义了传输绑定与核心协议语义之间的边界。
+- **可扩展性与可靠性**：传输层连接管理、资源效率、多路复用、负载分配、错误处理、重连、恢复，以及某绑定所提供的投递和顺序保证。
+- **传输相邻的协议架构**：可扩展、可互操作绑定所需的协议全局消息流关切，包括请求关联、逐请求元数据、无状态操作，以及从遗留的初始化和传输会话模型的迁移。
+- **传输安全**：绑定和信封的安全要求，例如 Origin 验证、TLS、mTLS 和证书处理，与安全 IG 协调。凭据承载与授权 IG 协调。
+- **验证与指导**：评估提案并帮助实现者采用商定的传输行为所需的参考实现、实验、实现证据和文档。支撑材料在上游[文档](https://github.com/modelcontextprotocol/transports-wg/tree/main/docs)中维护。本工作组向合规测试项目贡献传输场景和需求，该项目的维护者拥有合规套件。
+- **跨领域协调**：其他 MCP 群组所拥有工作的传输影响，但不接管它们的应用层特性。
+
+上游[范围声明](https://github.com/modelcontextprotocol/transports-wg/blob/main/CHARTER.md#scope)提供支撑背景，但不能扩展本章程中的边界。
+
+### 范围外
+
+- MCP 原语（如工具、资源、提示、任务、代理或事件）的应用层行为，包括应用状态、应用会话含义、任务生命周期，以及事件或订阅语义。当这些特性依赖于绑定或消息流行为时，本工作组进行协调。
+- 特定领域的扩展，以及特定实现的产品或业务关切。
+- 与传输无关的 SDK API 和实现细节。
+- 授权协议机制、凭据和令牌语义、应用身份，以及授权策略。本工作组就绑定如何承载商定的授权数据与相关群组协调。
+- MCP 合规套件的所有权。本工作组与其维护者协调，贡献传输需求和场景。
+
+### 相关群组
+
+- **[SDK 工作组](/community/working-groups/sdk)**：官方 SDK 实现传输变更；两个群组就可行性、参考实现和落地排序进行协调。
+- **[Agents 工作组](/community/working-groups/agents)**：Agents 工作组拥有 Tasks 和持久执行；当它们依赖于多次往返请求、请求关联、无状态操作或绑定行为时，两个群组进行协调。
+- **[Triggers and Events 工作组](/community/working-groups/triggers-events)**：事件回调、订阅和应用层投递语义归该群组；Transports 拥有绑定特定的承载和保证。
+- **[授权 IG](/community/interest-groups/auth)** 和 **[安全 IG](/community/interest-groups/security)**：两个群组就凭据承载和传输线路安全进行协调，而授权机制和更广泛的安全要求仍归各自的 IG。
+
+## 领导层
+
+当前的 WG Lead 是 [Kurtis Van Gent](https://github.com/kurtisvg)。
+
+## 权限与决策权
+
+| 决策类型                            | 权限层级                                               |
+| ----------------------------------- | ------------------------------------------------------ |
+| 会议事务与排期                      | WG Leads（自主）                                       |
+| WG 内提案优先级排序                 | WG Leads（自主）                                       |
+| SEP 分诊与关闭（范围内）            | WG Leads（自主，附成文理由）                           |
+| 范围内的技术设计                    | WG 共识                                                |
+| 规范变更（增量式）                  | WG 共识 → 核心维护者批准                               |
+| 规范变更（破坏性/根本性）           | WG 共识 → 核心维护者批准 + 更广泛评审                 |
+| 范围扩展                            | 需要核心维护者批准                                     |
+| WG 成员批准                         | WG 成员担保                                            |
+
+## 成员
+
+当前的 WG 成员列于上游[群组成员名录](https://github.com/modelcontextprotocol/transports-wg/blob/main/GOVERNANCE.md#members)。
+
+## 运作
+
+本工作组每周举行一次例会，当前时间和加入详情列于 [meet.modelcontextprotocol.io](https://meet.modelcontextprotocol.io)。议题在 [MCP Discord](https://discord.gg/6CSzBmMkjX) 的 `#transports-wg` 中异步讨论。
+
+工作遵循问题优先的工作流：
+
+1. 在[工作组仓库](https://github.com/modelcontextprotocol/transports-wg)中创建一份核心问题陈述，使本工作组就问题及其需求达成一致。
+2. 与其他有兴趣的参与者协作定义解决方案。
+3. 评审并迭代解决方案，以处理 WG 反馈。
+4. 在本工作组按其决策流程达成共识后，通过 [SEP 流程](/community/sep-guidelines)将解决方案作为 SEP 呈交给核心维护者。
+
+## 资源
+
+- [modelcontextprotocol/transports-wg](https://github.com/modelcontextprotocol/transports-wg)
+  - [提案](https://github.com/modelcontextprotocol/transports-wg/tree/main/proposals)
+  - [支撑文档与决策记录](https://github.com/modelcontextprotocol/transports-wg/tree/main/docs)
+  - [会议纪要](https://github.com/modelcontextprotocol/transports-wg/tree/main/meetings)
+
+## 交付物与成功指标
+
+### 活跃工作项
+
+参见[开放中的 pull request](https://github.com/modelcontextprotocol/transports-wg/pulls) 和 [`roadmaps/` 目录](https://github.com/modelcontextprotocol/transports-wg/tree/main/roadmaps)。
+
+### 成功标准
+
+- 已采纳的与传输无关的协议行为在各传输之间保持一致，而绑定特定的差异是显式的，并由实现证据和适用的合规场景验证。
+- 影响官方 SDK 的传输变更与 SDK 工作组协调，并有清晰的实现指导。
+- 决策、提案状态和支撑理由在工作组仓库中或由其链接保持公开可查。
+
+## 变更日志
+
+| 日期       | 变更            |
+| ---------- | --------------- |
+| 2026-08-23 | 首版章程        |

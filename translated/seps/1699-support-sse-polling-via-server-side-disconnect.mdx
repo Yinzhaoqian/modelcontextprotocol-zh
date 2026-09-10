@@ -1,0 +1,47 @@
+---
+title: "SEP-1699：通过服务器端断开支持 SSE 轮询"
+sidebarTitle: "SEP-1699"
+---
+
+- **状态（Status）**: Final
+- **类型（Type）**: Standards Track
+- **创建（Created）**: 2025-10-22
+- **作者（Author(s)）**: Jonathan Hefner (@jonathanhefner)
+- **Issue**: #1699
+
+## 摘要
+
+本 SEP 提议对 Streamable HTTP 传输作出更改，以缓解关于长连接和可恢复性的问题。
+
+## 动机
+
+Streamable HTTP 传输规范[不允许](https://github.com/modelcontextprotocol/modelcontextprotocol/blob/04c6e1f0ea6544c7df307fb2d7c637efe34f58d3/docs/specification/draft/basic/transports.mdx?plain=1#L109-L111)服务器在计算结果的过程中关闭连接。换句话说，除非客户端断开，否则服务器必须维持可能长时间运行的连接。
+
+## 规范
+
+当服务器启动一个 SSE 流时，它**必须（MUST）**立即发送一个由 [`id`](https://html.spec.whatwg.org/multipage/server-sent-events.html#:~:text=field%20name%20is%20%22id%22) 和空 [`data`](https://html.spec.whatwg.org/multipage/server-sent-events.html#:~:text=field%20name%20is%20%22data%22) 字符串构成的 SSE 事件，以便让客户端准备好以该事件 ID 作为 `Last-Event-ID` 进行重连。
+
+请注意，SSE 标准明确[允许将 `data` 设为空字符串](https://html.spec.whatwg.org/multipage/server-sent-events.html#:~:text=data%20buffer%20is%20an%20empty%20string)，并规定客户端侧的适当处理方式是记录 `id` 用于 `Last-Event-ID`，但在其他方面忽略该事件（即不调用事件处理回调）。
+
+在服务器向客户端发送了一个事件 ID 之后的任何时刻，服务器都**可以（MAY）**随意断开。具体而言，[MCP 规范的这一部分](https://github.com/modelcontextprotocol/modelcontextprotocol/blob/04c6e1f0ea6544c7df307fb2d7c637efe34f58d3/docs/specification/draft/basic/transports.mdx?plain=1#L109-L111)将从：
+
+> 服务器在为收到的 JSON-RPC*请求*发送 JSON-RPC*响应*之前**不应当（SHOULD NOT）**关闭 SSE 流
+
+更改为：
+
+> 如果服务器已经向客户端发送了带有事件 ID 的 SSE 事件，则它**可以（MAY）**在发送 JSON-RPC*响应*之前关闭连接
+
+如果服务器断开，客户端会将此次断开解释为与网络故障相同，并尝试重连。为防止客户端过度重连／轮询，服务器**应当（SHOULD）**发送一个带有 [`retry`](https://html.spec.whatwg.org/multipage/server-sent-events.html#:~:text=field%20name%20is%20%22retry%22) 字段的 SSE 事件，指明客户端在重连前应等待多久。客户端**必须（MUST）**尊重 `retry` 字段。
+
+## 理由
+
+服务器可以随意断开，避免长连接。发送 `retry` 字段将防止客户端以不当的重连尝试反复冲击服务器。
+
+## 向后兼容性
+
+- **新客户端 + 旧服务器**：无变化。无向后不兼容。
+- **旧客户端 + 新服务器**：客户端应将随意断开解释为与网络故障相同。`retry` 字段是 SSE 标准的一部分。如果客户端已经实现了正确的 SSE 恢复逻辑，则无向后不兼容。
+
+## 补充信息
+
+本 SEP（部分）取代了 [SEP-1335](https://github.com/modelcontextprotocol/modelcontextprotocol/issues/1335)。

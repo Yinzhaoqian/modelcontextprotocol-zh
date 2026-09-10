@@ -1,0 +1,92 @@
+---
+title: 安全章程
+description: MCP 安全兴趣组的章程。
+---
+
+## 群组类型
+
+**兴趣组**
+
+## 使命陈述
+
+安全兴趣组编目 MCP 特有的威胁、评审安全相关提案，并将经过验证的问题界定为聚焦的工作组或 [SEP](/community/sep-guidelines)。
+
+## 范围
+
+### 范围内
+
+- **威胁建模**：开发并维护一个共享的、分层的 MCP 攻击面视图，涵盖准入与身份、调用方治理、运行时行为、拦截与强制执行，以及可审计性，从而为各个提案提供一个共同的参照框架
+- **服务器身份、证明与准入**：在客户端向某服务器分派之前确立该服务器名副其实的需求，包括签名断言、信任根，以及协议层与注册表层验证之间的边界
+- **供应链与来源**：本地执行的服务器二进制文件和软件包的完整性（仿冒抢注、未固定的依赖、未签名的制品），以及客户端如何验证它所派生的东西
+- **运行时漂移与准入后变更**：对服务器获批后工具、schema 或行为变更的处理方式，以及此类变更属于版本控制、重新批准还是安全事件
+- **可审计性与可观测性**：为合规和事件复盘而对防篡改记录的需求，记录某次工具调用做了什么、在何种权限下
+- **传输相邻的安全**：针对 stdio 及其他不适用 HTTP 授权规范的非 HTTP 传输的机密处理、进程隔离和未认证的表面
+- **《安全最佳实践》文档**：撰写和评审[安全最佳实践](/docs/tutorials/security/security_best_practices)指导中的条目，包括就 MCP 特定内容与 OWASP GenAI、CoSAI 等外部机构联络
+- **漏洞披露路由**：为已针对某 MCP 仓库提交私密安全公告、需要帮助联系到正确维护者的报告者提供一个已知的联系点
+
+### 范围外
+
+- **授权协议机制**：OAuth 流、作用域、客户端注册和令牌处理属于[授权 IG](/community/interest-groups/auth)及其派生的工作组
+- **传输线路安全**：TLS、mTLS 和证书处理属于 Transports 工作组
+- **工具标注设计**：标注模型本身属于[工具标注 IG](/community/interest-groups/tool-annotations)。本群组提供安全需求作为输入
+- **注册表服务运营**：运行和保护托管的注册表服务属于 [Registry 工作组](/community/working-groups/registry)。本群组就来源和发布提供威胁输入
+- **产品特定的加固指南**：针对个别宿主应用或云平台的分步配置，属于那些产品的文档而非协议工作
+- **具有竞争敏感性或非公开的商业信息**，依据 [MCP 反垄断政策](/community/antitrust)
+
+### 相关群组
+
+- **[授权 IG](/community/interest-groups/auth)**：令牌混淆、受众不匹配，以及元数据发现中的 SSRF，处于两个群组之间的边界
+- **[工具标注 IG](/community/interest-groups/tool-annotations)**：信任和敏感度标注（[SEP-1913](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/1913)）跨越两个群组
+- **[Interceptors 工作组](/community/working-groups/interceptors)**：拦截器是此处所揭示的运行时安全决策的主要强制执行点
+- **[Server Card 工作组](/community/working-groups/server-card) / [Registry 工作组](/community/working-groups/registry)**：服务器身份、来源和发现元数据，与准入及供应链关切相交叉
+- **[Transports 工作组](/community/working-groups/transports)**：stdio 进程隔离和未认证的方法表面
+- **SDK 维护者**：对 SDK 安全公告的协调处理和跨 SDK 的安全默认值
+
+## 领导层
+
+| 角色        | 姓名           | 组织         | GitHub                                     | 任期    |
+| ----------- | -------------- | ------------ | ------------------------------------------ | ------- |
+| 主持人      | Den Delimarsky | Anthropic    | [@localden](https://github.com/localden)   | 首任    |
+| 主持人      | Paul Carleton  | Anthropic    | [@pcarleton](https://github.com/pcarleton) | 首任    |
+
+## 成员
+
+| 姓名                     | 组织         | GitHub                                               | Discord          | 级别        |
+| ------------------------ | ------------ | ---------------------------------------------------- | ---------------- | ----------- |
+| Sam Morrow               | GitHub       | [@SamMorrowDrums](https://github.com/SamMorrowDrums) | `sammorrowdrums` | 参与者      |
+| Ola Hungerford           | Nordstrom    | [@olaservo](https://github.com/olaservo)             | `olaservo`       | 参与者      |
+| Peder Holdgaard Pedersen | Saxo Bank    | [@PederHP](https://github.com/PederHP)               | `pederhp`        | 参与者      |
+| Stefano Ortolani         | Broadcom     | [@ostefano](https://github.com/ostefano)             | `ostefano.`      | 参与者      |
+
+向任何人开放。加入 [MCP 贡献者 Discord](/community/communication#discord) 上的 `#security-ig` 频道。电话会议是开放的，强烈鼓励积极参与。本群组正在寻找会真正参与提案、帮助推进工作，而非旁观的贡献者。
+
+## 运作
+
+| 会议         | 频率          | 时长     | 目的                                                                     |
+| ------------ | ------------- | -------- | ----------------------------------------------------------------------- |
+| 答疑时间     | 每 2 周       | 45 分钟  | 威胁评审、提案分诊、部署报告、WG 提案界定                               |
+
+每次电话会议前会在 `#security-ig` 中共享议程。
+
+Discord：[#security-ig](https://discord.com/channels/1358869848138059966/1379811011669921883)
+
+会议纪要发布到 GitHub Discussions 的 [Meeting Notes - Security IG](https://github.com/modelcontextprotocol/modelcontextprotocol/discussions/categories/meeting-notes-security-ig) 分类。
+
+## 讨论主题
+
+以下条目构成本 IG 的当前讨论议程。此列表并非详尽无遗，将随群组识别出新的兴趣领域而演进。
+
+| 条目                                                                               | 名称                                                                                                                        | 状态        | 牵头人                                                   |
+| ---------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- | ----------- | -------------------------------------------------------- |
+| [SEP-2809](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/2809) | 经证明的工具-服务器准入（ATSA）                                                                                             | Draft       | [@metereconsulting](https://github.com/metereconsulting) |
+| —                                                                                  | SDK 漏洞披露                                                                                                                | 进行中      | 主持人                                                   |
+| —                                                                                  | 运行时漂移：批准后的 `list_changed` 语义                                                                                    | 开放        | —                                                        |
+| —                                                                                  | 供应链完整性：协议、注册表还是配套标准                                                                                      | 开放        | —                                                        |
+| —                                                                                  | 跨服务器的工具身份                                                                                                          | 开放        | —                                                        |
+| —                                                                                  | 能力声明：提示还是契约（与[工具标注 IG](/community/interest-groups/tool-annotations)联合）                                  | 开放        | —                                                        |
+
+## 变更日志
+
+| 日期       | 变更            |
+| ---------- | --------------- |
+| 2026-06-13 | 首版章程        |

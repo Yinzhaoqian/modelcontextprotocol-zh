@@ -1,0 +1,120 @@
+---
+title: Skills Over MCP 章程
+description: MCP Skills Over MCP 工作组的章程。
+---
+
+## 群组类型
+
+**工作组**
+
+## 使命陈述
+
+Skills Over MCP 工作组定义"代理技能（agent skills）"——面向代理工作流的丰富、结构化指令——如何通过 MCP 被发现、分发和消费。宿主应用中的原生技能支持展现出强烈需求，本群组源于对 [SEP-2076 —— 将代理技能作为一流 MCP 原语](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/2076)的讨论，该讨论提出了一些开放问题：既有 MCP 原语是否足够，或应标准化哪些约定。本工作组产出规范扩展、参考实现和协调产物，因为解决方案触及协议规范、注册表 schema、SDK 实现和客户端行为。本工作组当前的方向体现在 [SEP-2640 —— Skills 扩展](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/2640)（基于资源，Extensions Track）中。
+
+## 范围
+
+### 范围内
+
+- **规范工作**：定义技能如何在 MCP 内被表示、发现和消费的 SEP——包括 Skills 扩展（Extensions Track）及相关协议变更
+- **参考实现**：演示技能发现和消费模式的 SDK 组件和参考服务器
+- **跨领域关切**：与 Registry 工作组（技能发现/分发、注册表 schema 变更）、Agents 工作组（技能激活、服务器元数据消费）、Primitive Grouping 工作组（渐进式披露模式）以及外部项目协调，外部项目包括 [Agent Skills](https://agentskills.io/) 规范（内容格式和 well-known URI 发现）、FastMCP 和 PydanticAI
+- **文档**：涵盖技能撰写、发现和消费的规范章节及指导
+
+### 范围外
+
+- **注册表 schema 决策**：schema 所有权归 Registry 工作组；本工作组贡献需求，但不拥有该 schema
+- **客户端实现强制**：我们可以记录模式，但不能要求特定的客户端行为
+- **插件/捆绑包打包**：可安装的捆绑包（技能 + 服务器 + 子代理 + 配置作为单一制品）——由用例揭示，但属于一项更广泛的打包工作
+
+### 相关群组
+
+- **Agents 工作组** —— 代理如何消费服务器元数据、技能激活
+- **Registry 工作组** —— 技能发现/分发、注册表 schema 变更
+- **Primitive Grouping 工作组** —— 渐进式披露模式
+
+## 领导层
+
+| 角色 | 姓名            | 组织                        | GitHub                                   | 任期    |
+| ---- | --------------- | --------------------------- | ---------------------------------------- | ------- |
+| Lead | Ola Hungerford  | Nordstrom / MCP 维护者      | [@olaservo](https://github.com/olaservo) | 首任    |
+| Lead | Peter Alexander | Anthropic / 核心维护者      | [@pja-ant](https://github.com/pja-ant)   | 首任    |
+
+## 权限与决策权
+
+| 决策类型                            | 权限层级                                               |
+| ----------------------------------- | ------------------------------------------------------ |
+| 会议事务与排期                      | WG Leads（自主）                                       |
+| WG 内提案优先级排序                 | WG Leads（自主）                                       |
+| SEP 分诊与关闭（范围内）            | WG Leads（自主，附成文理由）                           |
+| 范围内的技术设计                    | WG 共识                                                |
+| 规范变更（增量式）                  | WG 共识 → 核心维护者批准                               |
+| 规范变更（破坏性/根本性）           | WG 共识 → 核心维护者批准 + 更广泛评审                 |
+| 范围扩展                            | 需要核心维护者批准                                     |
+| WG 成员批准                         | WG 成员担保                                            |
+
+## 成员
+
+| 姓名                     | 组织                            | GitHub                                                 | Discord | 级别        |
+| ------------------------ | ------------------------------- | ------------------------------------------------------ | ------- | ----------- |
+| Ola Hungerford           | Nordstrom / MCP 维护者          | [@olaservo](https://github.com/olaservo)               |         | Lead        |
+| Peter Alexander          | Anthropic / 核心维护者          | [@pja-ant](https://github.com/pja-ant)                 |         | Lead        |
+| Yu Yi                    | Google                          | [@erain](https://github.com/erain)                     |         | 参与者      |
+| Sunish Sheth             | Databricks                      | [@sunishsheth2009](https://github.com/sunishsheth2009) |         | 参与者      |
+| Keith A Groves           | Hyix                            | [@keithagroves](https://github.com/keithagroves)       |         | 参与者      |
+| Peder Holdgaard Pedersen | Saxo Bank / MCP 维护者          | [@pederhp](https://github.com/pederhp)                 |         | 参与者      |
+| Sam Morrow               | GitHub                          | [@SamMorrowDrums](https://github.com/SamMorrowDrums)   |         | 参与者      |
+| Jacob MacDonald          | Google                          | [@jakemac53](https://github.com/jakemac53)             |         | 参与者      |
+| Jonathan Hefner          | Independent / MCP 维护者        | [@jonathanhefner](https://github.com/jonathanhefner)   |         | 参与者      |
+| Luca Chang               | AWS / MCP 维护者                | [@LucaButBoring](https://github.com/LucaButBoring)     |         | 参与者      |
+| Bob Dickinson            | TeamSpark.ai / MCP 维护者       | [@BobDickinson](https://github.com/BobDickinson)       |         | 参与者      |
+| Radoslav Dimitrov        | Stacklok / MCP 维护者           | [@rdimitrov](https://github.com/rdimitrov)             |         | 参与者      |
+| Juan Antonio Osorio      | Stacklok                        | [@JAORMX](https://github.com/JAORMX)                   |         | 参与者      |
+| Kaxil Naik               | Astronomer / Apache Airflow PMC | [@kaxil](https://github.com/kaxil)                     |         | 参与者      |
+| Cliff Hall               | Futurescale                     | [@cliffhall](https://github.com/cliffhall)             |         | 参与者      |
+| Haoyu Wang               | Google                          | [@helloeve](https://github.com/helloeve)               |         | 参与者      |
+| Sambhav Kothari          | Bloomberg / MCP 维护者          | [@sambhav](https://github.com/sambhav)                 |         | 参与者      |
+
+## 运作
+
+| 会议            | 频率              | 时长       | 目的                                                                             |
+| --------------- | ----------------- | ---------- | -------------------------------------------------------------------------------- |
+| 工作会议        | 每周（周二）      | 60 分钟    | 技术讨论、模式评估、提案评审；向所有参与者开放                                   |
+
+默认开始时间为太平洋时间上午 9:00。会议偶尔可能安排得更早，以更好地照顾非美国时区。
+
+会议发布于 [meet.modelcontextprotocol.io](https://meet.modelcontextprotocol.io)。议程按 MCP 会议政策提前公布。会议纪要发布到 [Meeting Notes — Skills Over MCP WG](https://github.com/modelcontextprotocol/modelcontextprotocol/discussions/categories/meeting-notes-skills-over-mcp-wg)。
+
+Discord：[#skills-over-mcp-wg](https://discord.com/channels/1358869848138059966/1464745826629976084)
+
+## 资源
+
+- 实验发现和参考实现：[modelcontextprotocol/experimental-ext-skills](https://github.com/modelcontextprotocol/experimental-ext-skills)
+- 项目看板：[Skills Over MCP WG](https://github.com/orgs/modelcontextprotocol/projects/38/views/1)
+
+## 交付物与成功指标
+
+### 活跃工作项
+
+完整的实时跟踪在 [Skills Over MCP WG 项目看板](https://github.com/orgs/modelcontextprotocol/projects/38/views/1)上。主要工作流：
+
+| 条目                                                                                                              | 状态        | 目标日期    | 牵头人                                                                                       |
+| ----------------------------------------------------------------------------------------------------------------- | ----------- | ----------- | -------------------------------------------------------------------------------------------- |
+| [Skills 扩展 SEP](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/2640)（Extensions Track）     | 评审中      |             | [@pja-ant](https://github.com/pja-ant)                                                       |
+| Skills 扩展参考实现                                                                                               | 评审中      |             | [@olaservo](https://github.com/olaservo)                                                     |
+| Agent Skills 规范协调                                                                                             | 进行中      |             | [@jonathanhefner](https://github.com/jonathanhefner)、[@pja-ant](https://github.com/pja-ant) |
+| 注册表 skills.json 提案                                                                                           | 进行中      |             | [@JAORMX](https://github.com/JAORMX)                                                         |
+
+### 成功标准
+
+- **短期**：就需求和对现有方法的评估形成成文的共识
+- **中期**：给出明确的建议（约定 vs. 协议扩展 vs. 两者兼有）——草案 Skills 扩展 SEP 代表了本工作组当前的方向：一个使用既有资源原语的正式扩展
+- **长期**：跨 MCP 服务器和客户端的可互操作技能分发
+
+## 变更日志
+
+| 日期       | 变更                                                                                                                                                                                                                                                                                                           |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-04-25 | 在活跃工作项中链接 SEP-2640；添加 @helloeve（Google）为参与者                                                                                                                                                                                                                                                    |
+| 2026-04-16 | 从兴趣组转为工作组                                                                                                                                                                                                                                                                                             |
+| 2026-04-14 | 首版章程（从 [experimental-ext-skills](https://github.com/modelcontextprotocol/experimental-ext-skills) 仓库 README 正式化而来，在通过 [SEP-2149](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/2149) 确立章程流程之前，该 README 充当事实上的章程） |
+| 2026-02-01 | IG 组建；实验性仓库创建                                                                                                                                                                                                                                                                                       |

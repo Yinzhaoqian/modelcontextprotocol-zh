@@ -1,0 +1,436 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "mint",
+  "name": "模型上下文协议",
+  "colors": {
+    "primary": "#09090b",
+    "light": "#FAFAFA",
+    "dark": "#09090b"
+  },
+  "favicon": "/favicon.svg",
+  "navbar": {
+    "links": [
+      {
+        "label": "Blog",
+        "href": "https://blog.modelcontextprotocol.io"
+      },
+      {
+        "label": "GitHub",
+        "href": "https://github.com/modelcontextprotocol"
+      }
+    ]
+  },
+  "logo": {
+    "light": "/logo/light.svg",
+    "dark": "/logo/dark.svg"
+  },
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "文档",
+        "versions": [
+          {
+            "version": "版本 2026-07-28（最新）",
+            "default": true,
+            "pages": [
+              {
+                "group": "开始使用",
+                "pages": [
+                  "docs/2026-07-28/getting-started/intro"
+                ]
+              },
+              {
+                "group": "关于 MCP",
+                "pages": [
+                  "docs/2026-07-28/learn/architecture",
+                  "docs/2026-07-28/learn/server-concepts",
+                  "docs/2026-07-28/learn/client-concepts",
+                  "docs/2026-07-28/learn/versioning"
+                ]
+              },
+              {
+                "group": "使用 MCP 开发",
+                "pages": [
+                  "docs/2026-07-28/develop/connect-local-servers",
+                  "docs/2026-07-28/develop/connect-remote-servers",
+                  "docs/2026-07-28/develop/build-with-agent-skills",
+                  "docs/2026-07-28/develop/build-server",
+                  {
+                    "group": "客户端",
+                    "pages": [
+                      "docs/2026-07-28/develop/build-client",
+                      "docs/2026-07-28/develop/clients/client-best-practices"
+                    ]
+                  },
+                  "docs/2026-07-28/sdk",
+                  {
+                    "group": "安全",
+                    "pages": [
+                      "docs/2026-07-28/tutorials/security/authorization",
+                      "docs/2026-07-28/tutorials/security/security_best_practices"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "开发者工具",
+                "pages": [
+                  {
+                    "group": "Inspector",
+                    "pages": [
+                      "docs/2026-07-28/tools/inspector",
+                      "docs/2026-07-28/tools/inspector/web",
+                      "docs/2026-07-28/tools/inspector/cli",
+                      "docs/2026-07-28/tools/inspector/tui",
+                      "docs/2026-07-28/tools/inspector/configuration",
+                      "docs/2026-07-28/tools/inspector/authorization",
+                      "docs/2026-07-28/tools/inspector/protocol-eras",
+                      "docs/2026-07-28/tools/inspector/recipes"
+                    ]
+                  },
+                  "docs/2026-07-28/tools/debugging"
+                ]
+              }
+            ]
+          },
+          {
+            "version": "版本 2025-11-25",
+            "pages": [
+              {
+                "group": "开始使用",
+                "pages": [
+                  "docs/2025-11-25/getting-started/intro"
+                ]
+              },
+              {
+                "group": "关于 MCP",
+                "pages": [
+                  "docs/2025-11-25/learn/architecture",
+                  "docs/2025-11-25/learn/server-concepts",
+                  "docs/2025-11-25/learn/client-concepts",
+                  "docs/2025-11-25/learn/versioning"
+                ]
+              },
+              {
+                "group": "使用 MCP 开发",
+                "pages": [
+                  "docs/2025-11-25/develop/connect-local-servers",
+                  "docs/2025-11-25/develop/connect-remote-servers",
+                  "docs/2025-11-25/develop/build-with-agent-skills",
+                  "docs/2025-11-25/develop/build-server",
+                  {
+                    "group": "客户端",
+                    "pages": [
+                      "docs/2025-11-25/develop/build-client",
+                      "docs/2025-11-25/develop/clients/client-best-practices"
+                    ]
+                  },
+                  "docs/2025-11-25/sdk",
+                  {
+                    "group": "安全",
+                    "pages": [
+                      "docs/2025-11-25/tutorials/security/authorization",
+                      "docs/2025-11-25/tutorials/security/security_best_practices"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "开发者工具",
+                "pages": [
+                  "docs/2025-11-25/tools/inspector",
+                  "docs/2025-11-25/tools/debugging"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "规范",
+        "versions": [
+          {
+            "version": "版本 2026-07-28（最新）",
+            "default": true,
+            "pages": [
+              "specification/2026-07-28/index",
+              "specification/2026-07-28/changelog",
+              "specification/2026-07-28/deprecated",
+              "specification/2026-07-28/architecture/index",
+              {
+                "group": "基础协议",
+                "pages": [
+                  "specification/2026-07-28/basic/index",
+                  "specification/2026-07-28/basic/versioning",
+                  {
+                    "group": "消息模式",
+                    "pages": [
+                      "specification/2026-07-28/basic/patterns/index",
+                      "specification/2026-07-28/basic/patterns/mrtr",
+                      "specification/2026-07-28/basic/patterns/subscriptions",
+                      "specification/2026-07-28/basic/patterns/cancellation",
+                      "specification/2026-07-28/basic/patterns/progress"
+                    ]
+                  },
+                  {
+                    "group": "传输",
+                    "pages": [
+                      "specification/2026-07-28/basic/transports/index",
+                      "specification/2026-07-28/basic/transports/stdio",
+                      "specification/2026-07-28/basic/transports/streamable-http"
+                    ]
+                  },
+                  {
+                    "group": "授权",
+                    "pages": [
+                      "specification/2026-07-28/basic/authorization/index",
+                      "specification/2026-07-28/basic/authorization/authorization-server-discovery",
+                      "specification/2026-07-28/basic/authorization/client-registration",
+                      "specification/2026-07-28/basic/authorization/security-considerations"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "客户端特性",
+                "pages": [
+                  "specification/2026-07-28/client/roots",
+                  "specification/2026-07-28/client/sampling",
+                  "specification/2026-07-28/client/elicitation"
+                ]
+              },
+              {
+                "group": "服务器特性",
+                "pages": [
+                  "specification/2026-07-28/server/index",
+                  "specification/2026-07-28/server/discover",
+                  "specification/2026-07-28/server/prompts",
+                  "specification/2026-07-28/server/resources",
+                  "specification/2026-07-28/server/tools",
+                  {
+                    "group": "实用工具",
+                    "pages": [
+                      "specification/2026-07-28/server/utilities/caching",
+                      "specification/2026-07-28/server/utilities/completion",
+                      "specification/2026-07-28/server/utilities/logging",
+                      "specification/2026-07-28/server/utilities/pagination"
+                    ]
+                  }
+                ]
+              },
+              "specification/2026-07-28/schema"
+            ]
+          },
+          {
+            "version": "版本 2025-11-25",
+            "pages": [
+              "specification/2025-11-25/index",
+              "specification/2025-11-25/changelog",
+              "specification/2025-11-25/architecture/index",
+              {
+                "group": "基础协议",
+                "pages": [
+                  "specification/2025-11-25/basic/index",
+                  "specification/2025-11-25/basic/lifecycle",
+                  "specification/2025-11-25/basic/transports",
+                  "specification/2025-11-25/basic/authorization",
+                  {
+                    "group": "实用工具",
+                    "pages": [
+                      "specification/2025-11-25/basic/utilities/cancellation",
+                      "specification/2025-11-25/basic/utilities/ping",
+                      "specification/2025-11-25/basic/utilities/progress",
+                      "specification/2025-11-25/basic/utilities/tasks"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "客户端特性",
+                "pages": [
+                  "specification/2025-11-25/client/elicitation",
+                  "specification/2025-11-25/client/roots",
+                  "specification/2025-11-25/client/sampling"
+                ]
+              },
+              {
+                "group": "服务器特性",
+                "pages": [
+                  "specification/2025-11-25/server/index",
+                  "specification/2025-11-25/server/prompts",
+                  "specification/2025-11-25/server/resources",
+                  "specification/2025-11-25/server/tools",
+                  {
+                    "group": "实用工具",
+                    "pages": [
+                      "specification/2025-11-25/server/utilities/completion",
+                      "specification/2025-11-25/server/utilities/logging",
+                      "specification/2025-11-25/server/utilities/pagination"
+                    ]
+                  }
+                ]
+              },
+              "specification/2025-11-25/schema"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "扩展",
+        "pages": [
+          "extensions/overview",
+          "extensions/client-matrix",
+          {
+            "group": "MCP Apps",
+            "pages": [
+              "extensions/apps/overview",
+              "extensions/apps/build"
+            ]
+          },
+          {
+            "group": "授权",
+            "pages": [
+              "extensions/auth/overview",
+              "extensions/auth/oauth-client-credentials",
+              "extensions/auth/enterprise-managed-authorization"
+            ]
+          },
+          {
+            "group": "Tasks",
+            "pages": [
+              "extensions/tasks/overview"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "注册表",
+        "pages": [
+          "registry/about",
+          "registry/quickstart",
+          "registry/authentication",
+          "registry/package-types",
+          "registry/remote-servers",
+          "registry/versioning",
+          "registry/github-actions",
+          "registry/registry-aggregators",
+          "registry/moderation-policy",
+          "registry/terms-of-service",
+          "registry/faq"
+        ]
+      },
+      {
+        "tab": "社区",
+        "pages": [
+          {
+            "group": "社区",
+            "pages": [
+              "community/communication",
+              "community/contributing",
+              "community/contributor-ladder",
+              "community/governance",
+              "community/design-principles",
+              "community/feature-lifecycle",
+              "community/sdk-tiers",
+              "community/sep-guidelines",
+              "community/security",
+              "community/antitrust"
+            ]
+          },
+          {
+            "group": "工作组与兴趣组",
+            "pages": [
+              "community/working-interest-groups",
+              "community/charter-template",
+              {
+                "group": "工作组",
+                "pages": [
+                  "community/working-groups/agents",
+                  "community/working-groups/file-uploads",
+                  "community/working-groups/inspector-v2",
+                  "community/working-groups/interceptors",
+                  "community/working-groups/registry",
+                  "community/working-groups/sdk",
+                  "community/working-groups/server-card",
+                  "community/working-groups/skills-over-mcp",
+                  "community/working-groups/transports",
+                  "community/working-groups/triggers-events"
+                ]
+              },
+              {
+                "group": "兴趣组",
+                "pages": [
+                  "community/interest-groups/auth",
+                  "community/interest-groups/enterprise-managed-authorization",
+                  "community/interest-groups/financial-services",
+                  "community/interest-groups/primitive-grouping",
+                  "community/interest-groups/security",
+                  "community/interest-groups/tool-annotations"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "项目",
+            "pages": [
+              "development/roadmap",
+              "examples"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "SEPs",
+        "pages": [
+          "seps/index",
+          {
+            "group": "提案（按编号）",
+            "pages": [
+              "seps/414-request-meta",
+              "seps/932-model-context-protocol-governance",
+              "seps/973-expose-additional-metadata-for-implementations-res",
+              "seps/985-align-oauth-20-protected-resource-metadata-with-rf",
+              "seps/986-specify-format-for-tool-names",
+              "seps/990-enable-enterprise-idp-policy-controls-during-mcp-o",
+              "seps/991-enable-url-based-client-registration-using-oauth-c",
+              "seps/994-shared-communication-practicesguidelines",
+              "seps/1024-mcp-client-security-requirements-for-local-server-",
+              "seps/1034--support-default-values-for-all-primitive-types-in",
+              "seps/1036-url-mode-elicitation-for-secure-out-of-band-intera",
+              "seps/1046-support-oauth-client-credentials-flow-in-authoriza",
+              "seps/1302-formalize-working-groups-and-interest-groups-in-mc",
+              "seps/1303-input-validation-errors-as-tool-execution-errors",
+              "seps/1319-decouple-request-payload-from-rpc-methods-definiti",
+              "seps/1330-elicitation-enum-schema-improvements-and-standards",
+              "seps/1577--sampling-with-tools",
+              "seps/1613-establish-json-schema-2020-12-as-default-dialect-f",
+              "seps/1686-tasks",
+              "seps/1699-support-sse-polling-via-server-side-disconnect",
+              "seps/1730-sdks-tiering-system",
+              "seps/1850-pr-based-sep-workflow",
+              "seps/1865-mcp-apps-interactive-user-interfaces-for-mcp",
+              "seps/2085-governance-succession-and-amendment",
+              "seps/2106-json-schema-2020-12",
+              "seps/2133-extensions",
+              "seps/2148-contributor-ladder",
+              "seps/2149-working-group-charter-template",
+              "seps/2164-resource-not-found-error",
+              "seps/2207-oidc-refresh-token-guidance",
+              "seps/2243-http-standardization",
+              "seps/2260-Require-Server-requests-to-be-associated-with-Client-requests",
+              "seps/2322-MRTR",
+              "seps/2468-recommend-issuer-claim-for-auth",
+              "seps/2484-conformance-tests-required-for-final-seps",
+              "seps/2549-TTL-for-list-results",
+              "seps/2567-sessionless-mcp",
+              "seps/2575-stateless-mcp",
+              "seps/2577-deprecate-roots-sampling-and-logging",
+              "seps/2596-spec-feature-lifecycle-and-deprecation",
+              "seps/2663-tasks-extension"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

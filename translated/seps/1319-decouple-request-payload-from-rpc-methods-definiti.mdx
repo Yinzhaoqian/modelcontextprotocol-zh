@@ -1,0 +1,86 @@
+---
+title: "SEP-1319：将请求载荷与 RPC 方法定义解耦"
+sidebarTitle: "SEP-1319"
+---
+
+- **状态（Status）**: Final
+- **类型（Type）**: Standards Track
+- **创建（Created）**: 2025-08-08
+- **作者（Author(s)）**: @kurtisvg
+- **Issue**: #1319
+
+## 摘要
+
+本 SEP 提议对模型上下文协议（MCP）规范进行结构性重构。核心变更是将请求的载荷（例如 CallToolRequest）定义为独立的定义，并让 RPC 方法定义引用这些模型。这将数据载荷的定义与传输它的远程过程的定义解耦，带来一份更清晰、更模块化、更易维护的规范。
+
+## 动机
+
+当前的 MCP 规范将请求的数据载荷与传输它的 JSON-RPC 方法紧密耦合。这种设计带来若干挑战：
+
+- **清晰度降低：** 它迫使开发者仅仅为了理解所交换的核心数据，就要在脑中解析 JSON-RPC 传输结构。这增加了认知负担，使规范难以阅读和正确实现。
+- **可维护性受阻：** 内联定义数据结构妨碍它们在不同方法间复用，导致冗余，并使协议未来的更新更复杂、更易出错。
+- **与 JSON-RPC 紧密耦合：** 最关键的是，这种与 JSON-RPC 的紧密耦合是为其他传输协议定义绑定的主要障碍。要支持像 **gRPC** 这样的传输（目前是[社区的一个热门诉求](https://github.com/modelcontextprotocol/modelcontextprotocol/issues/966)），需要对其请求和响应消息有一个与传输无关的定义。当前的结构使这在实践上几乎不可能。
+
+通过重构规范，将数据模型（"是什么"）与 RPC 方法（"怎么做"）分离，本提案将创造一份更清晰、更模块化的规范。此变更将立即改善开发者体验，最重要的是，为 MCP 未来跨多种传输的演进铺平道路。
+
+## 规范
+
+本提案引入以下原则：所有用作 RPC 方法参数（params）或结果（result）的数据结构，都应定义为独立的、具名的 schema。RPC 方法定义随后使用对这些 schema 的引用。
+
+### 当前方式（内联定义）：
+
+RPC 方法定义包含其参数和结果的完整结构。
+
+```ts
+export interface CallToolRequest extends Request {
+  method: "tools/call";
+  params: {
+    name: string;
+    arguments?: { [key: string]: unknown };
+  };
+}
+```
+
+### 提议的方式（解耦定义）：
+
+首先，请求和响应的数据模型被定义为顶层 schema。
+
+```ts
+/**
+ * Parameters for a `tools/call` request.
+ *
+ * @category tools/call
+ */
+export interface CallToolRequestParams extends RequestParams {
+  name: string;
+  arguments?: { [key: string]: unknown };
+}
+```
+
+然后，RPC 方法定义变得简单得多，仅仅引用这些模型。
+
+```ts
+export interface CallToolRequest extends Request {
+  method: "tools/call";
+  params: CallToolRequestParams;
+}
+```
+
+## 理由
+
+所提议的解决方案——将载荷定义与 RPC 方法分离——被选为实现动机中所述目标最直接、最少扰乱的路径。
+
+这种方式在两个不同的关注点之间确立了清晰的架构边界：
+
+1. **数据层：** 与传输无关的载荷定义（例如 `CallToolRequestParams`），代表所交换的核心信息。
+2. **传输层：** 特定于协议的封装（例如 JSON-RPC 的 `CallToolRequest` 对象），描述数据如何被发送。
+
+这种架构分离优于为每种传输维护独立、并行的规范（例如一份用于 JSON-RPC，另一份用于 gRPC），后者会引入显著的维护开销并带来不一致的风险。
+
+至关重要的是，此设计重构的是规范文档本身，但有意地**保持线路格式不变**。这使得本提案完全向后兼容，无需既有的、合规的客户端和服务器作任何改动。简言之，此变更是一项战略性的、基础性的改进，在不惩罚当前生态的前提下支持未来的成长。
+
+## 向后兼容性
+
+本提案对既有实现是**非破坏性变更**。它是对*规范文档本身*的重构，不改变协议消息的线路 JSON 格式。符合旧规范结构的客户端或服务器将继续符合新规范，因为最终生成的 JSON 载荷是相同的。
+
+主要影响在于阅读规范的开发者，以及解析规范以生成代码或文档的工具。

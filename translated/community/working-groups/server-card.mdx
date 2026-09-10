@@ -1,0 +1,102 @@
+---
+title: Server Card 章程
+description: MCP Server Card 工作组的章程。
+---
+
+## 群组类型
+
+**工作组**
+
+## 使命陈述
+
+Server Card 工作组的存在是为了定义一些机制，以便通过通用发现机制促进 MCP 服务器的发现和使用，并就这如何契合围绕发现的更广泛 AI 标准化工作提供指导。具体而言，本工作组将定义什么构成 MCP Server Card、Server Card 必须遵循的标准化文档格式，以及客户端如何为某个给定服务器发现其 Server Card。
+
+## 范围
+
+### 范围内
+
+- **规范工作**：定义什么构成 MCP Server Card 以及 Server Card 文档具体格式的 SEP 或扩展。
+- **发现机制**：规定如何发现一份 MCP Server Card 文档（well-known URL、基于资源的发现等）。
+- **跨生态协调**：就如何与 MCP Server Card 交互，向 [AI Card](https://github.com/Agent-Card/ai-card) 相关工作提出建议。
+- **文档**：涵盖 Server Card 撰写和消费的规范章节及指导。
+
+### 范围外
+
+- 对 MCP 初始化握手或传输层的更改。
+- 通用的 MCP 服务器注册表或目录（归 Registry 工作组）。
+- 在定义出 MCP 全局 i18n 方法之前对 Server Card 内容的国际化。
+
+### 相关群组
+
+- **Registry 工作组** —— Server Card 格式应尽可能贴近 `server.json` 的一个子集；需要协调以避免分歧。
+- **AI Card 相关工作**（外部）—— 关于 AI 目录能否以及如何直接链接到 MCP Server Card 的持续讨论。
+
+## 领导层
+
+| 角色 | 姓名              | 组织         | GitHub                                               | 任期                         |
+| ---- | ----------------- | ------------ | ---------------------------------------------------- | ---------------------------- |
+| Lead | David Soria Parra | Anthropic    | [@dsp-ant](https://github.com/dsp-ant)               | 6 个月（2026 年 8 月 14 日结束） |
+| Lead | Sam Morrow Drums  | GitHub       | [@SamMorrowDrums](https://github.com/SamMorrowDrums) | 6 个月（2026 年 8 月 14 日结束） |
+
+## 权限与决策权
+
+| 决策类型                            | 权限层级                                               |
+| ----------------------------------- | ------------------------------------------------------ |
+| 会议事务与排期                      | WG Leads（自主）                                       |
+| WG 内提案优先级排序                 | WG Leads（自主）                                       |
+| SEP 分诊与关闭（范围内）            | WG Leads（自主，附成文理由）                           |
+| 范围内的技术设计                    | WG 共识                                                |
+| 规范变更（增量式）                  | WG 共识 → 核心维护者批准                               |
+| 规范变更（破坏性/根本性）           | WG 共识 → 核心维护者批准 + 更广泛评审                 |
+| 范围扩展                            | 需要核心维护者批准                                     |
+| WG 成员批准                         | WG 成员担保                                            |
+
+## 成员
+
+| 姓名               | 组织         | GitHub                                               | Discord | 级别      |
+| ------------------ | ------------ | ---------------------------------------------------- | ------- | --------- |
+| David Soria Parra  | Anthropic    | [@dsp-ant](https://github.com/dsp-ant)               |         | Lead      |
+| Sam Morrow Drums   | GitHub       | [@SamMorrowDrums](https://github.com/SamMorrowDrums) |         | Lead      |
+| Tadas Antanavicius |              | [@tadasant](https://github.com/tadasant)             |         | WG 成员   |
+
+## 运作
+
+| 会议            | 频率      | 时长     | 目的                                  |
+| --------------- | --------- | -------- | ------------------------------------- |
+| 工作会议        | 每周      | 60 分钟  | 技术讨论、提案评审                     |
+
+Discord：[#server-card-wg](https://discord.com/channels/1358869848138059966/1399986204405141534)
+
+## 资源
+
+- 实验性扩展仓库：[modelcontextprotocol/experimental-ext-server-card](https://github.com/modelcontextprotocol/experimental-ext-server-card)
+
+## 交付物与成功指标
+
+### 活跃工作项
+
+| 条目                                                                                                | 状态   | 目标日期      | 牵头人                                 |
+| --------------------------------------------------------------------------------------------------- | ------ | ------------- | -------------------------------------- |
+| [SEP-2127：MCP Server Card](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/2127) | Draft  | 2026 年 4 月 3 日 | [@dsp-ant](https://github.com/dsp-ant) |
+
+### 成功标准
+
+### 活跃工作项
+
+| 条目                                    | 状态   | 目标日期    | 牵头人   |
+| --------------------------------------- | ------ | ----------- | -------- |
+| SEP 2127：MCP Server Card               | Draft  | 3 月底      | @dsp-ant |
+| Tier-1 SDK 中的参考实现                 | —      | 4 月底      | 待定     |
+
+### 成功标准
+
+- 规范变更被核心维护者接受。
+- SDK 实现可用。
+- 有影响力的现实世界客户端实现该提案。
+- 有影响力的现实世界服务器实现该提案。
+
+## 变更日志
+
+| 日期       | 变更            |
+| ---------- | --------------- |
+| 2026-03-26 | 首版章程        |

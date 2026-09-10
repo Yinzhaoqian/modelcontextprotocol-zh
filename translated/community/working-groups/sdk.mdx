@@ -1,0 +1,90 @@
+---
+title: SDK 工作组章程
+description: MCP SDK 工作组的章程。
+---
+
+## 群组类型
+
+**工作组**
+
+## 使命陈述
+
+SDK 工作组的存在是为了使官方 MCP SDK 保持一致、合规，并与规范同步。它协调各语言对新协议版本的实现，管理 [SDK 分级体系](/community/sdk-tiers)，并在合理之处建立共享的设计模式，从而让开发者在各 SDK 之间获得连贯的体验，同时每个 SDK 都保持对其语言的惯用性。
+
+## 范围
+
+### 范围内
+
+- **SDK 分级**：运营 [SDK 分级体系](/community/sdk-tiers)，包括评审等级晋升请求、适用降级标准，以及维护已发布的等级认定。
+- **官方 SDK 名录**：评估添加新官方 SDK 或退役既有 SDK 的提案。
+- **发布协调**：使 Tier-1 SDK 的发布计划与规范版本日期对齐，从而使协议特性按其等级所要求的时间线在 SDK 中落地。
+- **跨 SDK 设计指导**：为 SDK API 表面、版本控制、弃用、错误处理和扩展打包推荐通用模式，从而使 SDK 在各语言之间保持可辨识的相似性，同时保持惯用性。
+- **合规集成**：与合规测试项目协作，确保每个官方 SDK 运行合规套件并发布结果。
+- **维护者协调**：为各语言 SDK 维护者提供一个论坛，以分享实现经验并将规范歧义反馈给核心维护者。
+
+### 范围外
+
+- **逐 SDK 的日常维护**：单个 SDK 的 issue 分诊、PR 评审和发布，仍由该 SDK 在 [MAINTAINERS.md](https://github.com/modelcontextprotocol/modelcontextprotocol/blob/main/MAINTAINERS.md) 中所列的维护者负责。
+- **规范撰写**：协议变更通过 [SEP 流程](/community/sep-guidelines)提出，并归相关工作组或核心维护者所有。SDK 工作组实现已被接受的 SEP；它不拥有规范章节。
+- **合规测试撰写**：合规测试套件本身归[合规测试](https://github.com/modelcontextprotocol/conformance)项目所有。
+- **第三方和社区 SDK**：[modelcontextprotocol](https://github.com/modelcontextprotocol) 组织之外的 SDK 不受本群组治理。
+
+### 相关群组
+
+- **[Transports 工作组](/community/working-groups/transports)**：传输实现是每个 SDK 的重要组成部分。当传输 SEP 落地时，SDK 工作组就落地排序与 Transports 工作组协调。
+- **合规测试**：等级认定取决于合规分数。SDK 工作组消费合规结果，并反馈测试覆盖中的缺口。
+- **所有产出规范的工作组**：SDK 工作组是已被接受 SEP 的下游消费者，并就参考实现的时序与发起群组协调。
+
+## 领导层
+
+| 角色 | 姓名             | 组织         | GitHub                                                 | 任期    |
+| ---- | ---------------- | ------------ | ------------------------------------------------------ | ------- |
+| Lead | Felix Weinberger | Anthropic    | [@felixweinberger](https://github.com/felixweinberger) | 持续    |
+
+## 权限与决策权
+
+| 决策类型                                 | 权限层级                                       |
+| ---------------------------------------- | ---------------------------------------------- |
+| 会议事务与排期                           | WG Leads（自主）                               |
+| WG 内提案优先级排序                      | WG Leads（自主）                               |
+| SDK 等级晋升或降级                       | WG 共识                                        |
+| 跨 SDK 设计指导                          | WG 共识（对逐 SDK 维护者具建议性）             |
+| 逐 SDK 的发布、版本控制、API 设计        | 该 SDK 的维护者（自主）                        |
+| 添加或退役一个官方 SDK                   | WG 共识 → 核心维护者批准                       |
+| 对分级标准的更改                         | WG 共识 → 核心维护者批准                       |
+| 范围扩展                                 | 需要核心维护者批准                             |
+| WG 成员批准                              | WG 成员担保                                    |
+
+## 成员
+
+WG 成员是每个官方 SDK 的维护者，记录于 [MAINTAINERS.md](https://github.com/modelcontextprotocol/modelcontextprotocol/blob/main/MAINTAINERS.md) 以及 [modelcontextprotocol/access](https://github.com/modelcontextprotocol/access) 中的相应角色。任何官方 SDK 的维护者默认即为 WG 成员。
+
+## 运作
+
+| 会议            | 频率      | 时长     | 目的                                              |
+| --------------- | --------- | -------- | ------------------------------------------------- |
+| 工作会议        | 双周      | 45 分钟  | 发布协调、等级评审、跨 SDK 设计                    |
+
+沟通在 `#general-sdk-dev` Discord 频道和 [GitHub Discussions](https://github.com/modelcontextprotocol/modelcontextprotocol/discussions) 的 SDK Working Group 分类中进行。
+
+## 交付物与成功指标
+
+### 活跃工作项
+
+| 条目                                                | 状态        | 目标日期    | 牵头人              |
+| --------------------------------------------------- | ----------- | ----------- | ------------------- |
+| Tier-1 SDK 对 2026-06-30 规范的支持                 | 规划中      | 2026 Q3     | 逐 SDK 维护者       |
+| 无状态传输采用的跨 SDK 指导                         | 进行中      | 2026 Q2     | WG Leads            |
+| 季度等级评审                                        | 循环进行    | 每季度      | WG Leads            |
+
+### 成功标准
+
+- 所有官方 SDK 都有已发布的等级，且在其默认分支上有通过的合规运行。
+- Tier-1 SDK 在其等级所要求的时间线内交付对每个已发布规范版本的支持。
+- 等级晋升和降级决策连同理由记录在 GitHub Discussions 中。
+
+## 变更日志
+
+| 日期       | 变更            |
+| ---------- | --------------- |
+| 2026-04-28 | 首版章程        |

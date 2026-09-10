@@ -1,0 +1,274 @@
+---
+title: "SEP-2260：要求服务器请求与客户端请求相关联"
+sidebarTitle: "SEP-2260"
+---
+
+- **状态（Status）**: Final
+- **类型（Type）**: Standards Track
+- **创建（Created）**: 2026-02-16
+- **作者（Author(s)）**: MCP Transports Working Group
+- **担保人（Sponsor）**: @CaitieM20 - Caitie McCaffrey
+- **PR**: https://github.com/modelcontextprotocol/specification/pull/2260
+
+## 摘要
+
+本 SEP 澄清：`roots/list`、`sampling/createMessage` 和 `elicitation/create` 请求**必须（MUST）**与一个发起性的客户端到服务器请求相关联（例如在 `tools/call`、`resources/read` 或 `prompts/get` 处理期间）。除通知外，这些类型的独立服务器发起请求**不得（MUST NOT）**被实现。
+
+尽管当前的 MCP 数据层未强制执行，但从逻辑上讲，这些请求**必须（MUST）**与一个有效的客户端到服务器 JSON-RPC 请求 Id 相关联。
+
+运营性的服务器到客户端 **Ping** 是此限制的例外。
+
+## 动机
+
+### 当前规范
+
+当前规范在传输层使用 **SHOULD** 语言：
+
+在 Streamable HTTP 传输中响应 POST 请求的上下文下 [(2025-11-25/basic/transports.mdx:121-L123)](https://github.com/modelcontextprotocol/modelcontextprotocol/blob/2025-11-25/docs/specification/2025-11-25/basic/transports.mdx?plain=1#L121-L123)：
+
+> - "服务器**可以（MAY）**在发送 JSON-RPC*响应*之前发送 JSON-RPC*请求*和*通知*。这些消息**应当（SHOULD）**与发起性的客户端*请求*相关。"
+
+对于可选的 GET SSE 流 [(2025-11-25/basic/transports.mdx:146-L148)](https://github.com/modelcontextprotocol/modelcontextprotocol/blob/2025-11-25/docs/specification/2025-11-25/basic/transports.mdx?plain=1#L146C1-L148C32)：
+
+> - "服务器**可以（MAY）**在流上发送 JSON-RPC*请求*和*通知*。"
+> - "这些消息**应当（SHOULD）**与客户端任何并发运行的 JSON-RPC*请求*无关。"
+
+尽管 GET 流允许"未经请求的"请求，但其使用完全可选，MCP 服务器作者无法依赖它。
+
+### 设计意图
+
+MCP 服务器请求的设计意图是**嵌套于**其他 MCP 操作内部、反应式地运作：
+
+- **采样**使服务器能够在处理工具调用、资源请求或提示时请求 LLM 协助
+- **征询**使服务器能够收集完成某操作所需的额外用户输入
+- **列出根（List Roots）**使服务器能够识别共享存储位置
+
+**Ping** 具有特殊地位，因为它主要意在作为一种保活/健康检查机制。
+
+对于 Streamable HTTP 服务器，这使得在没有可发送的通知或请求时，SSE 流能够被维持较长时间。对于客户端到服务器的请求，它们是可关联的。未来的传输实现将消除对解离（dissociated）Ping 的需要。
+
+当前规范已经描述了这一模式：
+
+> "MCP 中的采样允许服务器实现代理式行为，方法是使 LLM 调用能够*嵌套*发生在其他 MCP 服务器特性内部。"
+
+然而，规范性要求并未强制执行这一约束。
+
+### 简化收益
+
+使此约束显式化：
+
+1. **简化传输实现** —— 传输无需支持任意的服务器发起请求/响应流（这需要从服务器到客户端的持久连接）；它们只需请求作用域内的双向通信
+2. **澄清用户体验** —— 用户理解采样/征询之所以发生，是*因为*他们发起了某个操作，而非自发发生
+3. **减小安全面** —— 确保客户端了解额外请求的信息将用于什么范围。这让客户端能够更明智地决定是否提供所请求的信息。
+4. **与实践一致** —— 基于对 GitHub 的扫描，所有既有实现都已遵循这一模式，除了 SEP 作者拥有的一个带有牵强场景的仓库。
+
+## 规范变更
+
+### 1. 向特性文档添加警告块
+
+**在 `client/sampling.mdx` 中（既有安全警告之后）：**
+
+```markdown
+<Warning>
+
+**Request Association Requirement**
+
+Servers **MUST** send `sampling/createMessage` requests only in association with an originating client request (e.g., during `tools/call`, `resources/read`, or `prompts/get` processing).
+
+Standalone server-initiated sampling on independent communication streams (unrelated to any client request) is not supported and **MUST NOT** be implemented. Future transport implementations are not required to support this pattern.
+
+</Warning>
+```
+
+**在 `client/elicitation.mdx` 中（既有安全警告之后）：**
+
+```markdown
+<Warning>
+
+**Request Association Requirement**
+
+Servers **MUST** send server-to-client requests (such as `roots/list`,
+`sampling/createMessage`, or `elicitation/create`) only in association with an
+originating client request (e.g., during `tools/call`, `resources/read`, or
+`prompts/get` processing).
+
+Standalone server-initiated requests of these types on independent
+communication streams (unrelated to any client request) are not supported and
+**MUST NOT** be implemented. Future transport implementations are not required
+to support this pattern.
+
+</Warning>
+```
+
+**在 `client/roots.mdx` 中（`User Interaction Model` 一节）：**
+
+```markdown
+<Warning>
+
+Servers **MUST** send server-to-client requests (such as `roots/list`,
+`sampling/createMessage`, or `elicitation/create`) only in association with an
+originating client request (e.g., during `tools/call`, `resources/read`, or
+`prompts/get` processing).
+
+Standalone server-initiated requests of these types on independent
+communication streams (unrelated to any client request) are not supported and
+**MUST NOT** be implemented. Future transport implementations are not required
+to support this pattern.
+
+</Warning>
+```
+
+**在 `basic/utilities/ping.mdx` 中（`Overview` 一节）：**
+
+```markdown
+<Warning>
+
+`ping` is an MCP-level liveness check and **MAY** be sent by either party at
+any time on an established session/connection.
+
+In Streamable HTTP, implementations **SHOULD** prefer transport-level SSE
+keepalive mechanisms for idle-connection maintenance; `ping` remains available
+for protocol-level responsiveness checks.
+
+Request-association requirements for `roots/list`, `sampling/createMessage`,
+and `elicitation/create` do not apply to `ping`.
+
+</Warning>
+```
+
+### 2. 澄清传输层约束
+
+**在 `basic/transports.mdx` 中，POST 发起的 SSE 流（约第 121 行）：**
+
+```diff
+- The server **MAY** send JSON-RPC _requests_ and _notifications_ before sending the
+- JSON-RPC _response_. These messages **SHOULD** relate to the originating client
+- _request_.
++ The server **MAY** send JSON-RPC _requests_ and _notifications_ before sending the
++ JSON-RPC _response_. These messages **MUST** relate to the originating client
++ _request_.
+```
+
+**在 `basic/transports.mdx` 中，GET 发起的独立 SSE 流（约第 147 行）：**
+
+```diff
+- The server **MAY** send JSON-RPC _requests_ and _notifications_ on the stream.
+- These messages **SHOULD** be unrelated to any concurrently-running JSON-RPC
+- _request_ from the client.
++ The server **MAY** send JSON-RPC _notifications_ and _pings_ on the stream.
++ These messages **SHOULD** be unrelated to any concurrently-running JSON-RPC
++ _request_ from the client, **except** that `roots/list`,
++ `sampling/createMessage`, and `elicitation/create` requests **MUST NOT** be
++ sent on standalone streams.
+```
+
+## 向后兼容性
+
+### 影响评估
+
+此变更预计对既有实现**几乎没有到没有影响**：
+
+1. **常见使用模式被保留** —— 工具执行、资源读取和提示处理内部的采样/征询保持完全受支持
+2. **无已知实现受影响** —— 在 GitHub 上进行的研究只显示了此模式的一个实现。这个唯一的实现由 SEP 作者拥有。
+
+### 何为被禁止的
+
+以下从未被显式记录或推荐的模式，现在被明确禁止：
+
+```python
+# ❌ PROHIBITED: Standalone server push
+async def background_task():
+    while True:
+        await asyncio.sleep(60)
+        # Try to initiate sampling without any client request context
+        await session.create_message(...)  # NOT ALLOWED
+```
+
+### 何为仍受支持的
+
+规范的模式保持完全受支持：
+
+```python
+# ✅ SUPPORTED: Sampling during tool execution
+@mcp.tool()
+async def analyze_data(data: str, ctx: Context) -> str:
+    # Request LLM analysis while processing the tool call
+    result = await ctx.session.create_message(
+        messages=[SamplingMessage(role="user", content=...)]
+    )
+    return result.content.text
+```
+
+## 实现指南
+
+### 面向服务器实现者
+
+如果你的服务器满足以下情况，则**无需更改**：
+
+- 只在工具处理器内部使用服务器到客户端请求
+- 只在资源/提示处理器内部使用服务器到客户端请求
+- 作为处理某个客户端请求的一部分同步地使用服务器到客户端请求
+
+如果你的服务器满足以下情况，则**需要更改**：
+
+- 尝试在独立的 HTTP GET 流上发起服务器到客户端请求
+- 尝试发送独立于客户端操作的服务器到客户端请求
+- 有试图调用服务器到客户端请求的后台任务
+
+对于"需要更改"的情况，需要实现替代设计。
+
+对于在初始化后立即执行未经请求的服务器到客户端请求（通常是 URL 征询）的实现者，鼓励在某个需要该信息的客户端到服务器请求的作用域内惰性地执行这些请求。
+
+### 超时考量
+
+当 MCP 服务器在某个客户端请求内部发起一个"嵌套"请求时，父请求的时长会延长以包含用户的响应时间。
+
+实现者**必须（MUST）**确保：
+
+1. 传输超时（例如 HTTP 请求超时）足以容纳"人在环路"的延迟，而这种延迟可能是无界的。
+2. 由基础设施（例如负载均衡器）强制执行的短超时，可能在用户响应之前导致连接终止。对于 Streamable HTTP，**应当（SHOULD）**使用传输层的 SSE 保活机制来保持连接存活并重置计时器；`ping` 请求**可以（MAY）**额外用于协议层的响应性检查。
+
+### 面向客户端实现者
+
+**无需更改** —— 客户端应当已经在其自身出站请求的上下文中处理采样/征询请求。如果当前支持带外方式，则有简化实现的可能。
+
+收到没有关联出站请求的服务器到客户端请求的客户端，**应当（SHOULD）**以 `-32602`（Invalid Params）错误响应。
+
+### 面向传输实现者
+
+未来的传输实现可以依赖以下保证：
+
+- 采样/征询请求只在客户端发起请求的作用域内发生
+- 传输无需支持独立通道上的任意服务器发起请求/响应流
+- 请求关联和生命周期管理得到简化
+
+## 时间线
+
+（本 SEP 意在作为对此变更的公开通知，先于将来不兼容此用法的未来协议版本）
+
+## 所考虑的替代方案
+
+### 1. 软弃用
+
+使用 **SHOULD NOT** 语言来劝阻但不禁止该模式。
+
+**被否决，因为：** 该行为从未被有意支持，将其保持含糊会妨碍传输简化。
+
+### 2. 保持当前的含糊
+
+保持既有的 **SHOULD** 语言不变。
+
+**被否决，因为：** 这阻碍未来的传输实现，并让实现者对该模式是否受支持感到不确定。
+
+### 3. 创建一个能力标志
+
+为想要此行为的服务器添加一个 `sampling.standalone` 或类似能力。
+
+**被否决，因为：** 这为一个没有已知需求的用例增加了复杂性，并与"嵌套"设计原则相矛盾。
+
+## 参考资料
+
+- 当前采样文档：`/specification/draft/client/sampling.mdx`
+- 当前征询文档：`/specification/draft/client/elicitation.mdx`
+- 传输规范：`/specification/draft/basic/transports.mdx`
+- 客户端概念文档中的用户交互模型讨论

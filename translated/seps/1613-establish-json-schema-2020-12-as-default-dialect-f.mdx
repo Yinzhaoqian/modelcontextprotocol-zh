@@ -1,0 +1,174 @@
+---
+title: "SEP-1613：确立 JSON Schema 2020-12 为 MCP 的默认方言"
+sidebarTitle: "SEP-1613"
+---
+
+- **状态（Status）**: Final
+- **类型（Type）**: Standards Track
+- **创建（Created）**: 2025-10-06
+- **作者（Author(s)）**: Ola Hungerford
+- **Issue**: #1613
+
+## 摘要
+
+本 SEP 确立 JSON Schema 2020-12 为 MCP 消息中内嵌 schema（工具的 `inputSchema`/`outputSchema` 和征询的 `requestedSchema` 字段）的默认方言。schema 可以通过 `$schema` 字段显式声明替代方言。这解决了曾导致实现之间兼容性问题的歧义。
+
+## 动机
+
+MCP 规范并未明确指出内嵌 schema 应使用哪个 JSON Schema 版本。这导致了：
+
+- 假定不同版本的客户端和服务器之间的校验失败
+- 各 SDK 生态之间的实现分歧
+- 开发者不得不进行任意版本选择的不确定性
+
+社区讨论（GitHub Discussion #366、PR #655）揭示了各实现在 draft-07 和 2020-12 之间存在分裂，多位维护者和社区成员强烈倾向于以 2020-12 作为默认。
+
+## 规范
+
+### 1. 默认方言
+
+当没有 `$schema` 字段时，MCP 消息中内嵌的 JSON schema **必须（MUST）**符合 [JSON Schema 2020-12](https://json-schema.org/draft/2020-12/schema)。
+
+### 2. 显式方言声明
+
+schema **可以（MAY）**包含一个显式的 `$schema` 字段来声明不同的方言：
+
+```json
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "name": { "type": "string" }
+  }
+}
+```
+
+### 3. Schema 校验要求
+
+- schema **必须（MUST）**依据其声明的或默认的方言有效
+- `inputSchema` 字段**不得（MUST NOT）**为 `null`
+
+**对于没有参数的工具**，使用以下有效方式之一：
+
+- `true` —— 接受任何输入（最宽松）
+- `{}` —— 等价于 `true`，接受任何输入
+- `{ "type": "object" }` —— 接受任何具有任意属性的对象
+- `{ "type": "object", "additionalProperties": false }` —— 只接受空对象 `{}`
+
+**示例**（无参数的工具）：
+
+```json
+{
+  "name": "get_current_time",
+  "description": "Returns the current server time",
+  "inputSchema": {
+    "type": "object",
+    "additionalProperties": false
+  }
+}
+```
+
+### 4. 适用范围
+
+本规范适用于：
+
+- `tools/list` 响应：`inputSchema` 和 `outputSchema`
+- `prompts/elicit` 请求：`requestedSchema`
+- 未来内嵌 JSON Schema 定义的 MCP 特性
+
+### 5. 实现要求
+
+**服务器必须（MUST）：**
+
+- 默认生成符合 2020-12 的 schema
+- 使用非默认方言时包含显式的 `$schema`
+
+**客户端必须（MUST）：**
+
+- 依据声明的或默认的方言校验 schema
+- 至少支持 JSON Schema 2020-12
+
+## 理由
+
+### 为何选择 2020-12？
+
+1. **生态一致**：Python SDK（通过 Pydantic）和 Go SDK 实现偏好／使用 2020-12
+2. **现代特性**：更好的校验能力和组合支持
+3. **社区偏好**：PR #655 讨论中的多位维护者和社区成员主张 2020-12 而非 draft-07
+4. **当前标准**：截至 2025 年，2020-12 是稳定版本
+
+### 为何允许显式声明？
+
+- 为既有 schema 支持迁移路径
+- 在不改变协议的前提下提供灵活性
+- 遵循 JSON Schema 最佳实践
+
+### 所考虑的替代方案
+
+- **以 Draft-07 为默认**：在社区反馈后被否决；它是能力较弱的旧版本
+- **无默认**：因不必要地冗长而被否决；增加样板
+- **多个同等版本**：被否决；造成不可预测性和碎片化
+
+## 向后兼容性
+
+从技术上讲这是一次**澄清**，而非破坏性变更：
+
+- 没有 `$schema` 的既有 schema 默认为 2020-12
+- 服务器可以在过渡期间添加显式的 `$schema`
+- 基础 schema（type、properties、required）在各版本间通用
+
+**对于默认假定 draft-07 的 schema，可能需要迁移：**
+
+- 使用 `dependencies` 的 schema（→ `dependentSchemas` + `dependentRequired`）
+- 位置式数组校验（→ `prefixItems`）
+
+**迁移策略：** 在过渡期间添加显式的 `$schema: "http://json-schema.org/draft-07/schema#"`，然后更新为 2020-12 特性。
+
+## 参考实现
+
+### SDK 实现
+
+**Python SDK** —— 已兼容：
+
+- 使用 Pydantic 生成 schema
+- Pydantic 通过 `.model_json_schema()` 默认为 2020-12
+
+**Go SDK** —— 已实现 2020-12：
+
+- 显式的 2020-12 实现已完成
+- 由 @samthanawalla 在 PR #655 讨论中确认
+
+**其他 SDK：**
+
+- 可能需要更新，但基于其他示例，应有直接或开箱即用的选项来支持这一点。我可以在此添加更多示例，或者我们可以在接受后创建 issue 来跟进这些。
+
+## 安全影响
+
+从确立 2020-12 为默认方言中未识别出特定的安全影响。此澄清减少了可能导致实现之间校验不匹配的歧义，这通过提高可预测性带来了微小的安全改进。
+
+实现应使用维护良好的 JSON Schema 校验器库，并像对待任何依赖一样保持其更新。
+
+## 相关工作
+
+### [SEP-1330：征询枚举 Schema 改进](https://github.com/modelcontextprotocol/modelcontextprotocol/issues/1330)
+
+**SEP-1330** 提议弃用非标准的 `enumNames` 属性，转而采用符合 JSON Schema 2020-12 的模式。这项工作正是由确立 2020-12 为默认方言直接促成的。
+
+**实现考量：**  
+如 SEP-1330 讨论中所述，对于 `oneOf` 和 `anyOf` 等高级 JSON Schema 特性的解析复杂性存在一些担忧。然而，这些特性是 JSON Schema 标准的一部分，并被成熟的校验器库良好支持。实现可以通过使用经过充分测试的 JSON Schema 校验库，在标准合规性与其解析需求之间取得平衡。
+
+### [SEP-834：完整的 JSON Schema 2020-12 支持](https://github.com/modelcontextprotocol/modelcontextprotocol/issues/834)
+
+本 SEP 确立基础（默认方言），而 SEP-834 处理对 2020-12 特性的全面支持。
+
+## 开放问题
+
+规范本身的 schema 引用了 `draft-07`，而我们用来生成它的 `typescript-json-schema` 包仅支持 draft-07。
+
+选项：
+
+1.  更新 schema 生成脚本，在生成后打补丁到 2020-12（这是我在当前 PR 中所做的）
+2.  切换到支持 2020-12 的其他 schema 生成器
+3.  保持原样，因为它实际上并不与规范冲突？
+
+个人而言，我短期偏好 (1)，然后以 (2) 作为后续跟进。

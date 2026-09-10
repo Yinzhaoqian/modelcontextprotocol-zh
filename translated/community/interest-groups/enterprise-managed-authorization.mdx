@@ -1,0 +1,71 @@
+---
+title: 企业托管授权章程
+description: MCP 企业托管授权兴趣组的章程。
+---
+
+<Note>
+  自 2026-08-17 起，本兴趣组已并入[授权 IG](/community/interest-groups/auth)。EMA 互操作性和部署进展作为议程时段在授权 IG 电话会议上呈现，讨论在 `#auth-ig` 话题中继续，`#enterprise-managed-auth-ig` 已归档。本页保留以供参考。
+</Note>
+
+## 群组类型
+
+**兴趣组**
+
+## 使命陈述
+
+企业托管授权兴趣组为身份提供方厂商、MCP 客户端实现者和 MCP 服务器运营者提供一个场所，以协调[企业托管授权扩展](/extensions/auth/enterprise-managed-authorization)（`io.modelcontextprotocol/enterprise-managed-authorization`）的现实采用。该扩展的 ID-JAG 流只有在企业 IdP、MCP 客户端和 MCP 服务器的授权服务器全部端到端互操作时才能带来价值——本群组的存在是为了收集部署经验、揭示独立实现之间的兼容性缺口，并将经过验证的问题反馈给[授权 IG](/community/interest-groups/auth)和 [ext-auth](https://github.com/modelcontextprotocol/ext-auth) 规范。
+
+## 范围
+
+### 范围内
+
+- **互操作性报告**：记录将特定 IdP、MCP 客户端和 MCP 授权服务器通过完整 ID-JAG 交换进行配对的结果，包括哪些行得通、哪些需要变通、哪些失败了
+- **合规场景输入**：识别 EMA 合规套件应当作出的断言（ID-JAG 验证、受众和签发者检查、声明映射、账户关联、错误处理），并为[合规](https://github.com/modelcontextprotocol/conformance)仓库贡献场景
+- **部署模式**：就在生产落地中观察到的租户隔离、管理员同意流程、JIT 预置、声明到权限的映射和令牌生命周期选择交流心得
+- **IdP 能力缺口**：编目哪些现有 IdP 产品尚无法按规范签发或验证 ID-JAG，以便实现者知道该有何预期、IdP 厂商有一份共享的待办清单
+- **规范澄清请求**：收集在实现期间发现的歧义和规定不足的行为，并作为 issue 或 PR 路由到 [ext-auth](https://github.com/modelcontextprotocol/ext-auth) 仓库
+
+### 范围外
+
+- **其他授权配置文件**：客户端凭据、DPoP、工作负载身份联合以及核心 OAuth 2.1 流属于[授权 IG](/community/interest-groups/auth)
+- **一般企业部署议题**：网络、打包和宿主应用落地方面的关切，凡与 ID-JAG 流无关者
+- **终端用户产品配置演练**：本 IG 讨论模式，而非针对个别 IdP 或客户端产品的分步设置。厂商报告的关于某个 IdP 能否实现某功能的约束，作为部署经验**属于**范围内
+- **具有竞争敏感性或非公开的商业信息**，依据 [MCP 反垄断政策](/community/antitrust)
+
+### 相关群组
+
+- **[授权 IG](/community/interest-groups/auth)**：所有 MCP 授权工作的母群组；EMA 规范变更在那里孵化，本 IG 的发现为其议程提供输入
+- **[安全 IG](/community/interest-groups/security)**：ID-JAG 流中的令牌受众混淆、签发者验证和账户关联风险，处于两个群组之间的边界
+- **SDK 维护者**：SDK 交付 EMA 客户端实现；互操作发现为跨 SDK 的行为和默认值提供依据
+
+## 领导层
+
+| 角色        | 姓名          | 组织         | GitHub                                     | 任期    |
+| ----------- | ------------- | ------------ | ------------------------------------------ | ------- |
+| 主持人      | Paul Carleton | Anthropic    | [@pcarleton](https://github.com/pcarleton) | 首任    |
+| 主持人      | Aaron Parecki | Okta         | [@aaronpk](https://github.com/aaronpk)     | 首任    |
+
+由 Den Delimarsky（[@localden](https://github.com/localden)，首席维护者）担保。
+
+## 成员
+
+向任何人开放；加入频道、参加电话会议或做贡献都无需正式的成员资格或批准步骤。本群组尤其欢迎来自企业 IdP 厂商、正在交付 EMA 支持的 MCP 客户端实现者，以及正与企业 IdP 集成的 MCP 服务器运营者的参与者。
+
+加入 [MCP 贡献者 Discord](/community/communication#discord) 上的 `#enterprise-managed-auth-ig` 频道，或在 [GitHub Discussions](https://github.com/modelcontextprotocol/modelcontextprotocol/discussions) 的 Authorization 分类中开一个话题。电话会议是开放的，出席是可选的——通过 Discord 和 GitHub 的异步参与同样受到重视。
+
+## 运作
+
+| 会议         | 频率          | 时长     | 目的                                                                 |
+| ------------ | ------------- | -------- | -------------------------------------------------------------------- |
+| 互操作电话会议 | 每 2 周       | 45 分钟  | 部署报告、兼容性矩阵评审、规范反馈分诊                               |
+
+每次电话会议前会在 `#enterprise-managed-auth-ig` 中共享议程。会议纪要发布到 [GitHub Discussions](https://github.com/modelcontextprotocol/modelcontextprotocol/discussions) 的 Authorization 分类。
+
+Discord：[#enterprise-managed-auth-ig](https://discord.com/channels/1358869848138059966/1516754292294287360) · [邀请](https://discord.gg/xw55W9Sw5s)
+
+## 变更日志
+
+| 日期       | 变更                                               |
+| ---------- | -------------------------------------------------- |
+| 2026-08-17 | 并入授权 IG；频道已归档                             |
+| 2026-06-16 | 首版章程                                            |
