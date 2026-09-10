@@ -2,34 +2,74 @@
 
 Model Context Protocol（MCP）官方文档的**高质量中文镜像**。
 
-> 源站：[modelcontextprotocol.io](https://modelcontextprotocol.io)　·　交付形态：Mintlify 中文站
+> 源站：[modelcontextprotocol.io](https://modelcontextprotocol.io)　·　在线站点：**[mcp-zh.com](https://mcp-zh.com)**　·　技术栈：Astro Starlight（纯静态）
 
 本项目的目标是把官方技术文档**完整、准确**地映射为中文版本，与官方保持结构一致、语义一致、URL 一致、版本一致。中文文档是**镜像**，不是博客、教程、摘要或 AI 二次解读。
 
 ---
 
-## 快速开始（本地预览）
+## 架构
 
-本项目用 Mintlify 渲染，配置文件为 `translated/docs.json`，必须在 `translated/` 目录下启动：
-
-```bash
-cd translated && npx -y mint@latest dev
+```text
+translated/   ← 唯一真源：中文 .mdx（Mintlify 格式）+ docs.json 导航
+     │
+     │ scripts/migrate_mintlify_to_starlight.py   （组件转换 / 资源复制 / 生成侧边栏）
+     ▼
+web/          ← Astro Starlight 工程（生成内容不入库）
+     │ npm run build
+     ▼
+web/dist/     ← 纯静态产物
+     │ GitHub Actions → rsync
+     ▼
+RackNerd 服务器（Caddy 提供服务 + 自动 HTTPS）→ https://mcp-zh.com
 ```
 
-启动后访问 **http://localhost:3000**。首次启动会拉取 `mint` 包并构建，日志出现 `Local: http://localhost:3000` 即就绪。
+- **`translated/` 是唯一真源**。翻译只改这里；`web/` 下的内容由迁移脚本生成，已在 `.gitignore` 中排除。
+- 迁移脚本把 Mintlify 专有组件转换为 Starlight 语法：`Note/Warning`→提示框、`Card`→`LinkCard`、`Steps`/`Tabs`/`Accordion`、`Frame`、`Tree`，mermaid 图客户端渲染。
+- 已接入 **Google Analytics 4**；首页为 Starlight splash。
 
-更多说明（换端口、热重载、版本排查）见 **[docs/本地预览.md](docs/本地预览.md)**。
+---
+
+## 本地预览
+
+需要 **Node ≥ 22.12** 与 Python 3。
+
+```bash
+# 1. 生成 Starlight 内容（translated/ -> web/）
+python scripts/migrate_mintlify_to_starlight.py
+
+# 2. 安装依赖并启动开发服务器
+cd web && npm install && npm run dev
+```
+
+启动后访问 **http://localhost:4321**。构建静态产物用 `npm run build`（输出到 `web/dist/`）。
+
+> 改动 `translated/` 后需重新运行迁移脚本，`web/` 才会更新。
+
+---
+
+## 部署
+
+推送到 `main` 后，GitHub Actions 自动构建并部署到服务器。完整步骤（DNS / Caddy / SSH 密钥 / GitHub Secrets）见 **[docs/部署.md](docs/部署.md)**。
+
+- CI 工作流：[.github/workflows/deploy.yml](.github/workflows/deploy.yml)
+- Caddy 配置模板：[deploy/Caddyfile](deploy/Caddyfile)
 
 ---
 
 ## 目录结构
 
 ```text
-sources/            官方原始数据（sitemap / url-mapping / 原始 .md、.mdx）
-translated/         中文镜像，按官方 Path 镜像目录
-  docs.json         Mintlify 站点与导航配置
+translated/         中文镜像（唯一真源），按官方 Path 镜像目录
+  docs.json         导航与版本配置（迁移脚本据此生成侧边栏）
   docs/<版本>/**    文档正文（.mdx）
-  specification/... 规范正文（.mdx）
+  specification/**  规范正文（.mdx）
+  images/ logo/     静态资源
+web/                Astro Starlight 工程
+  astro.config.mjs  站点配置（GA4 / mermaid / 别名）
+  src/              首页、自定义组件、生成内容（生成内容不入库）
+scripts/            迁移脚本
+deploy/             Caddyfile 模板
 docs/               项目规则与流程文档（见下）
 glossary.json       全局技术术语表
 AGENTS.md           项目总纲与核心原则
@@ -37,9 +77,9 @@ AGENTS.md           项目总纲与核心原则
 
 ---
 
-## 操作步骤 / 项目文档
+## 翻译规范 / 项目文档
 
-开始任何翻译任务前，**必须先阅读**以下文档并严格遵守：
+翻译任务前，**必须先阅读**以下文档并严格遵守：
 
 | 文档 | 说明 |
 |------|------|
@@ -47,18 +87,8 @@ AGENTS.md           项目总纲与核心原则
 | [docs/translation-rules.md](docs/translation-rules.md) | 翻译规范：代码/API/术语/规范性语言/URL 的处理规则与最终检查清单 |
 | [docs/workflow.md](docs/workflow.md) | 标准工作流：从发现源站到生成报告的 9 个阶段 |
 | [docs/plan.md](docs/plan.md) | 分批执行规划：批次划分（B0–B9）、子批顺序与进度追踪 |
-| [docs/本地预览.md](docs/本地预览.md) | 本地预览：启动命令、热重载、端口与排查 |
+| [docs/部署.md](docs/部署.md) | 部署到 RackNerd 服务器（Caddy + GitHub Actions）|
 | [glossary.json](glossary.json) | 全局术语表：确定后全站统一使用 |
-
-### 标准工作流程（来自 [docs/workflow.md](docs/workflow.md)）
-
-```text
-阶段 1 发现源站 → 阶段 2 分析结构 → 阶段 3 建立 Sitemap → 阶段 4 建立 URL 映射
-→ 阶段 5 建立术语表 → 阶段 6 逐页翻译 → 阶段 7 Source/Target 对照
-→ 阶段 8 保存 → 阶段 9 生成报告
-```
-
-以「页面」为最小工作单位，每完成一页立即做 Source/Target 对照并修正。
 
 ### 核心原则（来自 [AGENTS.md](AGENTS.md)）
 
